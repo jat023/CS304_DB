@@ -24,7 +24,7 @@ public class oracleDB {
  
 		try {
  
-			connection = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1522:ug", "ora_j5m8", "a10798122");
+			connection = DriverManager.getConnection("jdbc:oracle:thin:@dbhost.ugrad.cs.ubc.ca:1522:ug", "ora_j5m8", "a10798122");
  
 		} catch (SQLException e) {
  
