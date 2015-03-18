@@ -27,11 +27,9 @@ public class SteemDbConnector {
     public static Connection getDefaultConnection() {
 
         if (defaultConnection == null) {
-
             registerDriver();
 
             try {
-                
                 defaultConnection = DriverManager.getConnection(DEFAULT_URL, DEFAULT_USER, DEFAULT_PASSWORD);
                 
             } catch (SQLException e) {
