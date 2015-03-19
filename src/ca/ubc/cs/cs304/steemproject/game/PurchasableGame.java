@@ -1,7 +1,7 @@
 package ca.ubc.cs.cs304.steemproject.game;
 
 public class PurchasableGame implements IGame {
-    
+
     private final String fName;
     private final String fDescription;
     private final String fGenre;
@@ -21,7 +21,7 @@ public class PurchasableGame implements IGame {
         fOnSpecial = aOnSpecial;
         fDiscount = aDiscount;
     }
-    
+
     @Override
     public String getName() {
         return fName;
@@ -41,21 +41,39 @@ public class PurchasableGame implements IGame {
     public String getPublisher() {
         return fPublisher;
     }
-    
+
     public float getRating() {
         return fRating;
     }
-    
+
     public float getFullPrice() {
         return fPrice;
     }
-    
+
     public boolean isOnSpecial() {
         return fOnSpecial;
     }
-    
-    public float getDiscountPrice() {
-        return fPrice * (1 - fDiscount);
+
+    public float getDiscountPercentage() {
+        return fDiscount;
     }
+
+    public Float getSalePrice() {
+        if (fOnSpecial) {
+            return fPrice * (1 - fDiscount);
+        } else {
+            return fPrice;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "PurchasableGame [fName=" + fName + ", fDescription="
+                + fDescription + ", fGenre=" + fGenre + ", fPublisher="
+                + fPublisher + ", fRating=" + fRating + ", fPrice=" + fPrice
+                + ", fOnSpecial=" + fOnSpecial + ", getSalePrice()="
+                + getSalePrice() + "]";
+    }
+
 
 }

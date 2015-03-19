@@ -35,13 +35,14 @@ public class InitializeDatabase {
             Tables.GAME_ATTR_DESCRIPTION+ " VARCHAR(2000) NOT NULL," +
             Tables.GAME_ATTR_GENRE+ " VARCHAR(15) NOT NULL," +
             Tables.GAME_ATTR_DEVELOPER+ " VARCHAR(15) NOT NULL," +
-            Tables.PURCHASABLE_GAME_ATTR_RATING+ " NUMBER(2,1) NOT NULL," +
+            Tables.PURCHASABLE_GAME_ATTR_RATING+ " NUMBER(3,1) NOT NULL," +
             Tables.PURCHASABLE_GAME_ATTR_FULLPRICE+ " NUMBER(4,2) NOT NULL," +
             Tables.PURCHASABLE_GAME_ATTR_ONSPECIAL+ " NUMBER(1) DEFAULT 0," +
-            Tables.PURCHASABLE_GAME_ATTR_DISCOUNTPRICE+ " NUMBER(4,2)," +
+            Tables.PURCHASABLE_GAME_ATTR_DISCOUNTPERC+ " NUMBER(3,2)," +
             "PRIMARY KEY (" +Tables.GAME_ATTR_NAME+ ")," +
-            "CONSTRAINT " +Tables.PURCHASABLE_GAME_ATTR_ONSPECIAL+ "Contraint CHECK (" +Tables.PURCHASABLE_GAME_ATTR_ONSPECIAL+ " = 0 OR " +Tables.PURCHASABLE_GAME_ATTR_ONSPECIAL+ " = 1),"+
-            "CONSTRAINT " +Tables.PURCHASABLE_GAME_ATTR_RATING+ "Constraint CHECK (" +Tables.PURCHASABLE_GAME_ATTR_RATING+ " >= 0 AND " +Tables.PURCHASABLE_GAME_ATTR_RATING+ " <= 10) )";
+            "CONSTRAINT specialContraint CHECK (" +Tables.PURCHASABLE_GAME_ATTR_ONSPECIAL+ " = 0 OR " +Tables.PURCHASABLE_GAME_ATTR_ONSPECIAL+ " = 1),"+
+            "CONSTRAINT ratingConstraint CHECK (" +Tables.PURCHASABLE_GAME_ATTR_RATING+ " >= 0 AND " +Tables.PURCHASABLE_GAME_ATTR_RATING+ " <= 10),"+
+            "CONSTRAINT discountConstraint CHECK (" +Tables.PURCHASABLE_GAME_ATTR_DISCOUNTPERC+ " <= 1 AND " +Tables.PURCHASABLE_GAME_ATTR_DISCOUNTPERC+ " >= 0) )";
 
     private static final String createGameInDevelopmentSQL = "CREATE TABLE "+Tables.DEVELOPMENT_GAMETABLENAME+" ("+
             Tables.GAME_ATTR_NAME+ " VARCHAR(15)," +
@@ -127,7 +128,9 @@ public class InitializeDatabase {
         statement.execute(createTestSQL);
         log.info("Created table " + Tables.TEST_TABLENAME);
 
-        Tables.addNewPurchasableGame(new PurchasableGame("game1","fun game", "RPG", "Bob", 2.2f, 1.00f, true, 0.2f));
+        Tables.addNewPurchasableGame(new PurchasableGame("game1","fun game", "RPG", "Bob", 10f, 1.00f, false, 0f));
+        Tables.addNewPurchasableGame(new PurchasableGame("game2","fun game", "PUZZLE", "Dan Inc.", 8.8f, 9.99f, true, 0.4f));
+        Tables.addNewPurchasableGame(new PurchasableGame("game3","fun game", "ACTION", "Dan", 5f, 59.99f, false, 0.2f));
     }
 
     private static void dropTableIfExists(Connection con, String aTableName) {
