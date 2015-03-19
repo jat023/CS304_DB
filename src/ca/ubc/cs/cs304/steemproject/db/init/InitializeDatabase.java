@@ -12,125 +12,126 @@ import org.apache.log4j.Logger;
 
 import ca.ubc.cs.cs304.steemproject.db.Tables;
 import ca.ubc.cs.cs304.steemproject.db.connection.SteemDbConnector;
+import ca.ubc.cs.cs304.steemproject.game.PurchasableGame;
 
 public class InitializeDatabase {
 
     private static final Logger log = Logger.getLogger(InitializeDatabase.class);
 
-    private static final String createCustomerSQL = "CREATE TABLE " +Tables.CUSTOMER_TABLE+ " (" +
-            "userId INT," +
-            "email VARCHAR(30) NOT NULL UNIQUE," +
-            "password VARCHAR(30) NOT NULL," +
-            "PRIMARY KEY (userId) )";
+    private static final String createCustomerSQL = "CREATE TABLE " +Tables.CUSTOMER_TABLENAME+ " (" +
+            Tables.USER_ATTR_USERID+ " INT," +
+            Tables.USER_ATTR_EMAIL+ " VARCHAR(30) NOT NULL UNIQUE," +
+            Tables.USER_ATTR_PASSWORD+ " VARCHAR(30) NOT NULL," +
+            "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ") )";
 
-    private static final String createGameTesterSQL = "CREATE TABLE " +Tables.GAME_TESTER_TABLE+ " (" +
-            "userId INT," +
-            "email VARCHAR(30) NOT NULL UNIQUE," +
-            "password VARCHAR(30) NOT NULL," +
-            "PRIMARY KEY (userId) )";
+    private static final String createGameTesterSQL = "CREATE TABLE " +Tables.GAME_TESTER_TABLENAME+ " (" +
+            Tables.USER_ATTR_USERID+ " INT," +
+            Tables.USER_ATTR_EMAIL+ " VARCHAR(30) NOT NULL UNIQUE," +
+            Tables.USER_ATTR_PASSWORD+ " VARCHAR(30) NOT NULL," +
+            "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ") )";
 
-    private static final String createFinalizedGameSQL = "CREATE TABLE " +Tables.FINALIZED_GAME_TABLE+ " (" +
-            "gname VARCHAR(15)," +
-            "rating NUMBER(2,1) NOT NULL," +
-            "description VARCHAR(2000) NOT NULL," +
-            "genre VARCHAR(15) NOT NULL," +
-            "developer VARCHAR(15) NOT NULL," +
-            "price NUMBER(4,2) NOT NULL," +
-            "onSpecial NUMBER(1) DEFAULT 0," +
-            "discount NUMBER(2,2) DEFAULT 0," +
-            "PRIMARY KEY (gname)," +
-            "CONSTRAINT discountConstraint CHECK (discount >= 0 AND discount <= 1)," +
-            "CONSTRAINT ratingConstraint CHECK (rating >= 0 AND rating <= 10) )";
+    private static final String createFinalizedGameSQL = "CREATE TABLE " +Tables.PURCHASABLE_GAME_TABLENAME+ " (" +
+            Tables.GAME_ATTR_NAME+ " VARCHAR(15)," +
+            Tables.GAME_ATTR_DESCRIPTION+ " VARCHAR(2000) NOT NULL," +
+            Tables.GAME_ATTR_GENRE+ " VARCHAR(15) NOT NULL," +
+            Tables.GAME_ATTR_DEVELOPER+ " VARCHAR(15) NOT NULL," +
+            Tables.PURCHASABLE_GAME_ATTR_RATING+ " NUMBER(2,1) NOT NULL," +
+            Tables.PURCHASABLE_GAME_ATTR_FULLPRICE+ " NUMBER(4,2) NOT NULL," +
+            Tables.PURCHASABLE_GAME_ATTR_ONSPECIAL+ " NUMBER(1) DEFAULT 0," +
+            Tables.PURCHASABLE_GAME_ATTR_DISCOUNTPRICE+ " NUMBER(4,2)," +
+            "PRIMARY KEY (" +Tables.GAME_ATTR_NAME+ ")," +
+            "CONSTRAINT " +Tables.PURCHASABLE_GAME_ATTR_ONSPECIAL+ "Contraint CHECK (" +Tables.PURCHASABLE_GAME_ATTR_ONSPECIAL+ " = 0 OR " +Tables.PURCHASABLE_GAME_ATTR_ONSPECIAL+ " = 1),"+
+            "CONSTRAINT " +Tables.PURCHASABLE_GAME_ATTR_RATING+ "Constraint CHECK (" +Tables.PURCHASABLE_GAME_ATTR_RATING+ " >= 0 AND " +Tables.PURCHASABLE_GAME_ATTR_RATING+ " <= 10) )";
 
-    private static final String createGameInDevelopmentSQL = "CREATE TABLE "+Tables.GAME_IN_DEVELOPMENT_TABLE+" ("+
-            "gname VARCHAR(15)," +
-            "description VARCHAR(2000) NOT NULL," +
-            "genre VARCHAR(15) NOT NULL,"+
-            "developer VARCHAR(15) NOT NULL,"+
-            "version CHAR(10) NOT NULL," +
-            "PRIMARY KEY (gname) )";
+    private static final String createGameInDevelopmentSQL = "CREATE TABLE "+Tables.DEVELOPMENT_GAMETABLENAME+" ("+
+            Tables.GAME_ATTR_NAME+ " VARCHAR(15)," +
+            Tables.GAME_ATTR_DESCRIPTION+ " VARCHAR(2000) NOT NULL," +
+            Tables.GAME_ATTR_GENRE+ " VARCHAR(15) NOT NULL,"+
+            Tables.GAME_ATTR_DEVELOPER+ " VARCHAR(15) NOT NULL,"+
+            Tables.DEVELOPMENT_GAME_ATTR_VERSION+ " CHAR(10) NOT NULL," +
+            "PRIMARY KEY (" +Tables.GAME_ATTR_NAME+ ") )";
 
-    private static final String createCreditCardSQL = "CREATE TABLE "+Tables.CREDIT_CARD_TABLE+" (" +
-            "cardNum NUMBER(16),"+
-            "address VARCHAR(30) NOT NULL,"+
-            "ccv NUMBER(3) NOT NULL,"+
-            "userId INT NOT NULL,"+
-            "PRIMARY KEY (cardNum),"+
-            "FOREIGN KEY (userId) REFERENCES " +Tables.CUSTOMER_TABLE+ " )";
+    private static final String createCreditCardSQL = "CREATE TABLE "+Tables.CREDIT_CARD_TABLENAME+" (" +
+            Tables.CREDIT_CARD_ATTR_CARDNUM+ " NUMBER(16),"+
+            Tables.CREDIT_CARD_ATTR_ADDRESS+ " VARCHAR(30) NOT NULL,"+
+            Tables.CREDIT_CARD_ATTR_CCV+ " NUMBER(3) NOT NULL,"+
+            Tables.USER_ATTR_USERID+ " INT NOT NULL,"+
+            "PRIMARY KEY (" + Tables.CREDIT_CARD_ATTR_CARDNUM+ "),"+
+            "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ") REFERENCES " +Tables.CUSTOMER_TABLENAME+ " )";
 
-    private static final String createOwnsGameSQL = "Create TABLE "+Tables.OWNS_GAME_TABLE+" (" +
-            "userId INT,"+
-            "gname VARCHAR(15),"+
-            "hours NUMBER(2) DEFAULT 0,"+
-            "PRIMARY KEY (userId, gname),"+
-            "FOREIGN KEY (userId) REFERENCES " +Tables.CUSTOMER_TABLE+ ","+
-            "FOREIGN KEY (gname) REFERENCES " +Tables.FINALIZED_GAME_TABLE+ " )";
+    private static final String createOwnsGameSQL = "Create TABLE "+Tables.OWNS_GAME_TABLENAME+" (" +
+            Tables.USER_ATTR_USERID+ " INT,"+
+            Tables.GAME_ATTR_NAME+ " VARCHAR(15),"+
+            Tables.OWNS_GAME_ATTR_HOURS+ " NUMBER(2) DEFAULT 0,"+
+            "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ "),"+
+            "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ") REFERENCES " +Tables.CUSTOMER_TABLENAME+ ","+
+            "FOREIGN KEY (" +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.PURCHASABLE_GAME_TABLENAME+ " )";
 
-    private static final String createTransactionSQL = "CREATE TABLE "+Tables.TRANSACTION_TABLE+" (" +
-            "userId INT,"+
-            "gname VARCHAR(15),"+
-            "cardNum NUMBER(16) NOT NULL,"+
+    private static final String createTransactionSQL = "CREATE TABLE "+Tables.TRANSACTION_TABLENAME+" (" +
+            Tables.USER_ATTR_USERID+ " INT,"+
+            Tables.GAME_ATTR_NAME+ " VARCHAR(15),"+
+            Tables.CREDIT_CARD_ATTR_CARDNUM+ " NUMBER(16) NOT NULL,"+
             "dateTime TIMESTAMP NOT NULL,"+
-            "PRIMARY KEY (userId, gname),"+
-            "FOREIGN KEY (userId, gname) REFERENCES " +Tables.OWNS_GAME_TABLE+ ","+
-            "FOREIGN KEY (cardNum) REFERENCES " +Tables.CREDIT_CARD_TABLE+ " )";
+            "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ "),"+
+            "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.OWNS_GAME_TABLENAME+ ","+
+            "FOREIGN KEY (" + Tables.CREDIT_CARD_ATTR_CARDNUM+ ") REFERENCES " +Tables.CREDIT_CARD_TABLENAME+ " )";
 
-    private static final String createTestSQL = "CREATE TABLE "+Tables.TEST_TABLE+" (" +
-            "userId INT,"+
-            "gname VARCHAR(15),"+
+    private static final String createTestSQL = "CREATE TABLE "+Tables.TEST_TABLENAME+" (" +
+            Tables.USER_ATTR_USERID+ " INT,"+
+            Tables.GAME_ATTR_NAME+ " VARCHAR(15),"+
             "dateTime TIMESTAMP NOT NULL,"+
-            "rating NUMBER(2,1) NOT NULL,"+
-            "PRIMARY KEY (userId, gname, dateTime),"+
-            "FOREIGN KEY (userId) REFERENCES " +Tables.GAME_TESTER_TABLE+ ","+
-            "FOREIGN KEY (gname) REFERENCES " +Tables.GAME_IN_DEVELOPMENT_TABLE+ " )";
+            Tables.PURCHASABLE_GAME_ATTR_RATING+ " NUMBER(2,1) NOT NULL,"+
+            "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ ", dateTime),"+
+            "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ") REFERENCES " +Tables.GAME_TESTER_TABLENAME+ ","+
+            "FOREIGN KEY (" +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.DEVELOPMENT_GAMETABLENAME+ " )";
 
     public static void main(String args[]) throws SQLException {
 
         Connection con = SteemDbConnector.getDefaultConnection();
-
         Statement statement = con.createStatement();
 
         // Drop existing tables.
 
-        dropTableIfExists(con, Tables.TEST_TABLE);
-        dropTableIfExists(con, Tables.TRANSACTION_TABLE);
-        dropTableIfExists(con, Tables.OWNS_GAME_TABLE);
-        dropTableIfExists(con, Tables.CREDIT_CARD_TABLE);
-        dropTableIfExists(con, Tables.GAME_IN_DEVELOPMENT_TABLE);
-        dropTableIfExists(con, Tables.FINALIZED_GAME_TABLE);
-        dropTableIfExists(con, Tables.GAME_TESTER_TABLE);
-        dropTableIfExists(con, Tables.CUSTOMER_TABLE);
+        dropTableIfExists(con, Tables.TEST_TABLENAME);
+        dropTableIfExists(con, Tables.TRANSACTION_TABLENAME);
+        dropTableIfExists(con, Tables.OWNS_GAME_TABLENAME);
+        dropTableIfExists(con, Tables.CREDIT_CARD_TABLENAME);
+        dropTableIfExists(con, Tables.DEVELOPMENT_GAMETABLENAME);
+        dropTableIfExists(con, Tables.PURCHASABLE_GAME_TABLENAME);
+        dropTableIfExists(con, Tables.GAME_TESTER_TABLENAME);
+        dropTableIfExists(con, Tables.CUSTOMER_TABLENAME);
 
         // Create tables.
 
         statement.execute(createCustomerSQL);
-        log.info("Created table " + Tables.CUSTOMER_TABLE);
+        log.info("Created table " + Tables.CUSTOMER_TABLENAME);
 
         statement.execute(createGameTesterSQL);
-        log.info("Created table " + Tables.GAME_TESTER_TABLE);
+        log.info("Created table " + Tables.GAME_TESTER_TABLENAME);
 
         statement.execute(createFinalizedGameSQL);
-        log.info("Created table " + Tables.FINALIZED_GAME_TABLE);
+        log.info("Created table " + Tables.PURCHASABLE_GAME_TABLENAME);
 
         statement.execute(createGameInDevelopmentSQL);
-        log.info("Created table " + Tables.GAME_IN_DEVELOPMENT_TABLE);
+        log.info("Created table " + Tables.DEVELOPMENT_GAMETABLENAME);
 
         statement.execute(createCreditCardSQL);
-        log.info("Created table " + Tables.CREDIT_CARD_TABLE);
+        log.info("Created table " + Tables.CREDIT_CARD_TABLENAME);
 
         statement.execute(createOwnsGameSQL);
-        log.info("Created table " + Tables.OWNS_GAME_TABLE);
+        log.info("Created table " + Tables.OWNS_GAME_TABLENAME);
 
         statement.execute(createTransactionSQL);
-        log.info("Created table " + Tables.TRANSACTION_TABLE);
+        log.info("Created table " + Tables.TRANSACTION_TABLENAME);
 
         statement.execute(createTestSQL);
-        log.info("Created table " + Tables.TEST_TABLE);
+        log.info("Created table " + Tables.TEST_TABLENAME);
 
+        Tables.addNewPurchasableGame(new PurchasableGame("game1","fun game", "RPG", "Bob", 2.2f, 1.00f, true, 0.2f));
     }
-    
+
     private static void dropTableIfExists(Connection con, String aTableName) {
-        
+
         Statement stmt;
         try {
             stmt = con.createStatement();
@@ -138,38 +139,38 @@ public class InitializeDatabase {
             log.debug("Could not prepare statement.", e);
             throw new RuntimeException(e);
         }
-        
+
         try {
-            
+
             stmt.execute("DROP TABLE " + aTableName);
             log.debug("Dropped table " + aTableName);
-            
+
         } catch (SQLException e) {
-            
+
             // If failed because table does not exist, then we ignore.
             if (e.getMessage().contains("table or view does not exist")) {
                 log.debug(aTableName + " does not exist.");
             } else {
                 throw new RuntimeException("Failed to drop table " + aTableName, e);
             }
-            
+
         }
-        
+
     }
-    
+
     public static void getUserTables(Connection con) throws SQLException {
         Set<String> tableNames = new HashSet<String>();
         DatabaseMetaData meta = con.getMetaData();
         ResultSet res = meta.getTables(null, "ORA_J5M8", null, 
-           new String[] {"TABLE"});
-//        while (res.next()) {
-//           System.out.println(
-//              "   "+res.getString("TABLE_CAT") 
-//             + ", "+res.getString("TABLE_SCHEM")
-//             + ", "+res.getString("TABLE_NAME")
-//             + ", "+res.getString("TABLE_TYPE")
-//             + ", "+res.getString("REMARKS")); 
-//        }
+                new String[] {"TABLE"});
+        //        while (res.next()) {
+        //           System.out.println(
+        //              "   "+res.getString("TABLE_CAT") 
+        //             + ", "+res.getString("TABLE_SCHEM")
+        //             + ", "+res.getString("TABLE_NAME")
+        //             + ", "+res.getString("TABLE_TYPE")
+        //             + ", "+res.getString("REMARKS")); 
+        //        }
         while (res.next()) {
             tableNames.add(res.getString("TABLE_NAME"));
         }
