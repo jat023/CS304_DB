@@ -220,11 +220,4 @@ public final class PublicAccessor {
     private static String salePriceFormula() {
         return Tables.FINALIZED_GAME_ATTR_FULLPRICE + "* ( 1-" + Tables.FINALIZED_GAME_ATTR_DISCOUNTPERC + ")";
     }
-
-    public static void main(String[] args) throws UserNotExistsException {
-        for (PurchasableGame game : listPurchasableGames(null, null, null, null, null, GameSortByOption.SALEPRICE, SortDirection.DESC, false) ) {
-            System.out.println(game);
-            System.out.println(game.getSalePrice());
-        }        
-    }
 }
