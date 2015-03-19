@@ -1,4 +1,4 @@
-package ca.ubc.cs.cs304.steemproject.db.init;
+package ca.ubc.cs.cs304.steemproject.db.service;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -10,11 +10,10 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import ca.ubc.cs.cs304.steemproject.db.Tables;
 import ca.ubc.cs.cs304.steemproject.db.connection.SteemDbConnector;
 import ca.ubc.cs.cs304.steemproject.game.PurchasableGame;
 
-public class InitializeDatabase {
+class InitializeDatabase {
 
     private static final Logger log = Logger.getLogger(InitializeDatabase.class);
 
@@ -30,19 +29,19 @@ public class InitializeDatabase {
             Tables.USER_ATTR_PASSWORD+ " VARCHAR(30) NOT NULL," +
             "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ") )";
 
-    private static final String createFinalizedGameSQL = "CREATE TABLE " +Tables.PURCHASABLE_GAME_TABLENAME+ " (" +
+    private static final String createFinalizedGameSQL = "CREATE TABLE " +Tables.FINALIZED_GAME_TABLENAME+ " (" +
             Tables.GAME_ATTR_NAME+ " VARCHAR(15)," +
             Tables.GAME_ATTR_DESCRIPTION+ " VARCHAR(2000) NOT NULL," +
             Tables.GAME_ATTR_GENRE+ " VARCHAR(15) NOT NULL," +
             Tables.GAME_ATTR_DEVELOPER+ " VARCHAR(15) NOT NULL," +
-            Tables.PURCHASABLE_GAME_ATTR_RATING+ " NUMBER(3,1) NOT NULL," +
-            Tables.PURCHASABLE_GAME_ATTR_FULLPRICE+ " NUMBER(4,2) NOT NULL," +
-            Tables.PURCHASABLE_GAME_ATTR_ONSPECIAL+ " NUMBER(1) DEFAULT 0," +
-            Tables.PURCHASABLE_GAME_ATTR_DISCOUNTPERC+ " NUMBER(3,2)," +
+            Tables.FINALIZED_GAME_ATTR_RATING+ " NUMBER(3,1) NOT NULL," +
+            Tables.FINALIZED_GAME_ATTR_FULLPRICE+ " NUMBER(4,2) NOT NULL," +
+            Tables.FINALIZED_GAME_ATTR_ONSPECIAL+ " NUMBER(1) DEFAULT 0 NOT NULL," +
+            Tables.FINALIZED_GAME_ATTR_DISCOUNTPERC+ " NUMBER(3,2) DEFAULT 0 NOT NULL," +
             "PRIMARY KEY (" +Tables.GAME_ATTR_NAME+ ")," +
-            "CONSTRAINT specialContraint CHECK (" +Tables.PURCHASABLE_GAME_ATTR_ONSPECIAL+ " = 0 OR " +Tables.PURCHASABLE_GAME_ATTR_ONSPECIAL+ " = 1),"+
-            "CONSTRAINT ratingConstraint CHECK (" +Tables.PURCHASABLE_GAME_ATTR_RATING+ " >= 0 AND " +Tables.PURCHASABLE_GAME_ATTR_RATING+ " <= 10),"+
-            "CONSTRAINT discountConstraint CHECK (" +Tables.PURCHASABLE_GAME_ATTR_DISCOUNTPERC+ " <= 1 AND " +Tables.PURCHASABLE_GAME_ATTR_DISCOUNTPERC+ " >= 0) )";
+            "CONSTRAINT specialContraint CHECK (" +Tables.FINALIZED_GAME_ATTR_ONSPECIAL+ " = 0 OR " +Tables.FINALIZED_GAME_ATTR_ONSPECIAL+ " = 1),"+
+            "CONSTRAINT ratingConstraint CHECK (" +Tables.FINALIZED_GAME_ATTR_RATING+ " >= 0 AND " +Tables.FINALIZED_GAME_ATTR_RATING+ " <= 10),"+
+            "CONSTRAINT discountConstraint CHECK (" +Tables.FINALIZED_GAME_ATTR_DISCOUNTPERC+ " <= 1 AND " +Tables.FINALIZED_GAME_ATTR_DISCOUNTPERC+ " >= 0) )";
 
     private static final String createGameInDevelopmentSQL = "CREATE TABLE "+Tables.DEVELOPMENT_GAMETABLENAME+" ("+
             Tables.GAME_ATTR_NAME+ " VARCHAR(15)," +
@@ -60,19 +59,19 @@ public class InitializeDatabase {
             "PRIMARY KEY (" + Tables.CREDIT_CARD_ATTR_CARDNUM+ "),"+
             "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ") REFERENCES " +Tables.CUSTOMER_TABLENAME+ " )";
 
-    private static final String createOwnsGameSQL = "Create TABLE "+Tables.OWNS_GAME_TABLENAME+" (" +
+    private static final String createOwnsGameSQL = "CREATE TABLE "+Tables.OWNS_GAME_TABLENAME+" (" +
             Tables.USER_ATTR_USERID+ " INT,"+
             Tables.GAME_ATTR_NAME+ " VARCHAR(15),"+
-            Tables.OWNS_GAME_ATTR_HOURS+ " NUMBER(2) DEFAULT 0,"+
+            Tables.OWNS_GAME_ATTR_HOURS+ " NUMBER(5) DEFAULT 0 NOT NULL,"+
             "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ "),"+
             "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ") REFERENCES " +Tables.CUSTOMER_TABLENAME+ ","+
-            "FOREIGN KEY (" +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.PURCHASABLE_GAME_TABLENAME+ " )";
+            "FOREIGN KEY (" +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.FINALIZED_GAME_TABLENAME+ " )";
 
     private static final String createTransactionSQL = "CREATE TABLE "+Tables.TRANSACTION_TABLENAME+" (" +
             Tables.USER_ATTR_USERID+ " INT,"+
             Tables.GAME_ATTR_NAME+ " VARCHAR(15),"+
             Tables.CREDIT_CARD_ATTR_CARDNUM+ " NUMBER(16) NOT NULL,"+
-            "dateTime TIMESTAMP NOT NULL,"+
+            Tables.TRANSACTION_DATE+ " TIMESTAMP NOT NULL,"+
             "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ "),"+
             "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.OWNS_GAME_TABLENAME+ ","+
             "FOREIGN KEY (" + Tables.CREDIT_CARD_ATTR_CARDNUM+ ") REFERENCES " +Tables.CREDIT_CARD_TABLENAME+ " )";
@@ -80,13 +79,13 @@ public class InitializeDatabase {
     private static final String createTestSQL = "CREATE TABLE "+Tables.TEST_TABLENAME+" (" +
             Tables.USER_ATTR_USERID+ " INT,"+
             Tables.GAME_ATTR_NAME+ " VARCHAR(15),"+
-            "dateTime TIMESTAMP NOT NULL,"+
-            Tables.PURCHASABLE_GAME_ATTR_RATING+ " NUMBER(2,1) NOT NULL,"+
+            Tables.TEST_ATTR_DATE+ " TIMESTAMP NOT NULL,"+
+            Tables.TEST_ATTR_RATING+ " NUMBER(2,1) NOT NULL,"+
             "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ ", dateTime),"+
             "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ") REFERENCES " +Tables.GAME_TESTER_TABLENAME+ ","+
             "FOREIGN KEY (" +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.DEVELOPMENT_GAMETABLENAME+ " )";
 
-    public static void main(String args[]) throws SQLException {
+    private static void init() throws SQLException {
 
         Connection con = SteemDbConnector.getDefaultConnection();
         Statement statement = con.createStatement();
@@ -98,7 +97,7 @@ public class InitializeDatabase {
         dropTableIfExists(con, Tables.OWNS_GAME_TABLENAME);
         dropTableIfExists(con, Tables.CREDIT_CARD_TABLENAME);
         dropTableIfExists(con, Tables.DEVELOPMENT_GAMETABLENAME);
-        dropTableIfExists(con, Tables.PURCHASABLE_GAME_TABLENAME);
+        dropTableIfExists(con, Tables.FINALIZED_GAME_TABLENAME);
         dropTableIfExists(con, Tables.GAME_TESTER_TABLENAME);
         dropTableIfExists(con, Tables.CUSTOMER_TABLENAME);
 
@@ -111,7 +110,7 @@ public class InitializeDatabase {
         log.info("Created table " + Tables.GAME_TESTER_TABLENAME);
 
         statement.execute(createFinalizedGameSQL);
-        log.info("Created table " + Tables.PURCHASABLE_GAME_TABLENAME);
+        log.info("Created table " + Tables.FINALIZED_GAME_TABLENAME);
 
         statement.execute(createGameInDevelopmentSQL);
         log.info("Created table " + Tables.DEVELOPMENT_GAMETABLENAME);
@@ -158,7 +157,6 @@ public class InitializeDatabase {
             }
 
         }
-
     }
 
     public static void getUserTables(Connection con) throws SQLException {
@@ -176,6 +174,15 @@ public class InitializeDatabase {
         //        }
         while (res.next()) {
             tableNames.add(res.getString("TABLE_NAME"));
+        }
+    }
+    
+    public static void main(String[] args) {
+        try {
+            init();
+            log.info("Initialized Database and tables.");
+        } catch (Exception e) {
+            log.error("Initialization failed.", e);
         }
     }
 

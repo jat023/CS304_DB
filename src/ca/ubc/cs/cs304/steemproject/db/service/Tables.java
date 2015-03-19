@@ -1,4 +1,4 @@
-package ca.ubc.cs.cs304.steemproject.db;
+package ca.ubc.cs.cs304.steemproject.db.service;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import ca.ubc.cs.cs304.steemproject.db.connection.SteemDbConnector;
 import ca.ubc.cs.cs304.steemproject.game.PurchasableGame;
 
-public class Tables {
+class Tables {
 
     public static final String CUSTOMER_TABLENAME = "Customer";
     public static final String GAME_TESTER_TABLENAME = "GameTester";
@@ -15,11 +15,11 @@ public class Tables {
     public static final String USER_ATTR_EMAIL = "email";
     public static final String USER_ATTR_PASSWORD = "password";
 
-    public static final String PURCHASABLE_GAME_TABLENAME = "FinalizedGame";
-    public static final String PURCHASABLE_GAME_ATTR_RATING = "rating";
-    public static final String PURCHASABLE_GAME_ATTR_FULLPRICE = "price";
-    public static final String PURCHASABLE_GAME_ATTR_ONSPECIAL = "onSpecial";
-    public static final String PURCHASABLE_GAME_ATTR_DISCOUNTPERC = "discountPrice";
+    public static final String FINALIZED_GAME_TABLENAME = "FinalizedGame";
+    public static final String FINALIZED_GAME_ATTR_RATING = "rating";
+    public static final String FINALIZED_GAME_ATTR_FULLPRICE = "price";
+    public static final String FINALIZED_GAME_ATTR_ONSPECIAL = "onSpecial";
+    public static final String FINALIZED_GAME_ATTR_DISCOUNTPERC = "discountPrice";
 
     public static final String DEVELOPMENT_GAMETABLENAME = "GameInDevelopment";
     public static final String DEVELOPMENT_GAME_ATTR_VERSION = "version";
@@ -38,23 +38,23 @@ public class Tables {
     public static final String OWNS_GAME_ATTR_HOURS = "hours";
 
     public static final String TRANSACTION_TABLENAME = "Transaction";
-    public static final String TRANSACTION_DATETIME = "dateTime";
+    public static final String TRANSACTION_DATE = "date";
 
     public static final String TEST_TABLENAME = "Test";
-    public static final String TEST_ATTR_DATETIME = "dateTime";
+    public static final String TEST_ATTR_DATE = "date";
     public static final String TEST_ATTR_RATING = "rating";
 
     public static void addNewPurchasableGame(PurchasableGame aPurchasableGame) throws SQLException {
-        String insertFinalizedGameSQL = "INSERT INTO " + Tables.PURCHASABLE_GAME_TABLENAME
+        String insertFinalizedGameSQL = "INSERT INTO " + Tables.FINALIZED_GAME_TABLENAME
                 + "("
                 + GAME_ATTR_NAME+ ","
                 + GAME_ATTR_DESCRIPTION+ ","
                 + GAME_ATTR_GENRE+ ","
                 + GAME_ATTR_DEVELOPER+ ","
-                + PURCHASABLE_GAME_ATTR_RATING+ ","
-                + PURCHASABLE_GAME_ATTR_FULLPRICE+ ","
-                + PURCHASABLE_GAME_ATTR_ONSPECIAL+ ","
-                + PURCHASABLE_GAME_ATTR_DISCOUNTPERC
+                + FINALIZED_GAME_ATTR_RATING+ ","
+                + FINALIZED_GAME_ATTR_FULLPRICE+ ","
+                + FINALIZED_GAME_ATTR_ONSPECIAL+ ","
+                + FINALIZED_GAME_ATTR_DISCOUNTPERC
                 + ") VALUES "
                 + "(?,?,?,?,?,?,?,?)";
         PreparedStatement preparedStatement = SteemDbConnector.getDefaultConnection().prepareStatement(insertFinalizedGameSQL);
