@@ -27,7 +27,7 @@ public final class PublicAccessor {
 
         StringBuilder queryBuilder = new StringBuilder();
         
-        queryBuilder.append("SELECT * FROM " + Tables.FINALIZED_GAME_TABLENAME);
+        queryBuilder.append("SELECT * FROM " + Tables.PURCHASABLE_GAME_TABLENAME);
         
         if (matchName != null || matchGenre != null || matchDeveloper != null || matchLowestPrice != null || matchHighestPrice != null) {
             
