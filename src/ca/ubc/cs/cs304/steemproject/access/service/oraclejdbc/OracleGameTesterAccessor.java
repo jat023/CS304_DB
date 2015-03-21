@@ -61,12 +61,12 @@ public class OracleGameTesterAccessor implements IGameTesterAccessor {
     }
 
     @Override
-    public Collection<GameInDevelopment> listGamesInDevelopment() {
+    public List<GameInDevelopment> listGamesInDevelopment() {
         return listGamesInDevelopment(null, null, null, null, null);
     }
 
     @Override
-    public Collection<GameInDevelopment> listGamesInDevelopment(
+    public List<GameInDevelopment> listGamesInDevelopment(
             String matchName, String matchGenre, String matchDeveloper,
             GameSortByOption sortByOption, SortDirection sortDirection) {
 

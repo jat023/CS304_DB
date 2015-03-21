@@ -2,6 +2,7 @@ package ca.ubc.cs.cs304.steemproject.access.service;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import ca.ubc.cs.cs304.steemproject.access.exception.GameNotExistException;
 import ca.ubc.cs.cs304.steemproject.access.exception.UserNotExistsException;
@@ -17,7 +18,7 @@ public interface IGameTesterAccessor {
      * Lists all games in development with the matching parameters. 
      * @return
      */
-    public Collection<GameInDevelopment> listGamesInDevelopment();
+    public List<GameInDevelopment> listGamesInDevelopment();
 
     /**
      * Lists all games in development with the matching parameters. 
@@ -30,7 +31,7 @@ public interface IGameTesterAccessor {
      * @param sortDirection
      * @return
      */
-    public Collection<GameInDevelopment> listGamesInDevelopment(
+    public List<GameInDevelopment> listGamesInDevelopment(
             String matchName, String matchGenre, String matchPublisher, 
             GameSortByOption sortByOption, SortDirection sortDirection);    
 
