@@ -1,6 +1,7 @@
 package ca.ubc.cs.cs304.steemproject.access.service;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Date;
 
 import ca.ubc.cs.cs304.steemproject.access.exception.GameNotExistException;
 import ca.ubc.cs.cs304.steemproject.access.exception.UserNotExistsException;
@@ -8,6 +9,7 @@ import ca.ubc.cs.cs304.steemproject.access.service.options.GameSortByOption;
 import ca.ubc.cs.cs304.steemproject.access.service.options.SortDirection;
 import ca.ubc.cs.cs304.steemproject.base.development.GameInDevelopment;
 import ca.ubc.cs.cs304.steemproject.base.development.GameTester;
+import ca.ubc.cs.cs304.steemproject.base.development.GameTesterFeedback;
 
 public interface IGameTesterAccessor {
 
@@ -15,7 +17,7 @@ public interface IGameTesterAccessor {
      * Lists all games in development with the matching parameters. 
      * @return
      */
-    public List<GameInDevelopment> listGamesInDevelopment();
+    public Collection<GameInDevelopment> listGamesInDevelopment();
 
     /**
      * Lists all games in development with the matching parameters. 
@@ -28,7 +30,7 @@ public interface IGameTesterAccessor {
      * @param sortDirection
      * @return
      */
-    public List<GameInDevelopment> listGamesInDevelopment(
+    public Collection<GameInDevelopment> listGamesInDevelopment(
             String matchName, String matchGenre, String matchPublisher, 
             GameSortByOption sortByOption, SortDirection sortDirection);    
 
@@ -40,7 +42,8 @@ public interface IGameTesterAccessor {
 
     /**
      * Query for list of ratings and feedbacks of a specific game between within a certain time
-     * interval, submitted by any game tester, grouped by month and sorted by time
+     * interval (inclusive), submitted by any game tester, grouped by month and sorted by time
      */
+    public Collection<GameTesterFeedback> collectFeedback(Date afterThisDate, Date beforeThisDate);
     
 }

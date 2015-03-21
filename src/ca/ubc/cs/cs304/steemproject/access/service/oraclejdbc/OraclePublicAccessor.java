@@ -3,6 +3,7 @@ package ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,11 +32,11 @@ public final class OraclePublicAccessor implements IPublicAccessor {
         return fInstance;
     }
 
-    public List<FinalizedGame> listPurchasableGames() {
+    public Collection<FinalizedGame> listPurchasableGames() {
         return listPurchasableGames(null, null, null, null, null, null, null, false);
     }
     
-    public List<FinalizedGame> listPurchasableGames(
+    public Collection<FinalizedGame> listPurchasableGames(
             String matchName, String matchGenre, String matchDeveloper, 
             Float matchLowestPrice, Float matchHighestPrice, 
             GameSortByOption sortByOption, SortDirection sortDirection, 

@@ -69,7 +69,7 @@ final class InitializeDatabase {
             Tables.USER_ATTR_USERID+ " INT,"+
             Tables.GAME_ATTR_NAME+ " VARCHAR(15),"+
             Tables.CREDIT_CARD_ATTR_CARDNUM+ " NUMBER(16),"+
-            Tables.TRANSACTION_DATE+ " TIMESTAMP NOT NULL,"+
+            Tables.TRANSACTION_ATTR_TIME+ " DATE NOT NULL,"+
             "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ "),"+
             "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.OWNS_GAME_TABLENAME+ ","+
             "FOREIGN KEY (" + Tables.CREDIT_CARD_ATTR_CARDNUM+ ") REFERENCES " +Tables.CREDIT_CARD_TABLENAME+ " )";
@@ -77,28 +77,45 @@ final class InitializeDatabase {
     private static final String createTestSQL = "CREATE TABLE "+Tables.FEEDBACK_TABLENAME+" (" +
             Tables.USER_ATTR_USERID+ " INT,"+
             Tables.GAME_ATTR_NAME+ " VARCHAR(15),"+
-            Tables.FEEDBACK_ATTR_DATE+ " TIMESTAMP NOT NULL,"+
+            Tables.FEEDBACK_ATTR_TIME+ " DATE NOT NULL,"+
             Tables.FEEDBACK_ATTR_RATING+ " NUMBER(2,1) NOT NULL,"+
             Tables.FEEDBACK_ATTR_FEEDBACK+ " VARCHAR(2000) NOT NULL,"+
-            "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ ", " +Tables.FEEDBACK_ATTR_DATE+ "),"+
+            "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ ", " +Tables.FEEDBACK_ATTR_TIME+ "),"+
             "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ") REFERENCES " +Tables.GAME_TESTER_TABLENAME+ ","+
             "FOREIGN KEY (" +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.DEVELOPMENT_GAMETABLENAME+ " )";
 
+    
+    private static Connection fConnection;
+    private static PreparedStatement fInsertGameStatement;
+    
     private static void init() throws SQLException {
-
-        Connection con = SteemOracleDbConnector.getDefaultConnection();
-        Statement statement = con.createStatement();
+        
+        fConnection = SteemOracleDbConnector.getDefaultConnection();
+        fInsertGameStatement = fConnection.prepareStatement("INSERT INTO " + Tables.FINALIZED_GAME_TABLENAME
+                + "("
+                + Tables.GAME_ATTR_NAME+ ","
+                + Tables.GAME_ATTR_DESCRIPTION+ ","
+                + Tables.GAME_ATTR_GENRE+ ","
+                + Tables.GAME_ATTR_DEVELOPER+ ","
+                + Tables.FINALIZED_GAME_ATTR_RATING+ ","
+                + Tables.FINALIZED_GAME_ATTR_FULLPRICE+ ","
+                + Tables.FINALIZED_GAME_ATTR_ONSPECIAL+ ","
+                + Tables.FINALIZED_GAME_ATTR_DISCOUNTPERC
+                + ") VALUES "
+                + "(?,?,?,?,?,?,?,?)");
+        
+        Statement statement = fConnection.createStatement();
 
         // Drop existing tables.
 
-        dropTableIfExists(con, Tables.FEEDBACK_TABLENAME);
-        dropTableIfExists(con, Tables.TRANSACTION_TABLENAME);
-        dropTableIfExists(con, Tables.OWNS_GAME_TABLENAME);
-        dropTableIfExists(con, Tables.CREDIT_CARD_TABLENAME);
-        dropTableIfExists(con, Tables.DEVELOPMENT_GAMETABLENAME);
-        dropTableIfExists(con, Tables.FINALIZED_GAME_TABLENAME);
-        dropTableIfExists(con, Tables.GAME_TESTER_TABLENAME);
-        dropTableIfExists(con, Tables.CUSTOMER_TABLENAME);
+        dropTableIfExists(fConnection, Tables.FEEDBACK_TABLENAME);
+        dropTableIfExists(fConnection, Tables.TRANSACTION_TABLENAME);
+        dropTableIfExists(fConnection, Tables.OWNS_GAME_TABLENAME);
+        dropTableIfExists(fConnection, Tables.CREDIT_CARD_TABLENAME);
+        dropTableIfExists(fConnection, Tables.DEVELOPMENT_GAMETABLENAME);
+        dropTableIfExists(fConnection, Tables.FINALIZED_GAME_TABLENAME);
+        dropTableIfExists(fConnection, Tables.GAME_TESTER_TABLENAME);
+        dropTableIfExists(fConnection, Tables.CUSTOMER_TABLENAME);
 
         // Create tables.
 
@@ -161,28 +178,15 @@ final class InitializeDatabase {
     }
     
     private static void insertNewPurchasableGame(FinalizedGame aPurchasableGame) throws SQLException {
-        String insertFinalizedGameSQL = "INSERT INTO " + Tables.FINALIZED_GAME_TABLENAME
-                + "("
-                + Tables.GAME_ATTR_NAME+ ","
-                + Tables.GAME_ATTR_DESCRIPTION+ ","
-                + Tables.GAME_ATTR_GENRE+ ","
-                + Tables.GAME_ATTR_DEVELOPER+ ","
-                + Tables.FINALIZED_GAME_ATTR_RATING+ ","
-                + Tables.FINALIZED_GAME_ATTR_FULLPRICE+ ","
-                + Tables.FINALIZED_GAME_ATTR_ONSPECIAL+ ","
-                + Tables.FINALIZED_GAME_ATTR_DISCOUNTPERC
-                + ") VALUES "
-                + "(?,?,?,?,?,?,?,?)";
-        PreparedStatement preparedStatement = SteemOracleDbConnector.getDefaultConnection().prepareStatement(insertFinalizedGameSQL);
-        preparedStatement.setString(1, aPurchasableGame.getName());
-        preparedStatement.setString(2, aPurchasableGame.getDescription());
-        preparedStatement.setString(3, aPurchasableGame.getGenre().name());
-        preparedStatement.setString(4, aPurchasableGame.getPublisher());
-        preparedStatement.setFloat(5, aPurchasableGame.getRating());
-        preparedStatement.setFloat(6, aPurchasableGame.getFullPrice());
-        preparedStatement.setInt(7, aPurchasableGame.isOnSpecial() ? 1 : 0);
-        preparedStatement.setFloat(8, aPurchasableGame.getDiscountPercentage());
-        preparedStatement.executeUpdate();
+        fInsertGameStatement.setString(1, aPurchasableGame.getName());
+        fInsertGameStatement.setString(2, aPurchasableGame.getDescription());
+        fInsertGameStatement.setString(3, aPurchasableGame.getGenre().name());
+        fInsertGameStatement.setString(4, aPurchasableGame.getDeveloper());
+        fInsertGameStatement.setFloat(5, aPurchasableGame.getRating());
+        fInsertGameStatement.setFloat(6, aPurchasableGame.getFullPrice());
+        fInsertGameStatement.setInt(7, aPurchasableGame.isOnSpecial() ? 1 : 0);
+        fInsertGameStatement.setFloat(8, aPurchasableGame.getDiscountPercentage());
+        fInsertGameStatement.executeUpdate();
     }
     
     public static void main(String[] args) {

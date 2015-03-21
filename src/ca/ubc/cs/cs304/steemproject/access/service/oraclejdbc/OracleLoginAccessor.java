@@ -83,10 +83,10 @@ public final class OracleLoginAccessor implements ILoginAccessor {
         
         if (email == null && userId == null) {
             log.error("No email or user ID supplied.");
-            throw new RuntimeException("Exactly one of user email and ID must be given.");
+            throw new IllegalArgumentException("Exactly one of user email and ID must be given.");
         } else if (email != null && userId != null) {
             log.error("Both email and user ID supplied.");
-            throw new RuntimeException("Exactly one of user email and ID must be given.");
+            throw new IllegalArgumentException("Exactly one of user email and ID must be given.");
         }
         
         String query = "SELECT * FROM " + table + " WHERE " 

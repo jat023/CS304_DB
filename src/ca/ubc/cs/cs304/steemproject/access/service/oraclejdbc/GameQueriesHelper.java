@@ -104,4 +104,5 @@ final class GameQueriesHelper {
     private static String salePriceFormula() {
         return Tables.FINALIZED_GAME_ATTR_FULLPRICE + "* ( 1-" + Tables.FINALIZED_GAME_ATTR_DISCOUNTPERC + ")";
     }
+    
 }

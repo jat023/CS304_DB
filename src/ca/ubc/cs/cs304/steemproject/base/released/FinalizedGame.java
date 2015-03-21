@@ -8,17 +8,30 @@ public class FinalizedGame implements IGame {
     private final String fName;
     private final String fDescription;
     private final Genre fGenre;
-    private final String fPublisher;
+    private final String fDeveloper;
     private final float fRating;
     private final float fPrice;
     private final boolean fOnSpecial;
     private final float fDiscount;
 
-    public FinalizedGame(String aName, String aDescription, Genre aGenre, String aPublisher, float aRating, float aPrice, boolean aOnSpecial, float aDiscount) {
+    public FinalizedGame(String aName, String aDescription, Genre aGenre, String aDeveloper, float aRating, float aPrice, boolean aOnSpecial, float aDiscount) {
+        if (aName == null) {
+            throw new IllegalArgumentException("Name cannot be null.");
+        }
+        if (aDescription == null) {
+            throw new IllegalArgumentException("Description cannot be null.");
+        }
+        if (aGenre == null) {
+            throw new IllegalArgumentException("Genre cannot be null.");
+        }
+        if (aDeveloper == null) {
+            throw new IllegalArgumentException("Developer cannot be null.");
+        }
+        
         fName = aName;
         fDescription = aDescription;
         fGenre = aGenre;
-        fPublisher = aPublisher;
+        fDeveloper = aDeveloper;
         fRating = aRating;
         fPrice = aPrice;
         fOnSpecial = aOnSpecial;
@@ -41,8 +54,8 @@ public class FinalizedGame implements IGame {
     }
 
     @Override
-    public String getPublisher() {
-        return fPublisher;
+    public String getDeveloper() {
+        return fDeveloper;
     }
 
     public float getRating() {
@@ -73,7 +86,7 @@ public class FinalizedGame implements IGame {
     public String toString() {
         return "PurchasableGame [fName=" + fName + ", fDescription="
                 + fDescription + ", fGenre=" + fGenre + ", fPublisher="
-                + fPublisher + ", fRating=" + fRating + ", fPrice=" + fPrice
+                + fDeveloper + ", fRating=" + fRating + ", fPrice=" + fPrice
                 + ", fOnSpecial=" + fOnSpecial + ", getSalePrice()="
                 + getSalePrice() + "]";
     }

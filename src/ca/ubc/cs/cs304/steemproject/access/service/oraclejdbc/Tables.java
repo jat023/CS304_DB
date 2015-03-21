@@ -32,10 +32,10 @@ final class Tables {
     public static final String OWNS_GAME_ATTR_HOURS = "hours";
 
     public static final String TRANSACTION_TABLENAME = "Transaction";
-    public static final String TRANSACTION_DATE = "transactionDate";
+    public static final String TRANSACTION_ATTR_TIME = "transactionDate";
 
     public static final String FEEDBACK_TABLENAME = "Feedback";
-    public static final String FEEDBACK_ATTR_DATE = "feedbackDate";
+    public static final String FEEDBACK_ATTR_TIME = "feedbackDate";
     public static final String FEEDBACK_ATTR_RATING = "rating";
     public static final String FEEDBACK_ATTR_FEEDBACK = "feedback";
 

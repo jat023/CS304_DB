@@ -9,6 +9,14 @@ public class GameTester implements IUser {
     private final String fPassword;
     
     public GameTester(int aUserId, String aEmail, String aPassword) {
+        
+        if (aEmail == null) {
+            throw new IllegalArgumentException("Email cannot be null.");
+        }
+        if (aPassword == null) {
+            throw new IllegalArgumentException("Password cannot be null.");
+        }
+        
         this.fUserId = aUserId;
         this.fEmail = aEmail;
         this.fPassword = aPassword;

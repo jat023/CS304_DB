@@ -1,6 +1,6 @@
 package ca.ubc.cs.cs304.steemproject.access.service;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 import ca.ubc.cs.cs304.steemproject.access.exception.UserNotExistsException;
@@ -14,7 +14,7 @@ public interface IPublicAccessor {
      * Lists all purchasable games.
      * @return
      */
-    public List<FinalizedGame> listPurchasableGames();
+    public Collection<FinalizedGame> listPurchasableGames();
 
     /**
      * Lists all purchasable games with the matching parameters. 
@@ -31,7 +31,7 @@ public interface IPublicAccessor {
      * @param listOnlyDiscountedGames
      * @return
      */
-    public List<FinalizedGame> listPurchasableGames(
+    public Collection<FinalizedGame> listPurchasableGames(
             String matchName, String matchGenre, String matchDeveloper, 
             Float matchLowestPrice, Float matchHighestPrice, 
             GameSortByOption sortByOption, SortDirection sortDirection, 
