@@ -1,96 +1,166 @@
 package ca.ubc.cs.cs304.steemproject.ui;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.awt.event.*;
-import java.util.Observable;
-import java.util.Observer;
+import javax.swing.*;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
+public class ConsoleUI implements ActionListener {
 
-import ca.ubc.cs.cs304.steemproject.main.RunSteem;
-
-public class ConsoleUI extends JPanel implements IUI {
-
-	private JTextField idField = new JTextField(10);
-	private JTextField fnameField = new JTextField(30);
-	private JTextField mnameField = new JTextField(30);
-	private JTextField lnameField = new JTextField(30);
-	private JTextField emailField = new JTextField(50);
-	private JTextField phoneField = new JTextField(10);
+	private static final long serialVersionUID = 1L;
 	
-	private JButton updateButton = new JButton ("updateButton");
-	private JButton deleteButton = new JButton ("deleteButton");
-	private JButton firstButton = new JButton ("firstButton");
-	private JButton prevButton = new JButton ("prevButton");
-	private JButton nextButton = new JButton ("nextButton");
-	private JButton lastButton = new JButton ("lastButton");
+	// Global variables for use for building and querying from UI
+	private JLabel userLabel = new JLabel("User");
+	private JLabel emailLabel = new JLabel("Email");
+	private JLabel passwordLabel = new JLabel("Password");		
+	private JLabel gameLabel = new JLabel("Game");
+	private JLabel descriptionLabel = new JLabel("Description");
+	private JLabel genreLabel = new JLabel("Genre");
+	private JLabel publisherLabel = new JLabel("Publisher");
 	
-	private RunSteem steemApp = new RunSteem();
+	private JTextField userIDTextfield = new JTextField(30);
+	private JTextField userEmailTextfield = new JTextField(30);
+	private JTextField passwordTextfield = new JTextField(30);
+	private JTextField gameTextfield = new JTextField(30);
+	private JTextField descriptionTextfield = new JTextField(30);
+	private JTextField genreTextfield = new JTextField(30);
+	private JTextField publisherTextfield = new JTextField(30);
 	
-	public void consoleUI() {
-		setBorder(new TitledBorder(new EtchedBorder(), "Person Details"));
-		setLayout(new BorderLayout(5, 5));
-		add(initFields(), BorderLayout.NORTH);
-		add(initButtons(), BorderLayout.CENTER);
-		setFieldData(steemApp.moveFirst());
-	}
+		// these may or may not get used
+	private JButton next = new JButton("Next");
+	private JButton prev = new JButton("Previous");
+	private JButton first = new JButton("First");
+	private JButton last = new JButton("Last");
 	
-	private JPanel initFields() {
-	    JPanel panel = new JPanel();
-	    panel.setLayout(new MigLayout());
-	    panel.add(new JLabel("ID"), "align label");
-	    panel.add(idField, "wrap");
-	    idField.setEnabled(false);
-	    
-	    panel.add(new JLabel("First Name"), "align label");
-	    panel.add(fnameField, "wrap");
-	    panel.add(new JLabel("Last Name"), "align label");
-	    panel.add(lnameField, "wrap");
-	    panel.add(new JLabel("Middle Name"), "align label");
-	    panel.add(mnameField, "wrap");
-	    panel.add(new JLabel("ID"), "align label");
-	    panel.add(idField, "wrap");
-	    panel.add(new JLabel("Email Name"), "align label");
-	    panel.add(emailField, "wrap");
-	    panel.add(new JLabel("Phone"), "align label");
-	    panel.add(phoneField, "wrap");
-	    return panel;		
-	}
+	private JButton update = new JButton("Update");
+	private JButton delete = new JButton("Delete");
+	private JButton save = new JButton("Save");
+	private JButton newW = new JButton("New");
+	private JButton find = new JButton("Find");
+	private JButton clear = new JButton("Clear");
 	
-	private JPanel initButtons() {
-		JPanel panel = new JPanel();
-	    panel.setLayout(new FlowLayout(FlowLayout.CENTER, 3, 3));
-	    panel.add(updateButton);
-	    updateButton.addActionListener(new ButtonHandler());
-	    panel.add(deleteButton);
-	    deleteButton.addActionListener(new ButtonHandler());
-	    panel.add(firstButton);
-	    firstButton.addActionListener(new ButtonHandler());
-	    panel.add(prevButton);
-	    prevButton.addActionListener(new ButtonHandler());
-	    panel.add(nextButton);
-	    nextButton.addActionListener(new ButtonHandler());
-	    panel.add(lastButton);
-	    lastButton.addActionListener(new ButtonHandler());
-	    return panel;
-	}
 	
-	private RunSteem setFieldData() {
+	/*
+	 * The main function for building the GUI
+	 * 				that is called from main in RunSteem.java
+	 */
+	public void buildGUI() {
+		JFrame mainWindow = new JFrame();
+		mainWindow.setSize(500,500);
+		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-	}
-	
-	private RunSteem getFieldData() {
+		JPanel BG = new JPanel();
+		BG.setLayout(new BorderLayout(5,5));
 		
+		BG.add(initButtons(), BorderLayout.SOUTH);
+		BG.add(initLabels(), BorderLayout.NORTH);
+		BG.add(initTextfields(), BorderLayout.CENTER);
+
+		mainWindow.add(BG);
+		mainWindow.setVisible(true);
+	}
+
+	/*
+	 * Initializes all JButtons for adding to the main UI frame
+	 */
+	public JPanel initButtons() {
+		JPanel BG = new JPanel();
+		
+		BG.add(next);
+		BG.add(prev);
+		BG.add(first);
+		BG.add(last);
+		BG.add(clear);
+		BG.add(find);
+		BG.add(newW);
+		BG.add(save);
+		BG.add(update);
+		BG.add(delete);
+		
+		next.addActionListener(this);
+		prev.addActionListener(this);
+		first.addActionListener(this);
+		last.addActionListener(this);
+		clear.addActionListener(this);
+		find.addActionListener(this);
+		newW.addActionListener(this);
+		save.addActionListener(this);
+		update.addActionListener(this);
+		delete.addActionListener(this);
+		
+		return BG;
 	}
 	
-    @Override
-    public void printError(String errorMessage) {
-        System.out.println(errorMessage);
-    }
+	/*
+	 * Initializes all JTextfields for adding to the UI Frame
+	 */
+	public JPanel initTextfields() {
+		JPanel BG = new JPanel();	
+		
+		BG.add(userIDTextfield);
+		BG.add(userEmailTextfield);
+		BG.add(passwordTextfield);
+		BG.add(gameTextfield);
+		BG.add(descriptionTextfield);
+		BG.add(genreTextfield);
+		BG.add(publisherTextfield);
+		
+		return BG;
+	}
+	
+	/*
+	 * Initializes all JLabels for adding to UI frame
+	 */
+	public JPanel initLabels() {
+		JPanel BG = new JPanel();
+		
+		BG.add(userLabel);
+		BG.add(emailLabel);
+		BG.add(passwordLabel);
+		BG.add(gameLabel);
+		BG.add(descriptionLabel);
+		BG.add(genreLabel);
+		BG.add(publisherLabel);
+		
+		return BG;
+	}
+	
+	/*
+	 * ActionEvent to listen for button changes in the GUI
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+	}
+	
+	public void udpateAction() {
+		/*
+		 try {
+			 RESULT.updateInt("ID", Integer.parseInt(userIDTextfield.getUserID()));
+			 RESULT.updateString("Email", userEmailTextfield.getEmail());
+			 RESULT.updateString("Password", passwordTextfield.getPassword());
+			 */
+	}
+	
+	public void saveAction() {
+		// TODO Auto-generated method stub
+	}
+	
+	public void deleteAction() {
+		// TODO Auto-generated method stub
+	}
+	
+	public void newAction() {
+		// TODO Auto-generated method stub
+	}
+	
+	public void findAction() {
+		// TODO Auto-generated method stub
+	}
+	
+	public void clearAction() {
+		// TODO Auto-generated method stub
+	}
+	
+}
+   
