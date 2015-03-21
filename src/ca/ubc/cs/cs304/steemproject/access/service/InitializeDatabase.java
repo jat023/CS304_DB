@@ -1,17 +1,13 @@
-package ca.ubc.cs.cs304.steemproject.db.service;
+package ca.ubc.cs.cs304.steemproject.access.service;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import ca.ubc.cs.cs304.steemproject.db.connection.SteemDbConnector;
-import ca.ubc.cs.cs304.steemproject.game.PurchasableGame;
+import ca.ubc.cs.cs304.steemproject.access.database.connection.SteemOracleDbConnector;
+import ca.ubc.cs.cs304.steemproject.access.game.FinalizedGame;
 
 class InitializeDatabase {
 
@@ -70,7 +66,7 @@ class InitializeDatabase {
     private static final String createTransactionSQL = "CREATE TABLE "+Tables.TRANSACTION_TABLENAME+" (" +
             Tables.USER_ATTR_USERID+ " INT,"+
             Tables.GAME_ATTR_NAME+ " VARCHAR(15),"+
-            Tables.CREDIT_CARD_ATTR_CARDNUM+ " NUMBER(16) NOT NULL,"+
+            Tables.CREDIT_CARD_ATTR_CARDNUM+ " NUMBER(16),"+
             Tables.TRANSACTION_DATE+ " TIMESTAMP NOT NULL,"+
             "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ "),"+
             "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.OWNS_GAME_TABLENAME+ ","+
@@ -81,13 +77,13 @@ class InitializeDatabase {
             Tables.GAME_ATTR_NAME+ " VARCHAR(15),"+
             Tables.TEST_ATTR_DATE+ " TIMESTAMP NOT NULL,"+
             Tables.TEST_ATTR_RATING+ " NUMBER(2,1) NOT NULL,"+
-            "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ ", dateTime),"+
+            "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ ", " +Tables.TEST_ATTR_DATE+ "),"+
             "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ") REFERENCES " +Tables.GAME_TESTER_TABLENAME+ ","+
             "FOREIGN KEY (" +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.DEVELOPMENT_GAMETABLENAME+ " )";
 
     private static void init() throws SQLException {
 
-        Connection con = SteemDbConnector.getDefaultConnection();
+        Connection con = SteemOracleDbConnector.getDefaultConnection();
         Statement statement = con.createStatement();
 
         // Drop existing tables.
@@ -127,9 +123,9 @@ class InitializeDatabase {
         statement.execute(createTestSQL);
         log.info("Created table " + Tables.TEST_TABLENAME);
 
-        Tables.addNewPurchasableGame(new PurchasableGame("game1","fun game", "RPG", "Bob", 10f, 1.00f, false, 0f));
-        Tables.addNewPurchasableGame(new PurchasableGame("game2","fun game", "PUZZLE", "Dan Inc.", 8.8f, 9.99f, true, 0.4f));
-        Tables.addNewPurchasableGame(new PurchasableGame("game3","fun game", "ACTION", "Dan", 5f, 59.99f, false, 0.2f));
+        Tables.addNewPurchasableGame(new FinalizedGame("game1","fun game", "RPG", "Bob", 10f, 1.00f, false, 0f));
+        Tables.addNewPurchasableGame(new FinalizedGame("game2","fun game", "PUZZLE", "Dan Inc.", 8.8f, 9.99f, true, 0.4f));
+        Tables.addNewPurchasableGame(new FinalizedGame("game3","fun game", "ACTION", "Dan", 5f, 59.99f, false, 0.2f));
     }
 
     private static void dropTableIfExists(Connection con, String aTableName) {
@@ -158,31 +154,13 @@ class InitializeDatabase {
 
         }
     }
-
-    public static void getUserTables(Connection con) throws SQLException {
-        Set<String> tableNames = new HashSet<String>();
-        DatabaseMetaData meta = con.getMetaData();
-        ResultSet res = meta.getTables(null, "ORA_J5M8", null, 
-                new String[] {"TABLE"});
-        //        while (res.next()) {
-        //           System.out.println(
-        //              "   "+res.getString("TABLE_CAT") 
-        //             + ", "+res.getString("TABLE_SCHEM")
-        //             + ", "+res.getString("TABLE_NAME")
-        //             + ", "+res.getString("TABLE_TYPE")
-        //             + ", "+res.getString("REMARKS")); 
-        //        }
-        while (res.next()) {
-            tableNames.add(res.getString("TABLE_NAME"));
-        }
-    }
     
     public static void main(String[] args) {
         try {
             init();
-            log.info("Initialized Database and tables.");
+            log.info("Database and tables have been successfully reset.");
         } catch (Exception e) {
-            log.error("Initialization failed.", e);
+            log.error("Database initialization failed.", e);
         }
     }
 

@@ -1,6 +1,6 @@
-package ca.ubc.cs.cs304.steemproject.user;
+package ca.ubc.cs.cs304.steemproject.access.user;
 
-public class GameTester implements IUser {
+public class Customer implements IUser {
 
     @Override
     public String getEmail() {

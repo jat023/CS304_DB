@@ -1,6 +1,6 @@
-package ca.ubc.cs.cs304.steemproject.game;
+package ca.ubc.cs.cs304.steemproject.access.game;
 
-public class PurchasableGame implements IGame {
+public class FinalizedGame implements IGame {
 
     private final String fName;
     private final String fDescription;
@@ -11,7 +11,7 @@ public class PurchasableGame implements IGame {
     private final boolean fOnSpecial;
     private final float fDiscount;
 
-    public PurchasableGame(String aName, String aDescription, String aGenre, String aPublisher, float aRating, float aPrice, boolean aOnSpecial, float aDiscount) {
+    public FinalizedGame(String aName, String aDescription, String aGenre, String aPublisher, float aRating, float aPrice, boolean aOnSpecial, float aDiscount) {
         fName = aName;
         fDescription = aDescription;
         fGenre = aGenre;

@@ -15,7 +15,7 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
-import ca.ubc.cs.cs304.steemproject.db.connection.SteemDbConnector;
+import ca.ubc.cs.cs304.steemproject.access.database.connection.SteemOracleDbConnector;
 import ca.ubc.cs.cs304.steemproject.ui.ConsoleUI;
 import ca.ubc.cs.cs304.steemproject.ui.IUI;
 
@@ -45,7 +45,7 @@ public class RunSteem extends JFrame{
 	public static void main(String args[]) {
         IUI ui = new ConsoleUI();
 
-        Connection con = SteemDbConnector.getDefaultConnection();
+        Connection con = SteemOracleDbConnector.getDefaultConnection();
         
         if (con != null) {
         	System.out.println("Connection established");

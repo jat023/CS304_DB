@@ -1,4 +1,4 @@
-package ca.ubc.cs.cs304.steemproject.db.service;
+package ca.ubc.cs.cs304.steemproject.access.service;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -6,7 +6,7 @@ import java.sql.Statement;
 
 import org.apache.log4j.Logger;
 
-import ca.ubc.cs.cs304.steemproject.db.connection.SteemDbConnector;
+import ca.ubc.cs.cs304.steemproject.access.database.connection.SteemOracleDbConnector;
 
 final class DbQueryHelper {
 
@@ -17,7 +17,7 @@ final class DbQueryHelper {
     public static ResultSet runQuery(String query) {
 
         try {
-            Statement stmt = SteemDbConnector.getDefaultConnection().createStatement();
+            Statement stmt = SteemOracleDbConnector.getDefaultConnection().createStatement();
             return stmt.executeQuery(query);
         } catch (SQLException e) {
             log.error("Failed to execute query: \n" + query, e);
@@ -33,12 +33,11 @@ final class DbQueryHelper {
     public static boolean customerExists(int userId) {
         String userEmailExistsQuery = "SELECT * FROM " + Tables.CUSTOMER_TABLENAME + " WHERE " + Tables.USER_ATTR_USERID + "=" + userId;
         return exists(userEmailExistsQuery);
-
     }
     
     private static boolean exists(String userEmailExistsQuery) {
         try {
-            Statement stmt = SteemDbConnector.getDefaultConnection().createStatement();
+            Statement stmt = SteemOracleDbConnector.getDefaultConnection().createStatement();
             ResultSet results = stmt.executeQuery(userEmailExistsQuery);
 
             if (results.next()) {

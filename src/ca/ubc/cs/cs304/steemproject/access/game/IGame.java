@@ -1,4 +1,4 @@
-package ca.ubc.cs.cs304.steemproject.game;
+package ca.ubc.cs.cs304.steemproject.access.game;
 
 public interface IGame {
 

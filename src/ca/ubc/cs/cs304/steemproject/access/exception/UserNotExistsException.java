@@ -1,4 +1,4 @@
-package ca.ubc.cs.cs304.steemproject.db.exception;
+package ca.ubc.cs.cs304.steemproject.access.exception;
 
 public class UserNotExistsException extends Exception {
 

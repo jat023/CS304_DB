@@ -1,10 +1,10 @@
-package ca.ubc.cs.cs304.steemproject.db.service;
+package ca.ubc.cs.cs304.steemproject.access.service;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import ca.ubc.cs.cs304.steemproject.db.connection.SteemDbConnector;
-import ca.ubc.cs.cs304.steemproject.game.PurchasableGame;
+import ca.ubc.cs.cs304.steemproject.access.database.connection.SteemOracleDbConnector;
+import ca.ubc.cs.cs304.steemproject.access.game.FinalizedGame;
 
 class Tables {
 
@@ -38,13 +38,13 @@ class Tables {
     public static final String OWNS_GAME_ATTR_HOURS = "hours";
 
     public static final String TRANSACTION_TABLENAME = "Transaction";
-    public static final String TRANSACTION_DATE = "date";
+    public static final String TRANSACTION_DATE = "transactionDate";
 
     public static final String TEST_TABLENAME = "Test";
-    public static final String TEST_ATTR_DATE = "date";
+    public static final String TEST_ATTR_DATE = "testDate";
     public static final String TEST_ATTR_RATING = "rating";
 
-    public static void addNewPurchasableGame(PurchasableGame aPurchasableGame) throws SQLException {
+    public static void addNewPurchasableGame(FinalizedGame aPurchasableGame) throws SQLException {
         String insertFinalizedGameSQL = "INSERT INTO " + Tables.FINALIZED_GAME_TABLENAME
                 + "("
                 + GAME_ATTR_NAME+ ","
@@ -57,7 +57,7 @@ class Tables {
                 + FINALIZED_GAME_ATTR_DISCOUNTPERC
                 + ") VALUES "
                 + "(?,?,?,?,?,?,?,?)";
-        PreparedStatement preparedStatement = SteemDbConnector.getDefaultConnection().prepareStatement(insertFinalizedGameSQL);
+        PreparedStatement preparedStatement = SteemOracleDbConnector.getDefaultConnection().prepareStatement(insertFinalizedGameSQL);
         preparedStatement.setString(1, aPurchasableGame.getName());
         preparedStatement.setString(2, aPurchasableGame.getDescription());
         preparedStatement.setString(3, aPurchasableGame.getGenre());

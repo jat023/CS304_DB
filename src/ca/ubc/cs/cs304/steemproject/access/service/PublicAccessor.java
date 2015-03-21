@@ -1,4 +1,4 @@
-package ca.ubc.cs.cs304.steemproject.db.service;
+package ca.ubc.cs.cs304.steemproject.access.service;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,10 +11,10 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
-import ca.ubc.cs.cs304.steemproject.db.exception.UserNotExistsException;
-import ca.ubc.cs.cs304.steemproject.db.service.options.GameSortByOption;
-import ca.ubc.cs.cs304.steemproject.db.service.options.SortDirection;
-import ca.ubc.cs.cs304.steemproject.game.PurchasableGame;
+import ca.ubc.cs.cs304.steemproject.access.exception.UserNotExistsException;
+import ca.ubc.cs.cs304.steemproject.access.game.FinalizedGame;
+import ca.ubc.cs.cs304.steemproject.access.service.options.GameSortByOption;
+import ca.ubc.cs.cs304.steemproject.access.service.options.SortDirection;
 
 public final class PublicAccessor {
 
@@ -22,18 +22,18 @@ public final class PublicAccessor {
 
     private PublicAccessor() {};
 
-    public static List<PurchasableGame> listPurchasableGames() {
+    public static List<FinalizedGame> listPurchasableGames() {
         return listPurchasableGames(null, null, null, null, null);
     }
 
-    public static List<PurchasableGame> listPurchasableGames(
+    public static List<FinalizedGame> listPurchasableGames(
             String matchName, String matchGenre, String matchDeveloper, 
             Float matchLowestPrice, Float matchHighestPrice) {
         
         return listPurchasableGames(matchName, matchGenre, matchDeveloper, matchLowestPrice, matchHighestPrice, null, null, false);
     }
 
-    public static List<PurchasableGame> listPurchasableGames(
+    public static List<FinalizedGame> listPurchasableGames(
             String matchName, String matchGenre, String matchDeveloper, 
             Float matchLowestPrice, Float matchHighestPrice, 
             GameSortByOption sortByOption, SortDirection sortDirection, 
@@ -41,11 +41,11 @@ public final class PublicAccessor {
 
         ResultSet results = queryGames(matchName, matchGenre, matchDeveloper, matchLowestPrice, matchHighestPrice, sortByOption, sortDirection, listOnlyDiscountedGames, null, null);
 
-        List<PurchasableGame> games = new ArrayList<PurchasableGame>();
+        List<FinalizedGame> games = new ArrayList<FinalizedGame>();
 
         try {
             while (results.next()) {
-                games.add(new PurchasableGame(
+                games.add(new FinalizedGame(
                         results.getString(Tables.GAME_ATTR_NAME), 
                         results.getString(Tables.GAME_ATTR_DESCRIPTION), 
                         results.getString(Tables.GAME_ATTR_GENRE), 
@@ -63,17 +63,17 @@ public final class PublicAccessor {
         return games;
     }
 
-    public static Map<PurchasableGame, Float> listGamesOwned(int gameOwnerId) throws UserNotExistsException {
+    public static Map<FinalizedGame, Float> listGamesOwned(int gameOwnerId) throws UserNotExistsException {
         
         return listGamesOwned(gameOwnerId, null, null, null, null, null);
     }
     
-    public static Map<PurchasableGame, Float> listGamesOwned(String gameOwnerEmail) throws UserNotExistsException {
+    public static Map<FinalizedGame, Float> listGamesOwned(String gameOwnerEmail) throws UserNotExistsException {
         
         return listGamesOwned(gameOwnerEmail, null, null, null, null, null);
     }
     
-    public static Map<PurchasableGame, Float> listGamesOwned(
+    public static Map<FinalizedGame, Float> listGamesOwned(
             int gameOwnerId, 
             String matchName, String matchGenre, String matchDeveloper,
             GameSortByOption sortByOption, SortDirection sortDirection) throws UserNotExistsException {
@@ -86,7 +86,7 @@ public final class PublicAccessor {
         return readQueryResultsForGamesOwned(results);
     }
 
-    public static Map<PurchasableGame, Float> listGamesOwned(
+    public static Map<FinalizedGame, Float> listGamesOwned(
             String gameOwnerEmail, 
             String matchName, String matchGenre, String matchDeveloper, 
             GameSortByOption sortByOption, SortDirection sortDirection) throws UserNotExistsException {
@@ -99,14 +99,14 @@ public final class PublicAccessor {
         return readQueryResultsForGamesOwned(results);
     }
     
-    private static Map<PurchasableGame, Float> readQueryResultsForGamesOwned(ResultSet results) {
+    private static Map<FinalizedGame, Float> readQueryResultsForGamesOwned(ResultSet results) {
         
-        Map<PurchasableGame, Float> gameAndTimeSpent = new HashMap<PurchasableGame, Float>();
+        Map<FinalizedGame, Float> gameAndTimeSpent = new HashMap<FinalizedGame, Float>();
         
         try {
             while (results.next()) {
                 
-                PurchasableGame game = new PurchasableGame(
+                FinalizedGame game = new FinalizedGame(
                         results.getString(Tables.GAME_ATTR_NAME), 
                         results.getString(Tables.GAME_ATTR_DESCRIPTION), 
                         results.getString(Tables.GAME_ATTR_GENRE), 
