@@ -4,7 +4,7 @@ public interface IGame {
 
     public String getName();
     public String getDescription();
-    public String getGenre();
+    public Genre getGenre();
     public String getPublisher();
     
 }

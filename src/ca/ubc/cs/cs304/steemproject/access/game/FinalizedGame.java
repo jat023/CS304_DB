@@ -4,14 +4,14 @@ public class FinalizedGame implements IGame {
 
     private final String fName;
     private final String fDescription;
-    private final String fGenre;
+    private final Genre fGenre;
     private final String fPublisher;
     private final float fRating;
     private final float fPrice;
     private final boolean fOnSpecial;
     private final float fDiscount;
 
-    public FinalizedGame(String aName, String aDescription, String aGenre, String aPublisher, float aRating, float aPrice, boolean aOnSpecial, float aDiscount) {
+    public FinalizedGame(String aName, String aDescription, Genre aGenre, String aPublisher, float aRating, float aPrice, boolean aOnSpecial, float aDiscount) {
         fName = aName;
         fDescription = aDescription;
         fGenre = aGenre;
@@ -33,7 +33,7 @@ public class FinalizedGame implements IGame {
     }
 
     @Override
-    public String getGenre() {
+    public Genre getGenre() {
         return fGenre;
     }
 

@@ -20,7 +20,7 @@ public interface IPublicAccessor {
      * Lists all purchasable games with the matching parameters. 
      * All matching parameter can be null, in which case no matching is enforced.
      * Optional sorting options are available.
-     * Must additionally choose to list only games that currently have a discounted price.
+     * Can additionally choose to list only games that currently have a discounted price.
      * @param matchName
      * @param matchGenre
      * @param matchDeveloper

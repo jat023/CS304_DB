@@ -1,15 +1,17 @@
 package ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.apache.log4j.Logger;
 
 import ca.ubc.cs.cs304.steemproject.access.game.FinalizedGame;
+import ca.ubc.cs.cs304.steemproject.access.game.Genre;
 import ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc.connection.SteemOracleDbConnector;
 
-class InitializeDatabase {
+final class InitializeDatabase {
 
     private static final Logger log = Logger.getLogger(InitializeDatabase.class);
 
@@ -72,12 +74,13 @@ class InitializeDatabase {
             "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.OWNS_GAME_TABLENAME+ ","+
             "FOREIGN KEY (" + Tables.CREDIT_CARD_ATTR_CARDNUM+ ") REFERENCES " +Tables.CREDIT_CARD_TABLENAME+ " )";
 
-    private static final String createTestSQL = "CREATE TABLE "+Tables.TEST_TABLENAME+" (" +
+    private static final String createTestSQL = "CREATE TABLE "+Tables.FEEDBACK_TABLENAME+" (" +
             Tables.USER_ATTR_USERID+ " INT,"+
             Tables.GAME_ATTR_NAME+ " VARCHAR(15),"+
-            Tables.TEST_ATTR_DATE+ " TIMESTAMP NOT NULL,"+
-            Tables.TEST_ATTR_RATING+ " NUMBER(2,1) NOT NULL,"+
-            "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ ", " +Tables.TEST_ATTR_DATE+ "),"+
+            Tables.FEEDBACK_ATTR_DATE+ " TIMESTAMP NOT NULL,"+
+            Tables.FEEDBACK_ATTR_RATING+ " NUMBER(2,1) NOT NULL,"+
+            Tables.FEEDBACK_ATTR_FEEDBACK+ " VARCHAR(2000) NOT NULL,"+
+            "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ ", " +Tables.FEEDBACK_ATTR_DATE+ "),"+
             "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ") REFERENCES " +Tables.GAME_TESTER_TABLENAME+ ","+
             "FOREIGN KEY (" +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.DEVELOPMENT_GAMETABLENAME+ " )";
 
@@ -88,7 +91,7 @@ class InitializeDatabase {
 
         // Drop existing tables.
 
-        dropTableIfExists(con, Tables.TEST_TABLENAME);
+        dropTableIfExists(con, Tables.FEEDBACK_TABLENAME);
         dropTableIfExists(con, Tables.TRANSACTION_TABLENAME);
         dropTableIfExists(con, Tables.OWNS_GAME_TABLENAME);
         dropTableIfExists(con, Tables.CREDIT_CARD_TABLENAME);
@@ -121,11 +124,13 @@ class InitializeDatabase {
         log.info("Created table " + Tables.TRANSACTION_TABLENAME);
 
         statement.execute(createTestSQL);
-        log.info("Created table " + Tables.TEST_TABLENAME);
+        log.info("Created table " + Tables.FEEDBACK_TABLENAME);
 
-        QueryHelper.insertNewPurchasableGame(new FinalizedGame("game1","fun game", "RPG", "Bob", 10f, 1.00f, false, 0f));
-        QueryHelper.insertNewPurchasableGame(new FinalizedGame("game2","fun game", "PUZZLE", "Dan Inc.", 8.8f, 9.99f, true, 0.4f));
-        QueryHelper.insertNewPurchasableGame(new FinalizedGame("game3","fun game", "ACTION", "Dan", 5f, 59.99f, false, 0.2f));
+        // Insert at least five rows into all the tables.
+        
+        insertNewPurchasableGame(new FinalizedGame("game1","fun game", Genre.RPG, "Bob", 10f, 1.00f, false, 0f));
+        insertNewPurchasableGame(new FinalizedGame("game2","fun game", Genre.STRATEGY, "Dan Inc.", 8.8f, 9.99f, true, 0.4f));
+        insertNewPurchasableGame(new FinalizedGame("game3","fun game", Genre.ACTION, "Dan", 5f, 59.99f, false, 0.2f));
     }
 
     private static void dropTableIfExists(Connection con, String aTableName) {
@@ -153,6 +158,31 @@ class InitializeDatabase {
             }
 
         }
+    }
+    
+    private static void insertNewPurchasableGame(FinalizedGame aPurchasableGame) throws SQLException {
+        String insertFinalizedGameSQL = "INSERT INTO " + Tables.FINALIZED_GAME_TABLENAME
+                + "("
+                + Tables.GAME_ATTR_NAME+ ","
+                + Tables.GAME_ATTR_DESCRIPTION+ ","
+                + Tables.GAME_ATTR_GENRE+ ","
+                + Tables.GAME_ATTR_DEVELOPER+ ","
+                + Tables.FINALIZED_GAME_ATTR_RATING+ ","
+                + Tables.FINALIZED_GAME_ATTR_FULLPRICE+ ","
+                + Tables.FINALIZED_GAME_ATTR_ONSPECIAL+ ","
+                + Tables.FINALIZED_GAME_ATTR_DISCOUNTPERC
+                + ") VALUES "
+                + "(?,?,?,?,?,?,?,?)";
+        PreparedStatement preparedStatement = SteemOracleDbConnector.getDefaultConnection().prepareStatement(insertFinalizedGameSQL);
+        preparedStatement.setString(1, aPurchasableGame.getName());
+        preparedStatement.setString(2, aPurchasableGame.getDescription());
+        preparedStatement.setString(3, aPurchasableGame.getGenre().name());
+        preparedStatement.setString(4, aPurchasableGame.getPublisher());
+        preparedStatement.setFloat(5, aPurchasableGame.getRating());
+        preparedStatement.setFloat(6, aPurchasableGame.getFullPrice());
+        preparedStatement.setInt(7, aPurchasableGame.isOnSpecial() ? 1 : 0);
+        preparedStatement.setFloat(8, aPurchasableGame.getDiscountPercentage());
+        preparedStatement.executeUpdate();
     }
     
     public static void main(String[] args) {

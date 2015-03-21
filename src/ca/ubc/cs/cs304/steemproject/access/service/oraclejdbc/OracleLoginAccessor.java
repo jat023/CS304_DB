@@ -4,7 +4,7 @@ import ca.ubc.cs.cs304.steemproject.access.exception.PasswordIncorrectException;
 import ca.ubc.cs.cs304.steemproject.access.exception.UserNotExistsException;
 import ca.ubc.cs.cs304.steemproject.access.service.ILoginAccessor;
 
-public class OracleLoginAccessor implements ILoginAccessor {
+public final class OracleLoginAccessor implements ILoginAccessor {
 
     private static OracleLoginAccessor fInstance;
 
@@ -29,14 +29,14 @@ public class OracleLoginAccessor implements ILoginAccessor {
 
     private boolean login(String email, String password, String tablename) throws UserNotExistsException, PasswordIncorrectException {
 
-        if (!QueryHelper.userExists(email, tablename)) {
+        if (!QueriesHelper.userExists(email, tablename)) {
             throw new UserNotExistsException();
         }
 
         String query = "SELECT * FROM " +tablename+ 
                 " WHERE " +Tables.USER_ATTR_EMAIL+ "=" +email+ " AND " +Tables.USER_ATTR_PASSWORD+ "=" +password;
 
-        if (!QueryHelper.exists(query)) {
+        if (!QueriesHelper.exists(query)) {
             throw new PasswordIncorrectException();
         }
 

@@ -1,6 +1,6 @@
 package ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc;
 
-class Tables {
+final class Tables {
 
     public static final String CUSTOMER_TABLENAME = "Customer";
     public static final String GAME_TESTER_TABLENAME = "GameTester";
@@ -34,8 +34,9 @@ class Tables {
     public static final String TRANSACTION_TABLENAME = "Transaction";
     public static final String TRANSACTION_DATE = "transactionDate";
 
-    public static final String TEST_TABLENAME = "Test";
-    public static final String TEST_ATTR_DATE = "testDate";
-    public static final String TEST_ATTR_RATING = "rating";
+    public static final String FEEDBACK_TABLENAME = "Feedback";
+    public static final String FEEDBACK_ATTR_DATE = "feedbackDate";
+    public static final String FEEDBACK_ATTR_RATING = "rating";
+    public static final String FEEDBACK_ATTR_FEEDBACK = "feedback";
 
 }

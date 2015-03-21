@@ -4,7 +4,7 @@ public interface IUser {
 
     public String getEmail();
     
-    public String getUserId();
+    public int getUserId();
     
     public String getPassword();
     
