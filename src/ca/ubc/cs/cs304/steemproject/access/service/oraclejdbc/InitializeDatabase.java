@@ -7,9 +7,9 @@ import java.sql.Statement;
 
 import org.apache.log4j.Logger;
 
-import ca.ubc.cs.cs304.steemproject.access.game.FinalizedGame;
-import ca.ubc.cs.cs304.steemproject.access.game.Genre;
 import ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc.connection.SteemOracleDbConnector;
+import ca.ubc.cs.cs304.steemproject.base.Genre;
+import ca.ubc.cs.cs304.steemproject.base.released.FinalizedGame;
 
 final class InitializeDatabase {
 

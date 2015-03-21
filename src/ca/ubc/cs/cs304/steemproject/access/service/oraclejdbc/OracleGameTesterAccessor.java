@@ -11,13 +11,13 @@ import org.apache.log4j.Logger;
 
 import ca.ubc.cs.cs304.steemproject.access.exception.GameNotExistException;
 import ca.ubc.cs.cs304.steemproject.access.exception.UserNotExistsException;
-import ca.ubc.cs.cs304.steemproject.access.game.GameInDevelopment;
-import ca.ubc.cs.cs304.steemproject.access.game.Genre;
 import ca.ubc.cs.cs304.steemproject.access.service.IGameTesterAccessor;
 import ca.ubc.cs.cs304.steemproject.access.service.options.GameSortByOption;
 import ca.ubc.cs.cs304.steemproject.access.service.options.SortDirection;
 import ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc.connection.SteemOracleDbConnector;
-import ca.ubc.cs.cs304.steemproject.access.user.GameTester;
+import ca.ubc.cs.cs304.steemproject.base.Genre;
+import ca.ubc.cs.cs304.steemproject.base.development.GameInDevelopment;
+import ca.ubc.cs.cs304.steemproject.base.development.GameTester;
 
 public class OracleGameTesterAccessor implements IGameTesterAccessor {
 

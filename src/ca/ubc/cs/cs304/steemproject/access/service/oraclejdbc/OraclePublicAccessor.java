@@ -10,11 +10,11 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import ca.ubc.cs.cs304.steemproject.access.exception.UserNotExistsException;
-import ca.ubc.cs.cs304.steemproject.access.game.FinalizedGame;
-import ca.ubc.cs.cs304.steemproject.access.game.Genre;
 import ca.ubc.cs.cs304.steemproject.access.service.IPublicAccessor;
 import ca.ubc.cs.cs304.steemproject.access.service.options.GameSortByOption;
 import ca.ubc.cs.cs304.steemproject.access.service.options.SortDirection;
+import ca.ubc.cs.cs304.steemproject.base.Genre;
+import ca.ubc.cs.cs304.steemproject.base.released.FinalizedGame;
 
 public final class OraclePublicAccessor implements IPublicAccessor {
 

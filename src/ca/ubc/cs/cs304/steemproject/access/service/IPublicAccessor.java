@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import ca.ubc.cs.cs304.steemproject.access.exception.UserNotExistsException;
-import ca.ubc.cs.cs304.steemproject.access.game.FinalizedGame;
 import ca.ubc.cs.cs304.steemproject.access.service.options.GameSortByOption;
 import ca.ubc.cs.cs304.steemproject.access.service.options.SortDirection;
+import ca.ubc.cs.cs304.steemproject.base.released.FinalizedGame;
 
 public interface IPublicAccessor {
     
