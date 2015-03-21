@@ -3,10 +3,7 @@ package ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -15,7 +12,10 @@ import ca.ubc.cs.cs304.steemproject.access.service.IPublicAccessor;
 import ca.ubc.cs.cs304.steemproject.access.service.options.GameSortByOption;
 import ca.ubc.cs.cs304.steemproject.access.service.options.SortDirection;
 import ca.ubc.cs.cs304.steemproject.base.Genre;
+import ca.ubc.cs.cs304.steemproject.base.IUser;
+import ca.ubc.cs.cs304.steemproject.base.released.Customer;
 import ca.ubc.cs.cs304.steemproject.base.released.FinalizedGame;
+import ca.ubc.cs.cs304.steemproject.base.released.Playtime;
 
 public final class OraclePublicAccessor implements IPublicAccessor {
 
@@ -32,17 +32,17 @@ public final class OraclePublicAccessor implements IPublicAccessor {
         return fInstance;
     }
 
-    public Collection<FinalizedGame> listPurchasableGames() {
+    public List<FinalizedGame> listPurchasableGames() {
         return listPurchasableGames(null, null, null, null, null, null, null, false);
     }
     
-    public Collection<FinalizedGame> listPurchasableGames(
+    public List<FinalizedGame> listPurchasableGames(
             String matchName, String matchGenre, String matchDeveloper, 
             Float matchLowestPrice, Float matchHighestPrice, 
             GameSortByOption sortByOption, SortDirection sortDirection, 
             boolean listOnlyDiscountedGames) {
 
-        ResultSet results = GameQueriesHelper.queryGames(Tables.FINALIZED_GAME_TABLENAME, matchName, matchGenre, matchDeveloper, matchLowestPrice, matchHighestPrice, sortByOption, sortDirection, listOnlyDiscountedGames, null, null);
+        ResultSet results = GameQueriesHelper.queryGames(Tables.FINALIZED_GAME_TABLENAME, matchName, matchGenre, matchDeveloper, matchLowestPrice, matchHighestPrice, sortByOption, sortDirection, listOnlyDiscountedGames, null);
 
         List<FinalizedGame> games = new ArrayList<FinalizedGame>();
 
@@ -66,45 +66,43 @@ public final class OraclePublicAccessor implements IPublicAccessor {
         return games;
     }
 
-    public Map<FinalizedGame, Float> listGamesOwned(int gameOwnerId) throws UserNotExistsException {
+    public List<Playtime> listGamesOwned(int gameOwnerId) throws UserNotExistsException {
 
         return listGamesOwned(gameOwnerId, null, null, null, null, null);
     }
 
-    public Map<FinalizedGame, Float> listGamesOwned(String gameOwnerEmail) throws UserNotExistsException {
+    public List<Playtime> listGamesOwned(String gameOwnerEmail) throws UserNotExistsException {
 
         return listGamesOwned(gameOwnerEmail, null, null, null, null, null);
     }
 
-    public Map<FinalizedGame, Float> listGamesOwned(
+    public List<Playtime> listGamesOwned(
             int gameOwnerId, 
             String matchName, String matchGenre, String matchDeveloper,
             GameSortByOption sortByOption, SortDirection sortDirection) throws UserNotExistsException {
 
-        if (!QueriesHelper.userExists(gameOwnerId, Tables.CUSTOMER_TABLENAME)) {
-            throw new UserNotExistsException();
-        }
+        IUser user = QueriesHelper.retrieveUser(gameOwnerId, Tables.CUSTOMER_TABLENAME);
+        Customer gamer = new Customer(user.getUserId(), user.getEmail(), user.getPassword());
 
-        ResultSet results = GameQueriesHelper.queryGames(Tables.FINALIZED_GAME_TABLENAME, matchName, matchGenre, matchDeveloper, null, null, sortByOption, sortDirection, false, gameOwnerId, null);
-        return readQueryResultsForGamesOwned(results);
+        ResultSet results = GameQueriesHelper.queryGames(Tables.FINALIZED_GAME_TABLENAME, matchName, matchGenre, matchDeveloper, null, null, sortByOption, sortDirection, false, gameOwnerId);
+        return readQueryResultsForGamesOwned(gamer, results);
     }
 
-    public Map<FinalizedGame, Float> listGamesOwned(
+    public List<Playtime> listGamesOwned(
             String gameOwnerEmail, 
             String matchName, String matchGenre, String matchDeveloper, 
             GameSortByOption sortByOption, SortDirection sortDirection) throws UserNotExistsException {
 
-        if (!QueriesHelper.userExists(gameOwnerEmail, Tables.CUSTOMER_TABLENAME)) {
-            throw new UserNotExistsException();
-        }
-
-        ResultSet results = GameQueriesHelper.queryGames(Tables.FINALIZED_GAME_TABLENAME, matchName, matchGenre, matchDeveloper, null, null, sortByOption, sortDirection, false, null, gameOwnerEmail);
-        return readQueryResultsForGamesOwned(results);
+        IUser user = QueriesHelper.retrieveUser(gameOwnerEmail, Tables.CUSTOMER_TABLENAME);
+        Customer gamer = new Customer(user.getUserId(), user.getEmail(), user.getPassword());
+        
+        ResultSet results = GameQueriesHelper.queryGames(Tables.FINALIZED_GAME_TABLENAME, matchName, matchGenre, matchDeveloper, null, null, sortByOption, sortDirection, false, gamer.getUserId());
+        return readQueryResultsForGamesOwned(gamer, results);
     }
 
-    private static Map<FinalizedGame, Float> readQueryResultsForGamesOwned(ResultSet results) {
+    private static List<Playtime> readQueryResultsForGamesOwned(Customer gamer, ResultSet results) {
 
-        Map<FinalizedGame, Float> gameAndTimeSpent = new HashMap<FinalizedGame, Float>();
+        List<Playtime> playtimes = new ArrayList<Playtime>();
 
         try {
             while (results.next()) {
@@ -120,8 +118,8 @@ public final class OraclePublicAccessor implements IPublicAccessor {
                         results.getFloat(Tables.FINALIZED_GAME_ATTR_DISCOUNTPERC));
 
                 Float hours = results.getFloat(Tables.OWNS_GAME_ATTR_HOURS);
-
-                gameAndTimeSpent.put(game,hours);
+                
+                playtimes.add(new Playtime(gamer, game, hours));
 
             }
         } catch (SQLException e) {
@@ -129,7 +127,7 @@ public final class OraclePublicAccessor implements IPublicAccessor {
             throw new RuntimeException(e);
         }
 
-        return gameAndTimeSpent;
+        return playtimes;
 
     }
 }

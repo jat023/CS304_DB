@@ -44,7 +44,7 @@ public class OracleGameTesterAccessor implements IGameTesterAccessor {
     private OracleGameTesterAccessor() {
         try {
             fPreparedTestQuery = SteemOracleDbConnector.getDefaultConnection().prepareStatement(
-                    "SELECT * FROM " +Tables.FEEDBACK_TABLENAME+ " WHERE " +Tables.FEEDBACK_ATTR_TIME+ " BETWEEN ? AND ?");
+                    "SELECT * FROM " +Tables.FEEDBACK_TABLENAME+ " WHERE " +Tables.FEEDBACK_ATTR_TIME+ " BETWEEN ? AND ? GROUP BY ");
             fRetrieveGameQuery = SteemOracleDbConnector.getDefaultConnection().prepareStatement(
                     "SELECT * FROM " +Tables.DEVELOPMENT_GAMETABLENAME+ " WHERE " +Tables.GAME_ATTR_NAME+ "=?");
         } catch (SQLException e) {
@@ -70,7 +70,7 @@ public class OracleGameTesterAccessor implements IGameTesterAccessor {
             String matchName, String matchGenre, String matchDeveloper,
             GameSortByOption sortByOption, SortDirection sortDirection) {
 
-        ResultSet results = GameQueriesHelper.queryGames(Tables.DEVELOPMENT_GAMETABLENAME, matchName, matchGenre, matchDeveloper, null, null, sortByOption, sortDirection, false, null, null);
+        ResultSet results = GameQueriesHelper.queryGames(Tables.DEVELOPMENT_GAMETABLENAME, matchName, matchGenre, matchDeveloper, null, null, sortByOption, sortDirection, false, null);
 
         List<GameInDevelopment> games = new ArrayList<GameInDevelopment>();
 
@@ -100,7 +100,7 @@ public class OracleGameTesterAccessor implements IGameTesterAccessor {
             throw new UserNotExistsException();
         }
 
-        if (!QueriesHelper.gameExists(aGameInDevelopment.getName(), Tables.DEVELOPMENT_GAMETABLENAME)) {
+        if (!GameQueriesHelper.gameExists(aGameInDevelopment.getName(), Tables.DEVELOPMENT_GAMETABLENAME)) {
             throw new GameNotExistException();
         }
 

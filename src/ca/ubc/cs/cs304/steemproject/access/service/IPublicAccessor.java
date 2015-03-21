@@ -1,12 +1,12 @@
 package ca.ubc.cs.cs304.steemproject.access.service;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.List;
 
 import ca.ubc.cs.cs304.steemproject.access.exception.UserNotExistsException;
 import ca.ubc.cs.cs304.steemproject.access.service.options.GameSortByOption;
 import ca.ubc.cs.cs304.steemproject.access.service.options.SortDirection;
 import ca.ubc.cs.cs304.steemproject.base.released.FinalizedGame;
+import ca.ubc.cs.cs304.steemproject.base.released.Playtime;
 
 public interface IPublicAccessor {
     
@@ -14,7 +14,7 @@ public interface IPublicAccessor {
      * Lists all purchasable games.
      * @return
      */
-    public Collection<FinalizedGame> listPurchasableGames();
+    public List<FinalizedGame> listPurchasableGames();
 
     /**
      * Lists all purchasable games with the matching parameters. 
@@ -31,7 +31,7 @@ public interface IPublicAccessor {
      * @param listOnlyDiscountedGames
      * @return
      */
-    public Collection<FinalizedGame> listPurchasableGames(
+    public List<FinalizedGame> listPurchasableGames(
             String matchName, String matchGenre, String matchDeveloper, 
             Float matchLowestPrice, Float matchHighestPrice, 
             GameSortByOption sortByOption, SortDirection sortDirection, 
@@ -43,7 +43,7 @@ public interface IPublicAccessor {
      * @return
      * @throws UserNotExistsException
      */
-    public Map<FinalizedGame, Float> listGamesOwned(int gameOwnerId) throws UserNotExistsException;
+    public List<Playtime> listGamesOwned(int gameOwnerId) throws UserNotExistsException;
 
     /**
      * Lists all games belonging to the user with the supplied email.
@@ -51,7 +51,7 @@ public interface IPublicAccessor {
      * @return
      * @throws UserNotExistsException
      */
-    public Map<FinalizedGame, Float> listGamesOwned(String gameOwnerEmail) throws UserNotExistsException;
+    public List<Playtime> listGamesOwned(String gameOwnerEmail) throws UserNotExistsException;
 
     /**
      * Lists all games with the matching parameters belonging to the user with the supplied ID. 
@@ -65,7 +65,7 @@ public interface IPublicAccessor {
      * @return
      * @throws UserNotExistsException
      */
-    public Map<FinalizedGame, Float> listGamesOwned(
+    public List<Playtime> listGamesOwned(
             int gameOwnerId, 
             String matchName, String matchGenre, String matchDeveloper,
             GameSortByOption sortByOption, SortDirection sortDirection) throws UserNotExistsException;
@@ -82,7 +82,7 @@ public interface IPublicAccessor {
      * @return
      * @throws UserNotExistsException
      */
-    public Map<FinalizedGame, Float> listGamesOwned(
+    public List<Playtime> listGamesOwned(
             String gameOwnerEmail, 
             String matchName, String matchGenre, String matchDeveloper, 
             GameSortByOption sortByOption, SortDirection sortDirection) throws UserNotExistsException;
