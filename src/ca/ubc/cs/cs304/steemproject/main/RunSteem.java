@@ -19,6 +19,9 @@ public class RunSteem extends JFrame{
     
 	public final static Logger log = Logger.getLogger(RunSteem.class);
 	
+	/*
+	 * Basic constructor function for building the UI interface
+	 */
 	public static void createUI() {
 		ConsoleUI mainConsole = new ConsoleUI();
 		mainConsole.buildGUI();
