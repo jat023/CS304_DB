@@ -1,4 +1,4 @@
-package ca.ubc.cs.cs304.steemproject.access.game;
+package ca.ubc.cs.cs304.steemproject.base;
 
 public enum Genre {
     

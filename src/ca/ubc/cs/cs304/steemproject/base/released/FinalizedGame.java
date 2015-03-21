@@ -1,4 +1,7 @@
-package ca.ubc.cs.cs304.steemproject.access.game;
+package ca.ubc.cs.cs304.steemproject.base.released;
+
+import ca.ubc.cs.cs304.steemproject.base.Genre;
+import ca.ubc.cs.cs304.steemproject.base.IGame;
 
 public class FinalizedGame implements IGame {
 

@@ -1,12 +1,14 @@
-package ca.ubc.cs.cs304.steemproject.access.user;
+package ca.ubc.cs.cs304.steemproject.base.released;
 
-public class GameTester implements IUser {
+import ca.ubc.cs.cs304.steemproject.base.IUser;
 
-    private final int fUserId;
-    private final String fEmail;
-    private final String fPassword;
+public class Customer implements IUser {
+
+    private int fUserId;
+    private String fEmail;
+    private String fPassword;
     
-    public GameTester(int aUserId, String aEmail, String aPassword) {
+    public Customer(int aUserId, String aEmail, String aPassword) {
         this.fUserId = aUserId;
         this.fEmail = aEmail;
         this.fPassword = aPassword;

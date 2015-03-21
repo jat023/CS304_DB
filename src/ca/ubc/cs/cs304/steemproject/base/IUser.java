@@ -1,4 +1,4 @@
-package ca.ubc.cs.cs304.steemproject.access.user;
+package ca.ubc.cs.cs304.steemproject.base;
 
 public interface IUser {
 
