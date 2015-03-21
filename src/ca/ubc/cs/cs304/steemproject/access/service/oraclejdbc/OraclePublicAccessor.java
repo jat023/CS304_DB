@@ -1,4 +1,4 @@
-package ca.ubc.cs.cs304.steemproject.access.service;
+package ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,27 +13,30 @@ import org.apache.log4j.Logger;
 
 import ca.ubc.cs.cs304.steemproject.access.exception.UserNotExistsException;
 import ca.ubc.cs.cs304.steemproject.access.game.FinalizedGame;
+import ca.ubc.cs.cs304.steemproject.access.service.IPublicAccessor;
 import ca.ubc.cs.cs304.steemproject.access.service.options.GameSortByOption;
 import ca.ubc.cs.cs304.steemproject.access.service.options.SortDirection;
 
-public final class PublicAccessor {
+public final class OraclePublicAccessor implements IPublicAccessor {
 
-    private static final Logger log = Logger.getLogger(PublicAccessor.class);
+    private static final Logger log = Logger.getLogger(OraclePublicAccessor.class);
 
-    private PublicAccessor() {};
+    private static OraclePublicAccessor fInstance;
 
-    public static List<FinalizedGame> listPurchasableGames() {
-        return listPurchasableGames(null, null, null, null, null);
+    private OraclePublicAccessor() {};
+
+    public static OraclePublicAccessor getInstance() {
+        if (fInstance == null) {
+            fInstance = new OraclePublicAccessor();
+        } 
+        return fInstance;
     }
 
-    public static List<FinalizedGame> listPurchasableGames(
-            String matchName, String matchGenre, String matchDeveloper, 
-            Float matchLowestPrice, Float matchHighestPrice) {
-        
-        return listPurchasableGames(matchName, matchGenre, matchDeveloper, matchLowestPrice, matchHighestPrice, null, null, false);
+    public List<FinalizedGame> listPurchasableGames() {
+        return listPurchasableGames(null, null, null, null, null, null, null, false);
     }
-
-    public static List<FinalizedGame> listPurchasableGames(
+    
+    public List<FinalizedGame> listPurchasableGames(
             String matchName, String matchGenre, String matchDeveloper, 
             Float matchLowestPrice, Float matchHighestPrice, 
             GameSortByOption sortByOption, SortDirection sortDirection, 
@@ -63,49 +66,49 @@ public final class PublicAccessor {
         return games;
     }
 
-    public static Map<FinalizedGame, Float> listGamesOwned(int gameOwnerId) throws UserNotExistsException {
-        
+    public Map<FinalizedGame, Float> listGamesOwned(int gameOwnerId) throws UserNotExistsException {
+
         return listGamesOwned(gameOwnerId, null, null, null, null, null);
     }
-    
-    public static Map<FinalizedGame, Float> listGamesOwned(String gameOwnerEmail) throws UserNotExistsException {
-        
+
+    public Map<FinalizedGame, Float> listGamesOwned(String gameOwnerEmail) throws UserNotExistsException {
+
         return listGamesOwned(gameOwnerEmail, null, null, null, null, null);
     }
-    
-    public static Map<FinalizedGame, Float> listGamesOwned(
+
+    public Map<FinalizedGame, Float> listGamesOwned(
             int gameOwnerId, 
             String matchName, String matchGenre, String matchDeveloper,
             GameSortByOption sortByOption, SortDirection sortDirection) throws UserNotExistsException {
 
-        if (!DbQueryHelper.customerExists(gameOwnerId)) {
+        if (!QueryHelper.userExists(gameOwnerId, Tables.CUSTOMER_TABLENAME)) {
             throw new UserNotExistsException();
         }
-        
+
         ResultSet results = queryGames(matchName, matchGenre, matchDeveloper, null, null, sortByOption, sortDirection, false, gameOwnerId, null);
         return readQueryResultsForGamesOwned(results);
     }
 
-    public static Map<FinalizedGame, Float> listGamesOwned(
+    public Map<FinalizedGame, Float> listGamesOwned(
             String gameOwnerEmail, 
             String matchName, String matchGenre, String matchDeveloper, 
             GameSortByOption sortByOption, SortDirection sortDirection) throws UserNotExistsException {
-        
-        if (!DbQueryHelper.customerExists(gameOwnerEmail)) {
+
+        if (!QueryHelper.userExists(gameOwnerEmail, Tables.CUSTOMER_TABLENAME)) {
             throw new UserNotExistsException();
         }
-        
+
         ResultSet results = queryGames(matchName, matchGenre, matchDeveloper, null, null, sortByOption, sortDirection, false, null, gameOwnerEmail);
         return readQueryResultsForGamesOwned(results);
     }
-    
+
     private static Map<FinalizedGame, Float> readQueryResultsForGamesOwned(ResultSet results) {
-        
+
         Map<FinalizedGame, Float> gameAndTimeSpent = new HashMap<FinalizedGame, Float>();
-        
+
         try {
             while (results.next()) {
-                
+
                 FinalizedGame game = new FinalizedGame(
                         results.getString(Tables.GAME_ATTR_NAME), 
                         results.getString(Tables.GAME_ATTR_DESCRIPTION), 
@@ -115,19 +118,19 @@ public final class PublicAccessor {
                         results.getFloat(Tables.FINALIZED_GAME_ATTR_FULLPRICE),
                         results.getInt(7) == 1,
                         results.getFloat(Tables.FINALIZED_GAME_ATTR_DISCOUNTPERC));
-                
+
                 Float hours = results.getFloat(Tables.OWNS_GAME_ATTR_HOURS);
-                
+
                 gameAndTimeSpent.put(game,hours);
-                
+
             }
         } catch (SQLException e) {
             log.error("Could not read results.", e);
             throw new RuntimeException(e);
         }
-        
+
         return gameAndTimeSpent;
-        
+
     }
 
     private static ResultSet queryGames(
@@ -150,7 +153,7 @@ public final class PublicAccessor {
             Collection<String> constraints = new ArrayList<String>();
 
             if (matchName != null) {
-                constraints.add(Tables.GAME_ATTR_NAME+ "='" + matchName + "'");
+                constraints.add("UPPER(" +Tables.GAME_ATTR_NAME+ ") LIKE '%" +matchName.toUpperCase()+ "%'");
             }
 
             if (matchGenre != null) {
@@ -172,12 +175,11 @@ public final class PublicAccessor {
             if (onlyDiscountedGames) {
                 constraints.add(Tables.FINALIZED_GAME_ATTR_ONSPECIAL+ "=1");
             }
-            if (ownerId != null || ownerEmail != null) {
-                if (ownerId != null) {
-                    constraints.add(Tables.USER_ATTR_USERID+ "=" + ownerId);
-                } else if (ownerEmail != null) {
-                    constraints.add(Tables.USER_ATTR_EMAIL+ "=" + ownerEmail);
-                }
+
+            if (ownerId != null) {
+                constraints.add(Tables.USER_ATTR_USERID+ "=" + ownerId);
+            } else if (ownerEmail != null) {
+                constraints.add(Tables.USER_ATTR_EMAIL+ "=" + ownerEmail);
             }
 
             queryBuilder.append(StringUtils.join(constraints, " AND "));
@@ -185,10 +187,10 @@ public final class PublicAccessor {
 
         appendSorting(sortByOption, sortDirection, queryBuilder);
 
-        log.debug("Executing query:");
-        log.debug(queryBuilder.toString());
+        String query = queryBuilder.toString();
 
-        return DbQueryHelper.runQuery(queryBuilder.toString());
+        log.debug("Executing query: " + query);
+        return QueryHelper.runQuery(query);
     }
 
     private static void appendSorting(GameSortByOption sortByOption, SortDirection sortDirection, StringBuilder queryBuilder) {

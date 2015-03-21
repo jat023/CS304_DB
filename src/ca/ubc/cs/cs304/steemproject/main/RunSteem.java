@@ -15,7 +15,7 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
-import ca.ubc.cs.cs304.steemproject.access.database.connection.SteemOracleDbConnector;
+import ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc.connection.SteemOracleDbConnector;
 import ca.ubc.cs.cs304.steemproject.ui.ConsoleUI;
 import ca.ubc.cs.cs304.steemproject.ui.IUI;
 

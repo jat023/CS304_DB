@@ -1,4 +1,4 @@
-package ca.ubc.cs.cs304.steemproject.access.service;
+package ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -6,8 +6,8 @@ import java.sql.Statement;
 
 import org.apache.log4j.Logger;
 
-import ca.ubc.cs.cs304.steemproject.access.database.connection.SteemOracleDbConnector;
 import ca.ubc.cs.cs304.steemproject.access.game.FinalizedGame;
+import ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc.connection.SteemOracleDbConnector;
 
 class InitializeDatabase {
 
@@ -123,9 +123,9 @@ class InitializeDatabase {
         statement.execute(createTestSQL);
         log.info("Created table " + Tables.TEST_TABLENAME);
 
-        Tables.addNewPurchasableGame(new FinalizedGame("game1","fun game", "RPG", "Bob", 10f, 1.00f, false, 0f));
-        Tables.addNewPurchasableGame(new FinalizedGame("game2","fun game", "PUZZLE", "Dan Inc.", 8.8f, 9.99f, true, 0.4f));
-        Tables.addNewPurchasableGame(new FinalizedGame("game3","fun game", "ACTION", "Dan", 5f, 59.99f, false, 0.2f));
+        QueryHelper.insertNewPurchasableGame(new FinalizedGame("game1","fun game", "RPG", "Bob", 10f, 1.00f, false, 0f));
+        QueryHelper.insertNewPurchasableGame(new FinalizedGame("game2","fun game", "PUZZLE", "Dan Inc.", 8.8f, 9.99f, true, 0.4f));
+        QueryHelper.insertNewPurchasableGame(new FinalizedGame("game3","fun game", "ACTION", "Dan", 5f, 59.99f, false, 0.2f));
     }
 
     private static void dropTableIfExists(Connection con, String aTableName) {

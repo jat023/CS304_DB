@@ -1,4 +1,4 @@
-package ca.ubc.cs.cs304.steemproject.access.database.connection;
+package ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc.connection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
