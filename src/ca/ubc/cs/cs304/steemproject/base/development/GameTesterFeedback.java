@@ -7,6 +7,7 @@ public class GameTesterFeedback {
     
     private final GameInDevelopment fGameInDevelopment;
     private final String fGameTesterEmail;
+    //private final GameTester fGameTester;
     private final Date fDate;
     private final float fRating;
     private final String fFeedback;
@@ -16,9 +17,13 @@ public class GameTesterFeedback {
         if (aGameInDevelopment == null) {
             throw new IllegalArgumentException("Game in development cannot be null.");
         }
+        
         if (aGameTesterEmail == null) {
             throw new IllegalArgumentException("Game tester cannot be null.");
         }
+        /*if (aGameTester == null) {
+            throw new IllegalArgumentException("Game tester cannot be null.");
+        }*/
         if (aDate == null) {
             throw new IllegalArgumentException("Date cannot be null.");
         }
@@ -26,6 +31,7 @@ public class GameTesterFeedback {
             throw new IllegalArgumentException("Feedback cannot be null.");
         }
         
+        //fGameTester = aGameTester;
         fGameTesterEmail = aGameTesterEmail;
         fGameInDevelopment = aGameInDevelopment;
         fDate = aDate;
@@ -37,6 +43,11 @@ public class GameTesterFeedback {
     public GameInDevelopment getGame() {
         return fGameInDevelopment;
     }
+    
+    /*
+    public GameTester getTester() {
+        return fGameTester;
+    }*/
     
     public String getTesterEmail() {
         return fGameTesterEmail;

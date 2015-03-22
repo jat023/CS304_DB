@@ -9,7 +9,12 @@ import org.apache.log4j.Logger;
 
 import ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc.connection.SteemOracleDbConnector;
 import ca.ubc.cs.cs304.steemproject.base.Genre;
+import ca.ubc.cs.cs304.steemproject.base.development.GameInDevelopment;
+import ca.ubc.cs.cs304.steemproject.base.development.GameTester;
+import ca.ubc.cs.cs304.steemproject.base.development.GameTesterFeedback;
+import ca.ubc.cs.cs304.steemproject.base.released.Customer;
 import ca.ubc.cs.cs304.steemproject.base.released.FinalizedGame;
+import ca.ubc.cs.cs304.steemproject.base.released.Playtime;
 
 final class InitializeDatabase {
 
@@ -86,11 +91,38 @@ final class InitializeDatabase {
 
     
     private static Connection fConnection;
+    private static PreparedStatement fInsertCustomerStatement;
+    private static PreparedStatement fInsertGameTesterStatement;
     private static PreparedStatement fInsertGameStatement;
+    private static PreparedStatement fInsertGameInDevelopmentStatement;
+    private static PreparedStatement fInsertCreditCardStatement;
+    private static PreparedStatement fInsertOwnsGameStatement;
+    private static PreparedStatement fInsertTransactionStatement;
+    private static PreparedStatement fInsertFeedbackStatement;
     
     private static void init() throws SQLException {
         
         fConnection = SteemOracleDbConnector.getDefaultConnection();
+        
+        //Customer
+        fInsertCustomerStatement = fConnection.prepareStatement("INSERT INTO " + Tables.CUSTOMER_TABLENAME
+                + "("
+                + Tables.USER_ATTR_USERID+ ","
+                + Tables.USER_ATTR_EMAIL+ ","
+                + Tables.USER_ATTR_PASSWORD+ ","
+                + ") VALUES "
+                + "(?,?,?)");
+        
+        //Game Tester
+        fInsertGameTesterStatement = fConnection.prepareStatement("INSERT INTO " + Tables.GAME_TESTER_TABLENAME
+                + "("
+                + Tables.USER_ATTR_USERID+ ","
+                + Tables.USER_ATTR_EMAIL+ ","
+                + Tables.USER_ATTR_PASSWORD+ ","
+                + ") VALUES "
+                + "(?,?,?)");
+        
+        //Finalized Game
         fInsertGameStatement = fConnection.prepareStatement("INSERT INTO " + Tables.FINALIZED_GAME_TABLENAME
                 + "("
                 + Tables.GAME_ATTR_NAME+ ","
@@ -103,6 +135,57 @@ final class InitializeDatabase {
                 + Tables.FINALIZED_GAME_ATTR_DISCOUNTPERC
                 + ") VALUES "
                 + "(?,?,?,?,?,?,?,?)");
+        
+        //Game in Development
+        fInsertGameInDevelopmentStatement = fConnection.prepareStatement("INSERT INTO " + Tables.DEVELOPMENT_GAMETABLENAME
+                + "("
+                + Tables.GAME_ATTR_NAME+ ","
+                + Tables.GAME_ATTR_DESCRIPTION+ ","
+                + Tables.GAME_ATTR_GENRE+ ","
+                + Tables.GAME_ATTR_DEVELOPER+ ","
+                + Tables.DEVELOPMENT_GAME_ATTR_VERSION+ ","
+                + ") VALUES "
+                + "(?,?,?,?,?)");
+        
+        //Credit Card
+        fInsertCreditCardStatement = fConnection.prepareStatement("INSERT INTO " + Tables.CREDIT_CARD_TABLENAME
+                + "("
+                + Tables.CREDIT_CARD_ATTR_CARDNUM+ ","
+                + Tables.CREDIT_CARD_ATTR_ADDRESS+ ","
+                + Tables.CREDIT_CARD_ATTR_CCV+ ","
+                + Tables.USER_ATTR_USERID+ ","
+                + ") VALUES "
+                + "(?,?,?,?)");
+        
+        //Owns Game
+        fInsertOwnsGameStatement = fConnection.prepareStatement("INSERT INTO " + Tables.OWNS_GAME_TABLENAME
+                + "("
+                + Tables.USER_ATTR_USERID+ ","
+                + Tables.GAME_ATTR_NAME+ ","
+                + Tables.OWNS_GAME_ATTR_HOURS+ ","
+                + ") VALUES "
+                + "(?,?,?)");
+        
+        //Transaction
+        fInsertTransactionStatement = fConnection.prepareStatement("INSERT INTO " + Tables.TRANSACTION_TABLENAME
+                + "("
+                + Tables.USER_ATTR_USERID+ ","
+                + Tables.GAME_ATTR_NAME+ ","
+                + Tables.CREDIT_CARD_ATTR_CARDNUM+ ","
+                + Tables.TRANSACTION_ATTR_TIME+ ","
+                + ") VALUES "
+                + "(?,?,?,?)");
+        
+        //Test/Feedback
+        fInsertFeedbackStatement = fConnection.prepareStatement("INSERT INTO " + Tables.FEEDBACK_TABLENAME
+                + "("
+                + Tables.USER_ATTR_USERID+ ","
+                + Tables.GAME_ATTR_NAME+ ","
+                + Tables.FEEDBACK_ATTR_TIME+ ","
+                + Tables.FEEDBACK_ATTR_RATING+ ","
+                + Tables.FEEDBACK_ATTR_FEEDBACK+ ","
+                + ") VALUES "
+                + "(?,?,?,?,?)");
         
         Statement statement = fConnection.createStatement();
 
@@ -145,9 +228,59 @@ final class InitializeDatabase {
 
         // Insert at least five rows into all the tables.
         
-        insertNewPurchasableGame(new FinalizedGame("game1","fun game", Genre.RPG, "Bob", 10f, 1.00f, false, 0f));
-        insertNewPurchasableGame(new FinalizedGame("game2","fun game", Genre.STRATEGY, "Dan Inc.", 8.8f, 9.99f, true, 0.4f));
-        insertNewPurchasableGame(new FinalizedGame("game3","fun game", Genre.ACTION, "Dan", 5f, 59.99f, false, 0.2f));
+        Customer customer1 = new Customer(1, "customer1@gmail.com", "apple123");
+        Customer customer2 = new Customer(2, "customer2@gmail.com", "orange123");
+        Customer customer3 = new Customer(3, "customer3@gmail.com", "banana123");
+        Customer customer4 = new Customer(4, "customer4@gmail.com", "apple123");
+        Customer customer5 = new Customer(5, "customer5@gmail.com", "pear123");
+        
+        FinalizedGame game1 = new FinalizedGame("game1","fun game", Genre.RPG, "Bob", 10f, 1.00f, false, 0f);
+        FinalizedGame game2 = new FinalizedGame("game2","fun game", Genre.STRATEGY, "Dan Inc.", 8.8f, 9.99f, true, 0.4f);
+        FinalizedGame game3 = new FinalizedGame("game3","fun game", Genre.ACTION, "Dan", 5f, 59.99f, false, 0.2f);
+        FinalizedGame game4 = new FinalizedGame("game4","fun game", Genre.RPG, "Blazzard", 8.2f, 39.99f, true, 0.1f);
+        FinalizedGame game5 = new FinalizedGame("game5","fun game", Genre.SPORTS, "Dan", 3.5f, 29.99f, false, 0f);
+        
+        GameTester tester1 = new GameTester(1, "gametester1@gmail.com", "Pass1");
+        GameTester tester2 = new GameTester(2, "gametester2@gmail.com", "Pass2");
+        GameTester tester3 = new GameTester(3, "gametester3@gmail.com", "Pass3");
+        GameTester tester4 = new GameTester(4, "gametester4@gmail.com", "Pass4");
+        GameTester tester5 = new GameTester(5, "gametester5@gmail.com", "Pass5");
+        
+        GameInDevelopment gameInDev1 = new GameInDevelopment("Developing Game 1","fun game", Genre.RPG, "Bob", "0.10.10");
+        GameInDevelopment gameInDev2 = new GameInDevelopment("Developing Game 2","not a fun game", Genre.INDIE, "Dude", "1.0.0");
+        GameInDevelopment gameInDev3 = new GameInDevelopment("Developing Game 3","????", Genre.CASUAL, "Blazzard", "0.1.2");
+        GameInDevelopment gameInDev4 = new GameInDevelopment("Developing Game 4","fun game", Genre.RPG, "Bobby", "0.3.5");
+        GameInDevelopment gameInDev5 = new GameInDevelopment("Developing Game 5","fun game", Genre.SIMULATION, "bobb", "0.3.5");
+        
+        insertNewCustomer(customer1);
+        insertNewCustomer(customer2);
+        insertNewCustomer(customer3);
+        insertNewCustomer(customer4);
+        insertNewCustomer(customer5);
+        
+        insertNewGameTester(tester1);
+        insertNewGameTester(tester2);
+        insertNewGameTester(tester3);
+        insertNewGameTester(tester4);
+        insertNewGameTester(tester5);
+        
+        insertNewPurchasableGame(game1);
+        insertNewPurchasableGame(game2);
+        insertNewPurchasableGame(game3);
+        insertNewPurchasableGame(game4);
+        insertNewPurchasableGame(game5);
+        
+        insertNewGameInDevelopment(gameInDev1);
+        insertNewGameInDevelopment(gameInDev2);
+        insertNewGameInDevelopment(gameInDev3);
+        insertNewGameInDevelopment(gameInDev4);
+        insertNewGameInDevelopment(gameInDev5);
+        
+        insertNewOwnsGame(new Playtime(customer1, game1, 5.2f));
+        insertNewOwnsGame(new Playtime(customer2, game2, 5.2f));
+        insertNewOwnsGame(new Playtime(customer3, game3, 5.2f));
+        insertNewOwnsGame(new Playtime(customer4, game4, 5.2f));
+        insertNewOwnsGame(new Playtime(customer5, game5, 5.2f));
     }
 
     private static void dropTableIfExists(Connection con, String aTableName) {
@@ -177,6 +310,20 @@ final class InitializeDatabase {
         }
     }
     
+    private static void insertNewCustomer(Customer aCustomer) throws SQLException {
+    	fInsertCustomerStatement.setInt(1, aCustomer.getUserId());
+    	fInsertCustomerStatement.setString(2, aCustomer.getEmail());
+    	fInsertCustomerStatement.setString(3, aCustomer.getPassword());
+    	fInsertCustomerStatement.executeUpdate();
+    }
+    
+    private static void insertNewGameTester(GameTester aGameTester) throws SQLException {
+    	fInsertGameTesterStatement.setInt(1, aGameTester.getUserId());
+    	fInsertGameTesterStatement.setString(2, aGameTester.getEmail());
+    	fInsertGameTesterStatement.setString(3, aGameTester.getPassword());
+    	fInsertGameTesterStatement.executeUpdate();
+    }
+    
     private static void insertNewPurchasableGame(FinalizedGame aPurchasableGame) throws SQLException {
         fInsertGameStatement.setString(1, aPurchasableGame.getName());
         fInsertGameStatement.setString(2, aPurchasableGame.getDescription());
@@ -188,6 +335,54 @@ final class InitializeDatabase {
         fInsertGameStatement.setFloat(8, aPurchasableGame.getDiscountPercentage());
         fInsertGameStatement.executeUpdate();
     }
+    
+    private static void insertNewGameInDevelopment(GameInDevelopment aGameInDevelopment) throws SQLException {
+    	fInsertGameInDevelopmentStatement.setString(1, aGameInDevelopment.getName());
+    	fInsertGameInDevelopmentStatement.setString(2, aGameInDevelopment.getDescription());
+    	fInsertGameInDevelopmentStatement.setString(3, aGameInDevelopment.getGenre().name());
+    	fInsertGameInDevelopmentStatement.setString(4, aGameInDevelopment.getDeveloper());
+    	fInsertGameInDevelopmentStatement.setString(5, aGameInDevelopment.getVersion());
+    	fInsertGameInDevelopmentStatement.executeUpdate();
+    }
+    
+    /*
+    private static void insertNewCreditCard(CreditCard aCreditCard) throws SQLException {
+    	fInsertCreditCardStatement.setInt(1, aCreditCard.//getCardNum());
+    	fInsertCreditCardStatement.setString(2, aCreditCard.//getaddress);
+    	fInsertCreditCardStatement.setInt(3, aCreditCard.//getCCV());
+    	fInsertCreditCardStatement.setInt(4, aCreditCard.getUser().getUserId());
+    	fInsertCreditCardStatement.executeUpdate();
+    }*/
+    
+    private static void insertNewOwnsGame(Playtime aPlaytime) throws SQLException {
+    	fInsertOwnsGameStatement.setInt(1, aPlaytime.getUser().getUserId());
+    	fInsertOwnsGameStatement.setString(2, aPlaytime.getGame().getName());
+    	fInsertOwnsGameStatement.setFloat(3, aPlaytime.getHoursSpent());
+    	fInsertOwnsGameStatement.executeUpdate();
+    }
+    
+    /*
+    private static void insertNewTransaction(Transaction aTransaction) throws SQLException {
+    	fInsertTransactionStatement.setInt(1, aTransaction.getUser().getUserId());
+    	fInsertTransactionStatement.setString(2, aTransaction.getGame().getGameName());
+    	fInsertTransactionStatement.setInt(3, aTransaction.//getCreditCard().getCardNum());
+    	fInsertTransactionStatement.setDate(4, aTransaction.//getDate());
+    	fInsertTransactionStatement.executeUpdate();
+    }*/
+    
+    /* The GameTesterFeedback Class uses user email but should be user id?
+     * 
+    private static void insertNewFeedback(GameTesterFeedback aFeedback) throws SQLException {
+    	java.sql.Date tempDate;
+    	fInsertFeedbackStatement.setInt(1, aFeedback.getTester().getUserId());
+    	fInsertFeedbackStatement.setString(2, aFeedback.getGame().getName());
+    	tempDate = new java.sql.Date(aFeedback.getDate().getTime());
+    	fInsertFeedbackStatement.setDate(3, tempDate);
+    	fInsertFeedbackStatement.setFloat(4, aFeedback.getRating());
+    	fInsertFeedbackStatement.setString(5, aFeedback.getFeedback());
+    	fInsertFeedbackStatement.executeUpdate();
+    }
+    */
     
     public static void main(String[] args) {
         try {
