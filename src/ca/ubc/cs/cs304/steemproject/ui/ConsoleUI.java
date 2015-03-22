@@ -146,27 +146,67 @@ public class ConsoleUI implements ActionListener {
 	
 	public void selQueryAction() {
 		// TODO Auto-generated method stub
+		String searchItem = inputField.getText().trim();
+		
+		try {
+			 
+		}
+		catch (Exception X) {
+			
+		}
+		
+		inputField.setText("");
 	}
 	
 	public void projQueryAction() {
 		// TODO Auto-generated method stub
+		String searchItem = inputField.getText().trim();
+		
+		try {
+			 
+		}
+		catch (Exception X) {
+			
+		}
+		
+		inputField.setText("");
 	}
 	
 	public void joinQueryAction() {
 		// TODO Auto-generated method stub
+		String searchItem = inputField.getText().trim();
+		
+		try {
+			 
+		}
+		catch (Exception X) {
+			
+		}
+		
+		inputField.setText("");
 	}
 	
 	public void divQueryAction() {
 		// TODO Auto-generated method stub
-	}
-	
-	public void findAction() {
-		// TODO Auto-generated method stub
+		String searchItem = inputField.getText().trim();
+		
+		try {
+			 
+		}
+		catch (Exception X) {
+			
+		}
+		
+		inputField.setText("");
 	}
 	
 	public void clearAction() {
 		inputField.setText("");
 		radioGroup.clearSelection();
+	}
+	
+	public void findAction() {
+		// TODO Auto-generated method stub
 	}
 }
    
