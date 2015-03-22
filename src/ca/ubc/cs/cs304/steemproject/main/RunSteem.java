@@ -1,12 +1,7 @@
 package ca.ubc.cs.cs304.steemproject.main;
 
-import java.util.Observable;
-import java.util.Observer;
-
 import javax.swing.*;
 import java.sql.*;
-import java.awt.*;
-import java.awt.event.*;
 
 import org.apache.log4j.Logger;
 
@@ -15,7 +10,7 @@ import ca.ubc.cs.cs304.steemproject.ui.ConsoleUI;
 
 
 
-public class RunSteem extends JFrame{
+public class RunSteem {
     
 	public final static Logger log = Logger.getLogger(RunSteem.class);
 	

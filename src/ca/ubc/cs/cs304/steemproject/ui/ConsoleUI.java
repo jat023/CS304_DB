@@ -3,39 +3,27 @@ package ca.ubc.cs.cs304.steemproject.ui;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.sql.*;
 
 public class ConsoleUI implements ActionListener {
 
-	private static final long serialVersionUID = 1L;
+	Statement state;
+	ResultSet result;
 	
-	// Global variables for use for building and querying from UI
-	private JLabel userLabel = new JLabel("User");
-	private JLabel emailLabel = new JLabel("Email");
-	private JLabel passwordLabel = new JLabel("Password");		
-	private JLabel gameLabel = new JLabel("Game");
-	private JLabel descriptionLabel = new JLabel("Description");
-	private JLabel genreLabel = new JLabel("Genre");
-	private JLabel publisherLabel = new JLabel("Publisher");
-	
-	private JTextField userIDTextfield = new JTextField(30);
-	private JTextField userEmailTextfield = new JTextField(30);
-	private JTextField passwordTextfield = new JTextField(30);
-	private JTextField gameTextfield = new JTextField(30);
-	private JTextField descriptionTextfield = new JTextField(30);
-	private JTextField genreTextfield = new JTextField(30);
-	private JTextField publisherTextfield = new JTextField(30);
-	
-		// these may or may not get used
-	private JButton next = new JButton("Next");
-	private JButton prev = new JButton("Previous");
-	private JButton first = new JButton("First");
-	private JButton last = new JButton("Last");
-	
-	private JButton update = new JButton("Update");
-	private JButton delete = new JButton("Delete");
+	// Global variables for use for building and querying from UI	
+	private JTextArea inputField = new JTextArea(5, 20);
+	private ButtonGroup radioGroup = new ButtonGroup();
+	private JRadioButton update = new JRadioButton("Update");
+	private JRadioButton delete = new JRadioButton("Delete");
+	private JRadioButton selQuery = new JRadioButton("SELECT");
+	private JRadioButton projQuery = new JRadioButton("PROJECT");
+	private JRadioButton joinQuery = new JRadioButton("JOIN");
+	private JRadioButton divQuery = new JRadioButton("DIVIDE");
+	/*
 	private JButton save = new JButton("Save");
 	private JButton newW = new JButton("New");
 	private JButton find = new JButton("Find");
+	*/
 	private JButton clear = new JButton("Clear");
 	
 	
@@ -49,43 +37,63 @@ public class ConsoleUI implements ActionListener {
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel BG = new JPanel();
-		BG.setLayout(new BorderLayout(5,5));
 		
+		// sets layout and buttons of our GUI panel
+		BG.setLayout(new BorderLayout(5,5));
 		BG.add(initButtons(), BorderLayout.SOUTH);
-		BG.add(initLabels(), BorderLayout.NORTH);
 		BG.add(initTextfields(), BorderLayout.CENTER);
+		
+		// groups the radio buttons together (for clearing purposes)
+		radioGroup.add(update);
+		radioGroup.add(delete);
+		radioGroup.add(selQuery);
+		radioGroup.add(projQuery);
+		radioGroup.add(divQuery);
+		radioGroup.add(joinQuery);
+		
+		// Sets scroll for the text field (if the query ever gets that long)
+		JScrollPane scrollPane = new JScrollPane(inputField);
+		BG.setPreferredSize(new Dimension(200,200));
+		BG.add(scrollPane, BorderLayout.CENTER);
+		inputField.setLineWrap(true);
 
 		mainWindow.add(BG);
 		mainWindow.setVisible(true);
 	}
 
 	/*
-	 * Initializes all JButtons for adding to the main UI frame
+	 * Initializes all JButton and JRadioButtons for adding to the main UI frame
+	 * Adds action listeners for JButtons and JRadioButtons
 	 */
 	public JPanel initButtons() {
 		JPanel BG = new JPanel();
 		
-		BG.add(next);
-		BG.add(prev);
-		BG.add(first);
-		BG.add(last);
 		BG.add(clear);
+		/*
 		BG.add(find);
 		BG.add(newW);
 		BG.add(save);
+		*/
 		BG.add(update);
 		BG.add(delete);
+		BG.add(selQuery);
+		BG.add(projQuery);
+		BG.add(joinQuery);
+		BG.add(divQuery);
 		
-		next.addActionListener(this);
-		prev.addActionListener(this);
-		first.addActionListener(this);
-		last.addActionListener(this);
+		
 		clear.addActionListener(this);
+		/*
 		find.addActionListener(this);
 		newW.addActionListener(this);
 		save.addActionListener(this);
+		*/
 		update.addActionListener(this);
 		delete.addActionListener(this);
+		selQuery.addActionListener(this);
+		projQuery.addActionListener(this);
+		joinQuery.addActionListener(this);
+		divQuery.addActionListener(this);
 		
 		return BG;
 	}
@@ -95,15 +103,7 @@ public class ConsoleUI implements ActionListener {
 	 */
 	public JPanel initTextfields() {
 		JPanel BG = new JPanel();	
-		
-		BG.add(userIDTextfield);
-		BG.add(userEmailTextfield);
-		BG.add(passwordTextfield);
-		BG.add(gameTextfield);
-		BG.add(descriptionTextfield);
-		BG.add(genreTextfield);
-		BG.add(publisherTextfield);
-		
+		BG.add(inputField);
 		return BG;
 	}
 	
@@ -112,15 +112,6 @@ public class ConsoleUI implements ActionListener {
 	 */
 	public JPanel initLabels() {
 		JPanel BG = new JPanel();
-		
-		BG.add(userLabel);
-		BG.add(emailLabel);
-		BG.add(passwordLabel);
-		BG.add(gameLabel);
-		BG.add(descriptionLabel);
-		BG.add(genreLabel);
-		BG.add(publisherLabel);
-		
 		return BG;
 	}
 	
@@ -130,27 +121,42 @@ public class ConsoleUI implements ActionListener {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+		Object source = e.getSource();
+		
+		if (source == update) { updateAction(); }
+		if (source == delete) { deleteAction(); }
+		if (source == selQuery) { selQueryAction(); }
+		if (source == projQuery) { projQueryAction(); }
+		if (source == joinQuery) { joinQueryAction(); }
+		if (source == divQuery) { divQueryAction(); }
+		if (source == clear) { clearAction(); }
 	}
 	
-	public void udpateAction() {
-		/*
-		 try {
-			 RESULT.updateInt("ID", Integer.parseInt(userIDTextfield.getUserID()));
-			 RESULT.updateString("Email", userEmailTextfield.getEmail());
-			 RESULT.updateString("Password", passwordTextfield.getPassword());
-			 */
-	}
+//------------------------------------------------------------------------------------
+//------------ Action functions for Queries ------------------------------------------	
+//------------------------------------------------------------------------------------
 	
-	public void saveAction() {
-		// TODO Auto-generated method stub
+	public void updateAction() {
+		// TODO Auto_generated method stub
 	}
 	
 	public void deleteAction() {
 		// TODO Auto-generated method stub
 	}
 	
-	public void newAction() {
+	public void selQueryAction() {
+		// TODO Auto-generated method stub
+	}
+	
+	public void projQueryAction() {
+		// TODO Auto-generated method stub
+	}
+	
+	public void joinQueryAction() {
+		// TODO Auto-generated method stub
+	}
+	
+	public void divQueryAction() {
 		// TODO Auto-generated method stub
 	}
 	
@@ -159,8 +165,8 @@ public class ConsoleUI implements ActionListener {
 	}
 	
 	public void clearAction() {
-		// TODO Auto-generated method stub
+		inputField.setText("");
+		radioGroup.clearSelection();
 	}
-	
 }
    
