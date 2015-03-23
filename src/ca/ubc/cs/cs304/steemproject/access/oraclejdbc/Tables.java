@@ -1,4 +1,4 @@
-package ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc;
+package ca.ubc.cs.cs304.steemproject.access.oraclejdbc;
 
 final class Tables {
 

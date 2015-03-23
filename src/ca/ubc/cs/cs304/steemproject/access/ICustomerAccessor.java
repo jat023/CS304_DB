@@ -1,4 +1,4 @@
-package ca.ubc.cs.cs304.steemproject.access.service;
+package ca.ubc.cs.cs304.steemproject.access;
 
 import java.util.Date;
 import java.util.List;

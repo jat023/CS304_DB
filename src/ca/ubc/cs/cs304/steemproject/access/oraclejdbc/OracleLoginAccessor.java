@@ -1,18 +1,18 @@
-package ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc;
+package ca.ubc.cs.cs304.steemproject.access.oraclejdbc;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
-import ca.ubc.cs.cs304.steemproject.access.exception.InternalConnectionException;
-import ca.ubc.cs.cs304.steemproject.access.exception.PasswordIncorrectException;
-import ca.ubc.cs.cs304.steemproject.access.exception.UserNotExistsException;
-import ca.ubc.cs.cs304.steemproject.access.service.ILoginAccessor;
-import ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc.connection.SteemOracleDbConnector;
+import ca.ubc.cs.cs304.steemproject.access.ILoginAccessor;
+import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.connection.SteemOracleDbConnector;
 import ca.ubc.cs.cs304.steemproject.base.IUser;
 import ca.ubc.cs.cs304.steemproject.base.development.GameTester;
 import ca.ubc.cs.cs304.steemproject.base.released.Customer;
+import ca.ubc.cs.cs304.steemproject.exception.InternalConnectionException;
+import ca.ubc.cs.cs304.steemproject.exception.PasswordIncorrectException;
+import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
 
 public final class OracleLoginAccessor implements ILoginAccessor {
 

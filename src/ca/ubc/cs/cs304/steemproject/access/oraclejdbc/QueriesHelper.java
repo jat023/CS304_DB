@@ -1,4 +1,4 @@
-package ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc;
+package ca.ubc.cs.cs304.steemproject.access.oraclejdbc;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -6,10 +6,10 @@ import java.sql.Statement;
 
 import org.apache.log4j.Logger;
 
-import ca.ubc.cs.cs304.steemproject.access.exception.UserNotExistsException;
-import ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc.connection.SteemOracleDbConnector;
+import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.connection.SteemOracleDbConnector;
 import ca.ubc.cs.cs304.steemproject.base.IUser;
 import ca.ubc.cs.cs304.steemproject.base.released.Customer;
+import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
 
 
 final class QueriesHelper {

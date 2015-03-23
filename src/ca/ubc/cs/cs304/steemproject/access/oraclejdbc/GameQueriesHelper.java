@@ -1,4 +1,4 @@
-package ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc;
+package ca.ubc.cs.cs304.steemproject.access.oraclejdbc;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -7,8 +7,8 @@ import java.util.Collection;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
-import ca.ubc.cs.cs304.steemproject.access.service.options.GameSortByOption;
-import ca.ubc.cs.cs304.steemproject.access.service.options.SortDirection;
+import ca.ubc.cs.cs304.steemproject.access.options.GameSortByOption;
+import ca.ubc.cs.cs304.steemproject.access.options.SortDirection;
 
 final class GameQueriesHelper {
     

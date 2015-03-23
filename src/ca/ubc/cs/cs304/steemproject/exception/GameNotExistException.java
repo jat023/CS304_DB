@@ -1,4 +1,4 @@
-package ca.ubc.cs.cs304.steemproject.access.exception;
+package ca.ubc.cs.cs304.steemproject.exception;
 
 public class GameNotExistException extends Exception {
 

@@ -1,4 +1,4 @@
-package ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc;
+package ca.ubc.cs.cs304.steemproject.access.oraclejdbc;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,15 +7,15 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import ca.ubc.cs.cs304.steemproject.access.exception.UserNotExistsException;
-import ca.ubc.cs.cs304.steemproject.access.service.IPublicAccessor;
-import ca.ubc.cs.cs304.steemproject.access.service.options.GameSortByOption;
-import ca.ubc.cs.cs304.steemproject.access.service.options.SortDirection;
+import ca.ubc.cs.cs304.steemproject.access.IPublicAccessor;
+import ca.ubc.cs.cs304.steemproject.access.options.GameSortByOption;
+import ca.ubc.cs.cs304.steemproject.access.options.SortDirection;
 import ca.ubc.cs.cs304.steemproject.base.Genre;
 import ca.ubc.cs.cs304.steemproject.base.IUser;
 import ca.ubc.cs.cs304.steemproject.base.released.Customer;
 import ca.ubc.cs.cs304.steemproject.base.released.FinalizedGame;
 import ca.ubc.cs.cs304.steemproject.base.released.Playtime;
+import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
 
 public final class OraclePublicAccessor implements IPublicAccessor {
 

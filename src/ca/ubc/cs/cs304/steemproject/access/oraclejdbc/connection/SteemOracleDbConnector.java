@@ -1,4 +1,4 @@
-package ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc.connection;
+package ca.ubc.cs.cs304.steemproject.access.oraclejdbc.connection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
-import ca.ubc.cs.cs304.steemproject.access.exception.InternalConnectionException;
+import ca.ubc.cs.cs304.steemproject.exception.InternalConnectionException;
 
 public class SteemOracleDbConnector {
 

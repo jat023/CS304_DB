@@ -1,9 +1,9 @@
-package ca.ubc.cs.cs304.steemproject.access.service;
+package ca.ubc.cs.cs304.steemproject.access;
 
-import ca.ubc.cs.cs304.steemproject.access.exception.PasswordIncorrectException;
-import ca.ubc.cs.cs304.steemproject.access.exception.UserNotExistsException;
 import ca.ubc.cs.cs304.steemproject.base.development.GameTester;
 import ca.ubc.cs.cs304.steemproject.base.released.Customer;
+import ca.ubc.cs.cs304.steemproject.exception.PasswordIncorrectException;
+import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
 
 public interface ILoginAccessor {
     

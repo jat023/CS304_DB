@@ -1,15 +1,15 @@
-package ca.ubc.cs.cs304.steemproject.access.service;
+package ca.ubc.cs.cs304.steemproject.access;
 
 import java.util.Date;
 import java.util.List;
 
-import ca.ubc.cs.cs304.steemproject.access.exception.GameNotExistException;
-import ca.ubc.cs.cs304.steemproject.access.exception.UserNotExistsException;
-import ca.ubc.cs.cs304.steemproject.access.service.options.GameSortByOption;
-import ca.ubc.cs.cs304.steemproject.access.service.options.SortDirection;
+import ca.ubc.cs.cs304.steemproject.access.options.GameSortByOption;
+import ca.ubc.cs.cs304.steemproject.access.options.SortDirection;
 import ca.ubc.cs.cs304.steemproject.base.development.GameInDevelopment;
 import ca.ubc.cs.cs304.steemproject.base.development.GameTester;
 import ca.ubc.cs.cs304.steemproject.base.development.GameTesterFeedback;
+import ca.ubc.cs.cs304.steemproject.exception.GameNotExistException;
+import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
 
 public interface IGameTesterAccessor {
 

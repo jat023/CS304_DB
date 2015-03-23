@@ -1,4 +1,4 @@
-package ca.ubc.cs.cs304.steemproject.access.service.options;
+package ca.ubc.cs.cs304.steemproject.access.options;
 
 public enum GameSortByOption {
 

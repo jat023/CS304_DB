@@ -1,4 +1,4 @@
-package ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc;
+package ca.ubc.cs.cs304.steemproject.access.oraclejdbc;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,18 +10,18 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import ca.ubc.cs.cs304.steemproject.access.exception.GameNotExistException;
-import ca.ubc.cs.cs304.steemproject.access.exception.InternalConnectionException;
-import ca.ubc.cs.cs304.steemproject.access.exception.UserNotExistsException;
-import ca.ubc.cs.cs304.steemproject.access.service.IGameTesterAccessor;
-import ca.ubc.cs.cs304.steemproject.access.service.options.GameSortByOption;
-import ca.ubc.cs.cs304.steemproject.access.service.options.SortDirection;
-import ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc.connection.SteemOracleDbConnector;
+import ca.ubc.cs.cs304.steemproject.access.IGameTesterAccessor;
+import ca.ubc.cs.cs304.steemproject.access.options.GameSortByOption;
+import ca.ubc.cs.cs304.steemproject.access.options.SortDirection;
+import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.connection.SteemOracleDbConnector;
 import ca.ubc.cs.cs304.steemproject.base.Genre;
 import ca.ubc.cs.cs304.steemproject.base.IUser;
 import ca.ubc.cs.cs304.steemproject.base.development.GameInDevelopment;
 import ca.ubc.cs.cs304.steemproject.base.development.GameTester;
 import ca.ubc.cs.cs304.steemproject.base.development.GameTesterFeedback;
+import ca.ubc.cs.cs304.steemproject.exception.GameNotExistException;
+import ca.ubc.cs.cs304.steemproject.exception.InternalConnectionException;
+import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
 
 public class OracleGameTesterAccessor implements IGameTesterAccessor {
 

@@ -1,9 +1,9 @@
-package ca.ubc.cs.cs304.steemproject.access.service;
+package ca.ubc.cs.cs304.steemproject.access;
 
-import ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc.OracleCustomerAccessor;
-import ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc.OracleGameTesterAccessor;
-import ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc.OracleLoginAccessor;
-import ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc.OraclePublicAccessor;
+import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.OracleCustomerAccessor;
+import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.OracleGameTesterAccessor;
+import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.OracleLoginAccessor;
+import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.OraclePublicAccessor;
 
 public class Accessors {
     
