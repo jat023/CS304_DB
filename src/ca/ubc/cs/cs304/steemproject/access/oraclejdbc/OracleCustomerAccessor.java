@@ -3,6 +3,7 @@ package ca.ubc.cs.cs304.steemproject.access.oraclejdbc;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 import java.util.List;
 
@@ -21,17 +22,17 @@ import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
 public class OracleCustomerAccessor implements ICustomerAccessor {
 
     private static final Logger log = Logger.getLogger(OracleCustomerAccessor.class);
-    
+
     private static OracleCustomerAccessor fInstance;
 
     private final PreparedStatement fRetrieveCreditCardsSQL;
     private final PreparedStatement fDeleteCreditCardSQL;
     private final PreparedStatement fListTransactionHistorySQL;
-    
+
     private OracleCustomerAccessor() {
-        
+
         Connection con = SteemOracleDbConnector.getDefaultConnection();
-        
+
         try {
             fRetrieveCreditCardsSQL = con.prepareStatement("SELECT * FROM " +Tables.CREDIT_CARD_TABLENAME+ " WHERE " +Tables.USER_ATTR_USERID+ "=?");
             fDeleteCreditCardSQL = con.prepareStatement("DELETE FROM " +Tables.CREDIT_CARD_TABLENAME+ " WHERE " +Tables.CREDIT_CARD_ATTR_CARDNUM+ "=?");
@@ -42,9 +43,9 @@ public class OracleCustomerAccessor implements ICustomerAccessor {
             log.error("Failed to prepare statements.", e);
             throw new InternalConnectionException("Failed to prepare statements.", e);
         }
-        
+
     }
-    
+
     public static OracleCustomerAccessor getInstance() {
         if (fInstance == null) {
             fInstance = new OracleCustomerAccessor();
@@ -60,20 +61,42 @@ public class OracleCustomerAccessor implements ICustomerAccessor {
 
     @Override
     public void deleteCreditCard(CreditCard aCreditCard) throws UserNotExistsException {
-        // TODO Auto-generated method stub
-        
+        try {
+            if (QueriesHelper.userExists(aCreditCard.getCardOwner().getUserId(), Tables.CUSTOMER_TABLENAME)) {
+                
+                String deletionSQL = "DELETE FROM " +Tables.CREDIT_CARD_TABLENAME+ " WHERE " +Tables.CREDIT_CARD_ATTR_CARDNUM+ "=" +aCreditCard.getCardNumber();
+                Statement stmt = SteemOracleDbConnector.getDefaultConnection().createStatement();
+                stmt.execute(deletionSQL);
+                
+            } else {
+                throw new UserNotExistsException();
+            }
+        } catch (SQLException e) {
+            log.error("Could not delete credit card.", e);
+            throw new InternalConnectionException("Could not delete credit card.", e);
+        }
     }
 
     @Override
     public void addNewCreditCard(CreditCard aCreditCard) throws UserNotExistsException {
-        // TODO Auto-generated method stub
-        
+        try {
+            if (QueriesHelper.userExists(aCreditCard.getCardOwner().getUserId(), Tables.CUSTOMER_TABLENAME)) {
+                
+                Inserts.insertCreditCard(aCreditCard);
+                
+            } else {
+                throw new UserNotExistsException();
+            }
+        } catch (SQLException e) {
+            log.error("Could not add credit card.", e);
+            throw new InternalConnectionException("Could not add credit card.", e);
+        }
     }
 
     @Override
     public void purchaseGame(Customer aCustomer, CreditCard aCreditCard, FinalizedGame aFinalizedGame) throws UserNotExistsException, GameNotExistException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
