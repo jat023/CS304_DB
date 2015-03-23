@@ -1,5 +1,6 @@
 package ca.ubc.cs.cs304.steemproject.access.service;
 
+import ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc.OracleCustomerAccessor;
 import ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc.OracleGameTesterAccessor;
 import ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc.OracleLoginAccessor;
 import ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc.OraclePublicAccessor;
@@ -18,4 +19,7 @@ public class Accessors {
         return OracleGameTesterAccessor.getInstance();
     }
 
+    public ICustomerAccessor getCustomerAccessor() {
+        return OracleCustomerAccessor.getInstance();
+    }
 }

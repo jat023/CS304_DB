@@ -39,18 +39,18 @@ public class OracleGameTesterAccessor implements IGameTesterAccessor {
 
     private static OracleGameTesterAccessor fInstance;
 
-    private final PreparedStatement fRetrieveTestsQuery;
-    private final PreparedStatement fRetrieveGameQuery;
+    private final PreparedStatement fRetrieveTestsSQL;
+    private final PreparedStatement fRetrieveGameSQL;
 
     private OracleGameTesterAccessor() {
         try {
-            fRetrieveTestsQuery = SteemOracleDbConnector.getDefaultConnection().prepareStatement(
-                    "SELECT * FROM " +Tables.FEEDBACK_TABLENAME+ " WHERE " +Tables.FEEDBACK_ATTR_TIME+ " BETWEEN ? AND ? GROUP BY " + Tables.FEEDBACK_ATTR_TIME + " ASC");
-            fRetrieveGameQuery = SteemOracleDbConnector.getDefaultConnection().prepareStatement(
+            fRetrieveTestsSQL = SteemOracleDbConnector.getDefaultConnection().prepareStatement(
+                    "SELECT * FROM " +Tables.FEEDBACK_TABLENAME+ " WHERE " +Tables.FEEDBACK_ATTR_TIME+ " BETWEEN ? AND ? ORDER BY " + Tables.FEEDBACK_ATTR_TIME + " ASC");
+            fRetrieveGameSQL = SteemOracleDbConnector.getDefaultConnection().prepareStatement(
                     "SELECT * FROM " +Tables.DEVELOPMENT_GAMETABLENAME+ " WHERE " +Tables.GAME_ATTR_NAME+ "=?");
         } catch (SQLException e) {
-            log.error("Failed to prepare statement.", e);
-            throw new InternalConnectionException("Failed to prepare statement.", e);
+            log.error("Failed to prepare statements.", e);
+            throw new InternalConnectionException("Failed to prepare statements.", e);
         }
     }
 
@@ -134,9 +134,9 @@ public class OracleGameTesterAccessor implements IGameTesterAccessor {
         ResultSet results;
 
         try {
-            fRetrieveTestsQuery.setDate(1, new java.sql.Date(afterThisDate.getTime()));
-            fRetrieveTestsQuery.setDate(2, new java.sql.Date(beforeThisDate.getTime()));
-            results = fRetrieveTestsQuery.executeQuery();
+            fRetrieveTestsSQL.setDate(1, new java.sql.Date(afterThisDate.getTime()));
+            fRetrieveTestsSQL.setDate(2, new java.sql.Date(beforeThisDate.getTime()));
+            results = fRetrieveTestsSQL.executeQuery();
         } catch (SQLException e) {
             log.error("Could not execute query.", e);
             throw new InternalConnectionException("Could not execute query.", e);
@@ -179,8 +179,8 @@ public class OracleGameTesterAccessor implements IGameTesterAccessor {
         ResultSet results;
         
         try {
-            fRetrieveGameQuery.setString(1, nameOfGame);
-            results = fRetrieveGameQuery.executeQuery();
+            fRetrieveGameSQL.setString(1, nameOfGame);
+            results = fRetrieveGameSQL.executeQuery();
         } catch (SQLException e) {
             log.error("Could not execute query.", e);
             throw new InternalConnectionException("Could not execute query.", e);
