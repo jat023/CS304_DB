@@ -6,24 +6,19 @@ import java.util.Date;
 public class GameTesterFeedback {
     
     private final GameInDevelopment fGameInDevelopment;
-    private final String fGameTesterEmail;
-    //private final GameTester fGameTester;
+    private final GameTester fGameTester;
     private final Date fDate;
     private final float fRating;
     private final String fFeedback;
     
-    public GameTesterFeedback(GameInDevelopment aGameInDevelopment, String aGameTesterEmail, Date aDate, float aRating, String aFeedback) {
+    public GameTesterFeedback(GameInDevelopment aGameInDevelopment, GameTester aGameTester, Date aDate, float aRating, String aFeedback) {
         
         if (aGameInDevelopment == null) {
             throw new IllegalArgumentException("Game in development cannot be null.");
         }
-        
-        if (aGameTesterEmail == null) {
+        if (aGameTester == null) {
             throw new IllegalArgumentException("Game tester cannot be null.");
         }
-        /*if (aGameTester == null) {
-            throw new IllegalArgumentException("Game tester cannot be null.");
-        }*/
         if (aDate == null) {
             throw new IllegalArgumentException("Date cannot be null.");
         }
@@ -31,8 +26,7 @@ public class GameTesterFeedback {
             throw new IllegalArgumentException("Feedback cannot be null.");
         }
         
-        //fGameTester = aGameTester;
-        fGameTesterEmail = aGameTesterEmail;
+        fGameTester = aGameTester;
         fGameInDevelopment = aGameInDevelopment;
         fDate = aDate;
         fRating = aRating;
@@ -44,13 +38,8 @@ public class GameTesterFeedback {
         return fGameInDevelopment;
     }
     
-    /*
     public GameTester getTester() {
         return fGameTester;
-    }*/
-    
-    public String getTesterEmail() {
-        return fGameTesterEmail;
     }
     
     public Date getDate() {

@@ -1,6 +1,5 @@
 package ca.ubc.cs.cs304.steemproject.access.service;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -43,8 +42,8 @@ public interface IGameTesterAccessor {
 
     /**
      * Query for list of ratings and feedbacks of a specific game between within a certain time
-     * interval (inclusive), submitted by any game tester, grouped by month and sorted by time
+     * interval (inclusive), submitted by any game tester, sorted in chronological order.
      */
-    public Collection<GameTesterFeedback> collectFeedback(Date afterThisDate, Date beforeThisDate);
+    public List<GameTesterFeedback> collectFeedback(Date afterThisDate, Date beforeThisDate);
     
 }

@@ -19,6 +19,7 @@ import ca.ubc.cs.cs304.steemproject.access.service.options.GameSortByOption;
 import ca.ubc.cs.cs304.steemproject.access.service.options.SortDirection;
 import ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc.connection.SteemOracleDbConnector;
 import ca.ubc.cs.cs304.steemproject.base.Genre;
+import ca.ubc.cs.cs304.steemproject.base.IUser;
 import ca.ubc.cs.cs304.steemproject.base.development.GameInDevelopment;
 import ca.ubc.cs.cs304.steemproject.base.development.GameTester;
 import ca.ubc.cs.cs304.steemproject.base.development.GameTesterFeedback;
@@ -38,13 +39,13 @@ public class OracleGameTesterAccessor implements IGameTesterAccessor {
 
     private static OracleGameTesterAccessor fInstance;
 
-    private final PreparedStatement fPreparedTestQuery;
+    private final PreparedStatement fRetrieveTestsQuery;
     private final PreparedStatement fRetrieveGameQuery;
 
     private OracleGameTesterAccessor() {
         try {
-            fPreparedTestQuery = SteemOracleDbConnector.getDefaultConnection().prepareStatement(
-                    "SELECT * FROM " +Tables.FEEDBACK_TABLENAME+ " WHERE " +Tables.FEEDBACK_ATTR_TIME+ " BETWEEN ? AND ? GROUP BY ");
+            fRetrieveTestsQuery = SteemOracleDbConnector.getDefaultConnection().prepareStatement(
+                    "SELECT * FROM " +Tables.FEEDBACK_TABLENAME+ " WHERE " +Tables.FEEDBACK_ATTR_TIME+ " BETWEEN ? AND ? GROUP BY " + Tables.FEEDBACK_ATTR_TIME + " ASC");
             fRetrieveGameQuery = SteemOracleDbConnector.getDefaultConnection().prepareStatement(
                     "SELECT * FROM " +Tables.DEVELOPMENT_GAMETABLENAME+ " WHERE " +Tables.GAME_ATTR_NAME+ "=?");
         } catch (SQLException e) {
@@ -123,7 +124,7 @@ public class OracleGameTesterAccessor implements IGameTesterAccessor {
     }
 
     @Override
-    public Collection<GameTesterFeedback> collectFeedback(Date afterThisDate, Date beforeThisDate) {
+    public List<GameTesterFeedback> collectFeedback(Date afterThisDate, Date beforeThisDate) {
 
         if (afterThisDate == null || beforeThisDate == null) {
             log.error("Date parameters cannot be null.");
@@ -133,9 +134,9 @@ public class OracleGameTesterAccessor implements IGameTesterAccessor {
         ResultSet results;
 
         try {
-            fPreparedTestQuery.setDate(1, new java.sql.Date(afterThisDate.getTime()));
-            fPreparedTestQuery.setDate(2, new java.sql.Date(beforeThisDate.getTime()));
-            results = fPreparedTestQuery.executeQuery();
+            fRetrieveTestsQuery.setDate(1, new java.sql.Date(afterThisDate.getTime()));
+            fRetrieveTestsQuery.setDate(2, new java.sql.Date(beforeThisDate.getTime()));
+            results = fRetrieveTestsQuery.executeQuery();
         } catch (SQLException e) {
             log.error("Could not execute query.", e);
             throw new InternalConnectionException("Could not execute query.", e);
@@ -149,9 +150,13 @@ public class OracleGameTesterAccessor implements IGameTesterAccessor {
 
                 GameInDevelopment game = retrieveGameInDevelopment(results.getString(Tables.GAME_ATTR_NAME));
                 
+                IUser user = QueriesHelper.retrieveUser(results.getInt(Tables.USER_ATTR_USERID), Tables.GAME_TESTER_TABLENAME);
+                
+                GameTester tester = new GameTester(user.getUserId(), user.getEmail(), user.getPassword());
+                
                 feedbacks.add(new GameTesterFeedback(
                         game, 
-                        results.getString(Tables.USER_ATTR_EMAIL), 
+                        tester,
                         results.getTimestamp(Tables.FEEDBACK_ATTR_TIME), 
                         results.getFloat(Tables.FEEDBACK_ATTR_RATING), 
                         results.getString(Tables.FEEDBACK_ATTR_FEEDBACK)));
@@ -163,6 +168,8 @@ public class OracleGameTesterAccessor implements IGameTesterAccessor {
         } catch (GameNotExistException e) {
             log.error("Game not found.", e);
             throw new RuntimeException(e);
+        } catch (UserNotExistsException e) {
+            log.error("Found test submitted by non-existant tester.");
         } 
 
         return null;
