@@ -14,7 +14,9 @@ import ca.ubc.cs.cs304.steemproject.base.released.CreditCard;
 import ca.ubc.cs.cs304.steemproject.base.released.Customer;
 import ca.ubc.cs.cs304.steemproject.base.released.FinalizedGame;
 import ca.ubc.cs.cs304.steemproject.base.released.Transaction;
+import ca.ubc.cs.cs304.steemproject.exception.GameNotExistException;
 import ca.ubc.cs.cs304.steemproject.exception.InternalConnectionException;
+import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
 
 public class OracleCustomerAccessor implements ICustomerAccessor {
 
@@ -41,46 +43,37 @@ public class OracleCustomerAccessor implements ICustomerAccessor {
             throw new InternalConnectionException("Failed to prepare statements.", e);
         }
         
+    }
+
+    @Override
+    public List<CreditCard> listCreditCards(Customer aCardOwner) throws UserNotExistsException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void deleteCreditCard(CreditCard aCreditCard) throws UserNotExistsException {
+        // TODO Auto-generated method stub
         
     }
 
-    public static OracleCustomerAccessor getInstance() {
-        if (fInstance == null) {
-            fInstance = new OracleCustomerAccessor();
-        } 
-        return fInstance;
-    }
-    
     @Override
-    public List<CreditCard> listCreditCards(Customer aCardOwner) {
+    public void addNewCreditCard(CreditCard aCreditCard) throws UserNotExistsException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void purchaseGame(Customer aCustomer, CreditCard aCreditCard, FinalizedGame aFinalizedGame) throws UserNotExistsException, GameNotExistException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public List<Transaction> history(Customer aCustomer, Date aBeforeDate, Date aAfterDate) throws UserNotExistsException {
         // TODO Auto-generated method stub
         return null;
     }
 
-    @Override
-    public boolean deleteCreditCard(CreditCard aCreditCard) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean addNewCreditCard(CreditCard aCreditCard) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean purchaseGame(Customer aCustomer, CreditCard aCreditCard,
-            FinalizedGame aFinalizedGame) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public List<Transaction> history(Customer aCustomer, Date aBeforeDate,
-            Date aAfterDate) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
 }

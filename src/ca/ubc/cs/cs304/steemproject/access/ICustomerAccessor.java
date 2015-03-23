@@ -7,6 +7,8 @@ import ca.ubc.cs.cs304.steemproject.base.released.CreditCard;
 import ca.ubc.cs.cs304.steemproject.base.released.Customer;
 import ca.ubc.cs.cs304.steemproject.base.released.FinalizedGame;
 import ca.ubc.cs.cs304.steemproject.base.released.Transaction;
+import ca.ubc.cs.cs304.steemproject.exception.GameNotExistException;
+import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
 
 public interface ICustomerAccessor {
 
@@ -15,21 +17,21 @@ public interface ICustomerAccessor {
      * @param aCardOwner
      * @return
      */
-    public List<CreditCard> listCreditCards(Customer aCardOwner);
+    public List<CreditCard> listCreditCards(Customer aCardOwner) throws UserNotExistsException;
 
     /**
      * Delete a credit card that the user owns from the system.
      * @param aCreditCard
      * @return
      */
-    public boolean deleteCreditCard(CreditCard aCreditCard);
+    public void deleteCreditCard(CreditCard aCreditCard) throws UserNotExistsException;
 
     /**
      * Add a new credit card associated with the user.
      * @param aCreditCard
      * @return
      */
-    public boolean addNewCreditCard(CreditCard aCreditCard);
+    public void addNewCreditCard(CreditCard aCreditCard) throws UserNotExistsException;
 
     /**
      * Purchase a game using a credit card.
@@ -38,12 +40,12 @@ public interface ICustomerAccessor {
      * @param aFinalizedGame
      * @return
      */
-    public boolean purchaseGame(Customer aCustomer, CreditCard aCreditCard, FinalizedGame aFinalizedGame);
+    public void purchaseGame(Customer aCustomer, CreditCard aCreditCard, FinalizedGame aFinalizedGame) throws UserNotExistsException, GameNotExistException;
 
     /**
      * Query for history of transaction details, which includes the times of purchase and the
      * names of each game that the user owns, sorted based on time of purchase.
      */
-    public List<Transaction> history(Customer aCustomer, Date aBeforeDate, Date aAfterDate);
+    public List<Transaction> history(Customer aCustomer, Date aBeforeDate, Date aAfterDate) throws UserNotExistsException;
 
 }
