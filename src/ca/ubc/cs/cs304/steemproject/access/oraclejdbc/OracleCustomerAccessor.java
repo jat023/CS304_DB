@@ -44,6 +44,13 @@ public class OracleCustomerAccessor implements ICustomerAccessor {
         }
         
     }
+    
+    public static OracleCustomerAccessor getInstance() {
+        if (fInstance == null) {
+            fInstance = new OracleCustomerAccessor();
+        } 
+        return fInstance;
+    }
 
     @Override
     public List<CreditCard> listCreditCards(Customer aCardOwner) throws UserNotExistsException {
