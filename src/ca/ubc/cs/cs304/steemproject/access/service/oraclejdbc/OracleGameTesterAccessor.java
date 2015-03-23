@@ -3,7 +3,6 @@ package ca.ubc.cs.cs304.steemproject.access.service.oraclejdbc;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -27,15 +26,6 @@ import ca.ubc.cs.cs304.steemproject.base.development.GameTesterFeedback;
 public class OracleGameTesterAccessor implements IGameTesterAccessor {
 
     private static final Logger log = Logger.getLogger(OracleGameTesterAccessor.class);
-
-    private static final String insertTestsSQL = "INSERT INTO " + Tables.FEEDBACK_TABLENAME
-            + "("
-            + Tables.USER_ATTR_USERID+ ","
-            + Tables.GAME_ATTR_NAME+ ","
-            + Tables.FEEDBACK_ATTR_TIME+ ","
-            + Tables.FEEDBACK_ATTR_RATING+ ","
-            + Tables.FEEDBACK_ATTR_FEEDBACK+ ","
-            + "(?,?,?,?,?)";
 
     private static OracleGameTesterAccessor fInstance;
 
@@ -107,13 +97,8 @@ public class OracleGameTesterAccessor implements IGameTesterAccessor {
 
         try {
 
-            PreparedStatement pstmt = SteemOracleDbConnector.getDefaultConnection().prepareStatement(insertTestsSQL);
-            pstmt.setInt(1, aGameTester.getUserId());
-            pstmt.setString(2, aGameInDevelopment.getName());
-            pstmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
-            pstmt.setFloat(4, aRating);
-            pstmt.setString(5, aFeedback);
-            pstmt.executeUpdate();
+            GameTesterFeedback feedback = new GameTesterFeedback(aGameInDevelopment, aGameTester, new Date(System.currentTimeMillis()), aRating, aFeedback);
+            Inserts.insertFeedback(feedback);
 
         } catch (SQLException e) {
             log.error("Could not insert feedback.", e);
