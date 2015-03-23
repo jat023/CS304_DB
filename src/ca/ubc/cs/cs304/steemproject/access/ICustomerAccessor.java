@@ -48,4 +48,9 @@ public interface ICustomerAccessor {
      */
     public List<Transaction> history(Customer aCustomer, Date aBeforeDate, Date aAfterDate) throws UserNotExistsException;
 
+    /**
+     * User has played an additional X hours.
+     */
+    public float userPlayed(Customer aCustomer, FinalizedGame aFinalizedGame, float additionalHours) throws UserNotExistsException, GameNotExistException;
+    
 }
