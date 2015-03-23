@@ -17,7 +17,7 @@ import ca.ubc.cs.cs304.steemproject.base.released.FinalizedGame;
 import ca.ubc.cs.cs304.steemproject.base.released.Playtime;
 import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
 
-public final class OraclePublicAccessor implements IPublicAccessor {
+public class OraclePublicAccessor implements IPublicAccessor {
 
     private static final Logger log = Logger.getLogger(OraclePublicAccessor.class);
 

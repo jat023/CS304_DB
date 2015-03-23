@@ -14,7 +14,7 @@ import ca.ubc.cs.cs304.steemproject.exception.InternalConnectionException;
 import ca.ubc.cs.cs304.steemproject.exception.PasswordIncorrectException;
 import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
 
-public final class OracleLoginAccessor implements ILoginAccessor {
+public class OracleLoginAccessor implements ILoginAccessor {
 
     private static final Logger log = Logger.getLogger(OracleLoginAccessor.class);
     

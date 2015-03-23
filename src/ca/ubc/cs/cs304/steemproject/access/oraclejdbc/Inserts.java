@@ -14,7 +14,7 @@ import ca.ubc.cs.cs304.steemproject.base.released.FinalizedGame;
 import ca.ubc.cs.cs304.steemproject.base.released.Playtime;
 import ca.ubc.cs.cs304.steemproject.base.released.Transaction;
 
-public class Inserts {
+final class Inserts {
 
     private static PreparedStatement fInsertCustomerStatement;
     private static PreparedStatement fInsertGameTesterStatement;
