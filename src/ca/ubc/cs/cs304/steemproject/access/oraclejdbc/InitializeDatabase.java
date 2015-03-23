@@ -3,6 +3,8 @@ package ca.ubc.cs.cs304.steemproject.access.oraclejdbc;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.apache.log4j.Logger;
 
@@ -10,9 +12,11 @@ import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.connection.SteemOracleDbCo
 import ca.ubc.cs.cs304.steemproject.base.Genre;
 import ca.ubc.cs.cs304.steemproject.base.development.GameInDevelopment;
 import ca.ubc.cs.cs304.steemproject.base.development.GameTester;
+import ca.ubc.cs.cs304.steemproject.base.released.CreditCard;
 import ca.ubc.cs.cs304.steemproject.base.released.Customer;
 import ca.ubc.cs.cs304.steemproject.base.released.FinalizedGame;
 import ca.ubc.cs.cs304.steemproject.base.released.Playtime;
+import ca.ubc.cs.cs304.steemproject.base.released.Transaction;
 
 final class InitializeDatabase {
 
@@ -53,9 +57,9 @@ final class InitializeDatabase {
             "PRIMARY KEY (" +Tables.GAME_ATTR_NAME+ ") )";
 
     private static final String createCreditCardSQL = "CREATE TABLE "+Tables.CREDIT_CARD_TABLENAME+" (" +
-            Tables.CREDIT_CARD_ATTR_CARDNUM+ " NUMBER(16),"+
+            Tables.CREDIT_CARD_ATTR_CARDNUM+ " CHAR(16),"+
             Tables.CREDIT_CARD_ATTR_ADDRESS+ " VARCHAR(30) NOT NULL,"+
-            Tables.CREDIT_CARD_ATTR_CCV+ " NUMBER(3) NOT NULL,"+
+            Tables.CREDIT_CARD_ATTR_CCV+ " CHAR(3) NOT NULL,"+
             Tables.USER_ATTR_USERID+ " INT NOT NULL,"+
             "PRIMARY KEY (" + Tables.CREDIT_CARD_ATTR_CARDNUM+ "),"+
             "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ") REFERENCES " +Tables.CUSTOMER_TABLENAME+ " )";
@@ -71,7 +75,7 @@ final class InitializeDatabase {
     private static final String createTransactionSQL = "CREATE TABLE "+Tables.TRANSACTION_TABLENAME+" (" +
             Tables.USER_ATTR_USERID+ " INT,"+
             Tables.GAME_ATTR_NAME+ " VARCHAR(15),"+
-            Tables.CREDIT_CARD_ATTR_CARDNUM+ " NUMBER(16),"+
+            Tables.CREDIT_CARD_ATTR_CARDNUM+ " CHAR(16),"+
             Tables.TRANSACTION_ATTR_TIME+ " DATE NOT NULL,"+
             "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ "),"+
             "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.OWNS_GAME_TABLENAME+ ","+
@@ -158,6 +162,14 @@ final class InitializeDatabase {
         GameInDevelopment gameInDev3 = new GameInDevelopment("Developing Game 3","????", Genre.CASUAL, "Blazzard", "0.1.2");
         GameInDevelopment gameInDev4 = new GameInDevelopment("Developing Game 4","fun game", Genre.RPG, "Bobby", "0.3.5");
         GameInDevelopment gameInDev5 = new GameInDevelopment("Developing Game 5","fun game", Genre.SIMULATION, "bobb", "0.3.5");
+        
+        CreditCard card1 = new CreditCard(customer1, "1111222233334444", "922", "12 Neighbourhood Drive");
+        
+        Calendar tempCal = Calendar.getInstance();
+        tempCal.set(2009, 05, 15);
+        Date date1 = tempCal.getTime();
+        Transaction transaction1 = new Transaction( customer1, card1, game1, date1 );
+        
         
         Inserts.insertCustomer(customer1);
         Inserts.insertCustomer(customer2);

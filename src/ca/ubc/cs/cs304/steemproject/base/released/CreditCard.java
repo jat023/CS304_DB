@@ -3,19 +3,19 @@ package ca.ubc.cs.cs304.steemproject.base.released;
 public class CreditCard {
     
     private final Customer fCardOwner;
-    private final int fCardNumber;
-    private final int fCcv;
+    private final String fCardNumber;
+    private final String fCcv;
     private final String fAddress;
 
-    public CreditCard(Customer aCardOwner, int aCardNumber, int aCcv, String aAddress) {
+    public CreditCard(Customer aCardOwner, String aCardNumber, String aCcv, String aAddress) {
         
         if (aCardOwner == null) {
             throw new IllegalArgumentException("Card owner cannot be null.");
         }
-        if (Math.floor(Math.log10(aCardNumber))+1 != 16) {
+        if (aCardNumber.matches("[0-9]+") == false && aCardNumber.length() != 16) {
             throw new IllegalArgumentException("Card number must be a 16 digit number.");
         }
-        if (Math.floor(Math.log10(aCcv))+1 != 3) {
+        if (aCcv.matches("[0-9]+") == false && aCcv.length() != 3) {
             throw new IllegalArgumentException("CCV must be a 3 digit number.");
         }
         if (aAddress == null) {
@@ -32,11 +32,11 @@ public class CreditCard {
         return fCardOwner;
     }
     
-    public int getCardNumber() {
+    public String getCardNumber() {
         return fCardNumber;
     }
     
-    public int getCcv() {
+    public String getCcv() {
         return fCcv;
     }
     

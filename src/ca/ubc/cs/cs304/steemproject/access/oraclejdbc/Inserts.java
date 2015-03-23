@@ -120,9 +120,9 @@ public class Inserts {
                     + "(?,?,?,?)");
         }
 
-        fInsertCreditCardStatement.setInt(1, aCreditCard.getCardNumber());
+        fInsertCreditCardStatement.setString(1, aCreditCard.getCardNumber());
         fInsertCreditCardStatement.setString(2, aCreditCard.getAddress());
-        fInsertCreditCardStatement.setInt(3, aCreditCard.getCcv());
+        fInsertCreditCardStatement.setString(3, aCreditCard.getCcv());
         fInsertCreditCardStatement.setInt(4, aCreditCard.getCardOwner().getUserId());
         fInsertCreditCardStatement.executeUpdate();
     }
@@ -160,7 +160,7 @@ public class Inserts {
 
         fInsertTransactionStatement.setInt(1, aTransaction.getBuyer().getUserId());
         fInsertTransactionStatement.setString(2, aTransaction.getGame().getName());
-        fInsertTransactionStatement.setInt(3, aTransaction.getCreditCard().getCardNumber());
+        fInsertTransactionStatement.setString(3, aTransaction.getCreditCard().getCardNumber());
         fInsertTransactionStatement.setTimestamp(4, new java.sql.Timestamp(aTransaction.getDateOfPurchase().getTime()));
         fInsertTransactionStatement.executeUpdate();
     }
