@@ -12,6 +12,7 @@ import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.connection.SteemOracleDbCo
 import ca.ubc.cs.cs304.steemproject.base.Genre;
 import ca.ubc.cs.cs304.steemproject.base.development.GameInDevelopment;
 import ca.ubc.cs.cs304.steemproject.base.development.GameTester;
+import ca.ubc.cs.cs304.steemproject.base.development.GameTesterFeedback;
 import ca.ubc.cs.cs304.steemproject.base.released.CreditCard;
 import ca.ubc.cs.cs304.steemproject.base.released.Customer;
 import ca.ubc.cs.cs304.steemproject.base.released.FinalizedGame;
@@ -76,6 +77,7 @@ final class InitializeDatabase {
             Tables.USER_ATTR_USERID+ " INT,"+
             Tables.GAME_ATTR_NAME+ " VARCHAR(15),"+
             Tables.CREDIT_CARD_ATTR_CARDNUM+ " CHAR(16),"+
+            Tables.TRANSACTION_ATTR_TIME+ " DATE NOT NULL,"+
             Tables.TRANSACTION_ATTR_TIME+ " DATE NOT NULL,"+
             "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ "),"+
             "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.OWNS_GAME_TABLENAME+ ","+
@@ -164,11 +166,27 @@ final class InitializeDatabase {
         GameInDevelopment gameInDev5 = new GameInDevelopment("Developing Game 5","fun game", Genre.SIMULATION, "bobb", "0.3.5");
         
         CreditCard card1 = new CreditCard(customer1, "1111222233334444", "922", "12 Neighbourhood Drive");
+        CreditCard card2 = new CreditCard(customer2, "1111222233335555", "214", "100 Broadway Street");
+        CreditCard card3 = new CreditCard(customer3, "1111222233336666", "522", "1202 Maple Street");
+        CreditCard card4 = new CreditCard(customer4, "1111222233337777", "152", "14 Neighbourhood Drive");
+        CreditCard card5 = new CreditCard(customer5, "1111222233338888", "177", "16 Neighbourhood Drive");
         
-        Calendar tempCal = Calendar.getInstance();
-        tempCal.set(2009, 05, 15);
-        Date date1 = tempCal.getTime();
+        Date date1 = createDate(2009,05,15);
+        Date date2 = createDate(2010,06,22);
+        Date date3 = createDate(2011,06,22);
+        Date date4 = createDate(2012,02,25);
+        
         Transaction transaction1 = new Transaction( customer1, card1, game1, date1 );
+        Transaction transaction2 = new Transaction( customer2, card2, game2, date2 );
+        Transaction transaction3 = new Transaction( customer3, card3, game3, date3 );
+        Transaction transaction4 = new Transaction( customer4, card4, game4, date4 );
+        Transaction transaction5 = new Transaction( customer1, card1, game2, date2 );
+        
+        GameTesterFeedback feedback1 = new GameTesterFeedback(gameInDev1, tester1, date1, 2.1f, "Very Buggy");
+        GameTesterFeedback feedback2 = new GameTesterFeedback(gameInDev1, tester2, date2, 0.1f, "Game too hard");
+        GameTesterFeedback feedback3 = new GameTesterFeedback(gameInDev2, tester3, date3, 8.8f, "AWESOME");
+        GameTesterFeedback feedback4 = new GameTesterFeedback(gameInDev3, tester4, date3, 3.0f, "Early Development");
+        GameTesterFeedback feedback5 = new GameTesterFeedback(gameInDev4, tester1, date4, 8.1f, "After 20 patches..");
         
         
         Inserts.insertCustomer(customer1);
@@ -201,7 +219,23 @@ final class InitializeDatabase {
         Inserts.insertOwnsGame(new Playtime(customer4, game4, 5.2f));
         Inserts.insertOwnsGame(new Playtime(customer5, game5, 5.2f));
         
-        // TODO: insert credit cards and transactions
+        Inserts.insertCreditCard(card1);
+        Inserts.insertCreditCard(card2);
+        Inserts.insertCreditCard(card3);
+        Inserts.insertCreditCard(card4);
+        Inserts.insertCreditCard(card5);
+        
+        Inserts.insertTransaction(transaction1);
+        Inserts.insertTransaction(transaction2);
+        Inserts.insertTransaction(transaction3);
+        Inserts.insertTransaction(transaction4);
+        Inserts.insertTransaction(transaction5);
+        
+        Inserts.insertFeedback(feedback1);
+        Inserts.insertFeedback(feedback2);
+        Inserts.insertFeedback(feedback3);
+        Inserts.insertFeedback(feedback4);
+        Inserts.insertFeedback(feedback5);
     }
 
     private static void dropTableIfExists(Connection con, String aTableName) {
@@ -229,6 +263,18 @@ final class InitializeDatabase {
             }
 
         }
+    }
+    
+    /**
+     * Creates a Date and sets the year, month, and day to specified values.
+     * Hours, minutes, etc. set to current time.
+     **/
+    private static Date createDate(int year, int month, int day) {
+    	Calendar tempCal = Calendar.getInstance();
+        tempCal.set(year, month, day);
+        Date tempDate = new Date();
+        tempDate = tempCal.getTime();
+        return tempDate;
     }
     
     public static void main(String[] args) {
