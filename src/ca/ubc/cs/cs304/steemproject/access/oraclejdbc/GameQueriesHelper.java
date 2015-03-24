@@ -1,6 +1,7 @@
 package ca.ubc.cs.cs304.steemproject.access.oraclejdbc;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -9,7 +10,11 @@ import org.apache.log4j.Logger;
 
 import ca.ubc.cs.cs304.steemproject.access.options.GameSortByOption;
 import ca.ubc.cs.cs304.steemproject.access.options.SortDirection;
+import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.connection.SteemOracleDbConnector;
 import ca.ubc.cs.cs304.steemproject.base.Genre;
+import ca.ubc.cs.cs304.steemproject.base.released.FinalizedGame;
+import ca.ubc.cs.cs304.steemproject.exception.GameNotExistException;
+import ca.ubc.cs.cs304.steemproject.exception.InternalConnectionException;
 
 final class GameQueriesHelper {
     
@@ -109,4 +114,38 @@ final class GameQueriesHelper {
         return QueriesHelper.exists(userEmailExistsQuery);
     }
     
+    public static FinalizedGame retrieveFinalizedGame(String nameOfGame) throws GameNotExistException {
+
+        ResultSet results;
+        
+        try {
+            String query = "SELECT * FROM " +Tables.FINALIZED_GAME_TABLENAME+ " WHERE " + Tables.GAME_ATTR_NAME+ "='" +nameOfGame+ "'";
+            results = SteemOracleDbConnector.getDefaultConnection().createStatement().executeQuery(query);
+        } catch (SQLException e) {
+            log.error("Could not execute query.", e);
+            throw new InternalConnectionException("Could not execute query.", e);
+        }
+
+        try {
+            if (results.next()) {
+
+                return new FinalizedGame(
+                        results.getString(Tables.GAME_ATTR_NAME), 
+                        results.getString(Tables.GAME_ATTR_DESCRIPTION),
+                        Genre.valueOf(results.getString(Tables.GAME_ATTR_GENRE)), 
+                        results.getString(Tables.GAME_ATTR_DEVELOPER), 
+                        results.getFloat(Tables.FINALIZED_GAME_ATTR_RATING), 
+                        results.getFloat(Tables.FINALIZED_GAME_ATTR_FULLPRICE), 
+                        results.getInt(Tables.FINALIZED_GAME_ATTR_ONSPECIAL)==1, 
+                        results.getFloat(Tables.FINALIZED_GAME_ATTR_DISCOUNTPERC));
+
+
+            } else {
+                throw new GameNotExistException(nameOfGame);
+            }
+        } catch (SQLException e) {
+            log.error("Could not read results.", e);
+            throw new RuntimeException("Could not read results.", e);
+        }
+    }
 }

@@ -1,8 +1,11 @@
 package ca.ubc.cs.cs304.steemproject.access.oraclejdbc;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -10,20 +13,44 @@ import org.apache.log4j.Logger;
 import ca.ubc.cs.cs304.steemproject.access.IPublicAccessor;
 import ca.ubc.cs.cs304.steemproject.access.options.GameSortByOption;
 import ca.ubc.cs.cs304.steemproject.access.options.SortDirection;
+import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.connection.SteemOracleDbConnector;
 import ca.ubc.cs.cs304.steemproject.base.Genre;
 import ca.ubc.cs.cs304.steemproject.base.IUser;
 import ca.ubc.cs.cs304.steemproject.base.released.Customer;
 import ca.ubc.cs.cs304.steemproject.base.released.FinalizedGame;
 import ca.ubc.cs.cs304.steemproject.base.released.Playtime;
+import ca.ubc.cs.cs304.steemproject.exception.GameNotExistException;
+import ca.ubc.cs.cs304.steemproject.exception.InternalConnectionException;
 import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
 
 public class OraclePublicAccessor implements IPublicAccessor {
 
     private static final Logger log = Logger.getLogger(OraclePublicAccessor.class);
 
+    private final PreparedStatement fMostPopularGameSQL;
+    private final PreparedStatement fMostExpensiveGenreSQL;
+    private final PreparedStatement fLeastExpensiveGenreSQL;
+
     private static OraclePublicAccessor fInstance;
 
-    private OraclePublicAccessor() {};
+    private OraclePublicAccessor() {
+        try {
+            fMostPopularGameSQL = SteemOracleDbConnector.getDefaultConnection().prepareStatement(
+                    "SELECT " +Tables.GAME_ATTR_NAME+ " FROM "  +Tables.OWNS_GAME_TABLENAME+ " GROUP BY " +Tables.GAME_ATTR_NAME
+                    + " HAVING COUNT(*) >= ALL (SELECT COUNT(*) FROM " +Tables.OWNS_GAME_TABLENAME+ " GROUP BY " +Tables.GAME_ATTR_NAME+ ")");
+            fMostExpensiveGenreSQL = SteemOracleDbConnector.getDefaultConnection().prepareStatement(
+                    "SELECT " +Tables.GAME_ATTR_GENRE+ " FROM "  +Tables.FINALIZED_GAME_TABLENAME+ " GROUP BY " +Tables.GAME_ATTR_GENRE
+                    + " HAVING AVG("+Tables.FINALIZED_GAME_ATTR_FULLPRICE+") >= ALL "
+                    + " (SELECT AVG(" +Tables.FINALIZED_GAME_ATTR_FULLPRICE+ ") FROM " +Tables.FINALIZED_GAME_TABLENAME+ " GROUP BY " +Tables.GAME_ATTR_GENRE+ ")");
+            fLeastExpensiveGenreSQL = SteemOracleDbConnector.getDefaultConnection().prepareStatement(
+                    "SELECT " +Tables.GAME_ATTR_GENRE+ " FROM "  +Tables.FINALIZED_GAME_TABLENAME+ " GROUP BY " +Tables.GAME_ATTR_GENRE
+                    + " HAVING AVG("+Tables.FINALIZED_GAME_ATTR_FULLPRICE+") <= ALL "
+                    + " (SELECT AVG(" +Tables.FINALIZED_GAME_ATTR_FULLPRICE+ ") FROM " +Tables.FINALIZED_GAME_TABLENAME+ " GROUP BY " +Tables.GAME_ATTR_GENRE+ ")");
+        } catch (SQLException e) {
+            log.error("Could not prepare statements.", e);
+            throw new InternalConnectionException("Could not prepare statements.", e);
+        }
+    }
 
     public static OraclePublicAccessor getInstance() {
         if (fInstance == null) {
@@ -35,7 +62,7 @@ public class OraclePublicAccessor implements IPublicAccessor {
     public List<FinalizedGame> listPurchasableGames() {
         return listPurchasableGames(null, null, null, null, null, null, null, false);
     }
-    
+
     public List<FinalizedGame> listPurchasableGames(
             String matchName, Genre matchGenre, String matchDeveloper, 
             Float matchLowestPrice, Float matchHighestPrice, 
@@ -95,7 +122,7 @@ public class OraclePublicAccessor implements IPublicAccessor {
 
         IUser user = QueriesHelper.retrieveUser(gameOwnerEmail, Tables.CUSTOMER_TABLENAME);
         Customer gamer = new Customer(user.getUserId(), user.getEmail(), user.getPassword());
-        
+
         ResultSet results = GameQueriesHelper.queryGames(Tables.FINALIZED_GAME_TABLENAME, matchName, matchGenre, matchDeveloper, null, null, sortByOption, sortDirection, false, gamer.getUserId());
         return readQueryResultsForGamesOwned(gamer, results);
     }
@@ -118,7 +145,7 @@ public class OraclePublicAccessor implements IPublicAccessor {
                         results.getFloat(Tables.FINALIZED_GAME_ATTR_DISCOUNTPERC));
 
                 Float hours = results.getFloat(Tables.OWNS_GAME_ATTR_HOURS);
-                
+
                 playtimes.add(new Playtime(gamer, game, hours));
 
             }
@@ -130,4 +157,64 @@ public class OraclePublicAccessor implements IPublicAccessor {
         return playtimes;
 
     }
+
+    @Override
+    public Collection<FinalizedGame> findMostPopularGame() {
+        try {
+            ResultSet results = fMostPopularGameSQL.executeQuery();
+
+            Collection<FinalizedGame> popularGames = new HashSet<FinalizedGame>();
+
+            while (results.next()) {
+                popularGames.add(GameQueriesHelper.retrieveFinalizedGame(results.getString(Tables.GAME_ATTR_NAME)));
+            }
+
+            return popularGames;
+        } catch (SQLException e) {
+            throw new InternalConnectionException("Failed to find most popular game.", e);
+        } catch (GameNotExistException e) {
+            throw new RuntimeException("This shouldn't happen.");
+        }
+    }
+
+    @Override
+    public Genre findMostExpensiveGenre() {
+        try {
+            ResultSet results = fMostExpensiveGenreSQL.executeQuery();
+
+            if (results.next()) {
+                return Genre.valueOf(results.getString(Tables.GAME_ATTR_GENRE));
+            } else {
+                throw new GameNotExistException("No games in database?");
+            }
+        } catch (SQLException e) {
+            throw new InternalConnectionException("Failed to find most expensive genre.", e);
+        } catch (GameNotExistException e) {
+            throw new RuntimeException("This shouldn't happen.");
+        }
+    }
+
+    @Override
+    public Genre findLeastExpensiveGenre() {
+        try {
+            ResultSet results = fLeastExpensiveGenreSQL.executeQuery();
+
+            if (results.next()) {
+                Genre ret = Genre.valueOf(results.getString(Tables.GAME_ATTR_GENRE));
+                
+                if (results.next()) {
+                    throw new RuntimeException("Shoot.");
+                }
+                
+                return ret;
+            } else {
+                throw new GameNotExistException("No games in database?");
+            }
+        } catch (SQLException e) {
+            throw new InternalConnectionException("Failed to find least expensive genre.", e);
+        } catch (GameNotExistException e) {
+            throw new RuntimeException("This shouldn't happen.");
+        }
+    }
+
 }

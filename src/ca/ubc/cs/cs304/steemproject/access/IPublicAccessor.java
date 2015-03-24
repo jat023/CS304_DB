@@ -1,5 +1,6 @@
 package ca.ubc.cs.cs304.steemproject.access;
 
+import java.util.Collection;
 import java.util.List;
 
 import ca.ubc.cs.cs304.steemproject.access.options.GameSortByOption;
@@ -10,7 +11,7 @@ import ca.ubc.cs.cs304.steemproject.base.released.Playtime;
 import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
 
 public interface IPublicAccessor {
-    
+
     /**
      * Lists all purchasable games.
      * @return
@@ -88,4 +89,19 @@ public interface IPublicAccessor {
             String matchName, Genre matchGenre, String matchDeveloper, 
             GameSortByOption sortByOption, SortDirection sortDirection) throws UserNotExistsException;
 
+    /**
+     * Returns the games that are bought by the most number of customers.
+     * @return
+     */
+    public Collection<FinalizedGame> findMostPopularGame();
+
+    /**
+     * Find the most expensive genre. (ie. Genre where the games of this genre have the highest average price out of all genres.)
+     */
+    public Genre findMostExpensiveGenre();
+    
+    /**
+     * Find the least expensive genre. (ie. Genre where the games of this genre have the lowest average price out of all genres.)
+     */
+    public Genre findLeastExpensiveGenre();
 }
