@@ -72,7 +72,7 @@ final class InitializeDatabase {
             Tables.CREDIT_CARD_ATTR_CARDNUM+ " CHAR(16),"+
             Tables.TRANSACTION_ATTR_TIME+ " DATE NOT NULL,"+
             "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ "),"+
-            "FOREIGN KEY (" + Tables.CREDIT_CARD_ATTR_CARDNUM+ ") REFERENCES " +Tables.CREDIT_CARD_TABLENAME+ " ON DELETE RESTRICT )";
+            "FOREIGN KEY (" + Tables.CREDIT_CARD_ATTR_CARDNUM+ ") REFERENCES " +Tables.CREDIT_CARD_TABLENAME+ " ON DELETE CASCADE)";
 
     private static final String createOwnsGameSQL = "CREATE TABLE "+Tables.OWNS_GAME_TABLENAME+" (" +
             Tables.USER_ATTR_USERID+ " INT,"+
@@ -80,7 +80,6 @@ final class InitializeDatabase {
             Tables.OWNS_GAME_ATTR_HOURS+ " NUMBER(5) DEFAULT 0 NOT NULL,"+
             "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ "),"+
             "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ") REFERENCES " +Tables.CUSTOMER_TABLENAME+ " ON DELETE CASCADE ,"+
-            "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.TRANSACTION_TABLENAME+ " ON DELETE CASCADE ,"+
             "FOREIGN KEY (" +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.FINALIZED_GAME_TABLENAME+ " ON DELETE CASCADE )";
 
     private static final String createTestSQL = "CREATE TABLE "+Tables.FEEDBACK_TABLENAME+" (" +
@@ -317,6 +316,7 @@ final class InitializeDatabase {
         } catch (Exception e) {
             log.error("Database initialization failed.", e);
         }
+        
     }
 
 }

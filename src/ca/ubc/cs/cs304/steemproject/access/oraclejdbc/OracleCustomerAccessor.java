@@ -29,22 +29,19 @@ public class OracleCustomerAccessor implements ICustomerAccessor {
 
     private static OracleCustomerAccessor fInstance;
 
-    private final PreparedStatement fRetrieveCreditCardsSQL;
+    private final PreparedStatement fListCreditCardsSQL;
     private final PreparedStatement fDeleteCreditCardSQL;
     private final PreparedStatement fListTransactionHistorySQL;
-    private final PreparedStatement fGetCreditCardSQL;
-
     private OracleCustomerAccessor() {
 
         Connection con = SteemOracleDbConnector.getDefaultConnection();
 
         try {
-            fRetrieveCreditCardsSQL = con.prepareStatement("SELECT * FROM " +Tables.CREDIT_CARD_TABLENAME+ " WHERE " +Tables.USER_ATTR_USERID+ "=?");
+            fListCreditCardsSQL = con.prepareStatement("SELECT * FROM " +Tables.CREDIT_CARD_TABLENAME+ " WHERE " +Tables.USER_ATTR_USERID+ "=?");
             fDeleteCreditCardSQL = con.prepareStatement("DELETE FROM " +Tables.CREDIT_CARD_TABLENAME+ " WHERE " +Tables.CREDIT_CARD_ATTR_CARDNUM+ "=?");
             fListTransactionHistorySQL = con.prepareStatement("SELECT * FROM " +Tables.TRANSACTION_TABLENAME
                     + " WHERE " +Tables.USER_ATTR_USERID+ "=? AND "
                     + Tables.TRANSACTION_ATTR_TIME+ " BETWEEN ? AND ? ORDER BY " +Tables.TRANSACTION_ATTR_TIME+ " ASC");
-            fGetCreditCardSQL = con.prepareStatement("SELECT * FROM " +Tables.CREDIT_CARD_TABLENAME+ " WHERE " +Tables.CREDIT_CARD_ATTR_CARDNUM+ "=?");
         } catch (SQLException e) {
             log.error("Failed to prepare statements.", e);
             throw new InternalConnectionException("Failed to prepare statements.", e);
@@ -64,8 +61,8 @@ public class OracleCustomerAccessor implements ICustomerAccessor {
         ResultSet results;
 
         try {
-            fRetrieveCreditCardsSQL.setInt(1, aCardOwner.getUserId());
-            results = fRetrieveCreditCardsSQL.executeQuery();
+            fListCreditCardsSQL.setInt(1, aCardOwner.getUserId());
+            results = fListCreditCardsSQL.executeQuery();
         } catch (SQLException e) {
             log.error("Could not execute query.", e);
             throw new InternalConnectionException("Could not execute query.", e);
@@ -169,7 +166,7 @@ public class OracleCustomerAccessor implements ICustomerAccessor {
             while (results.next()) {
                 transactions.add(new Transaction(
                         aCustomer, 
-                        retrieveCreditCard(aCustomer, results.getString(Tables.CREDIT_CARD_ATTR_CARDNUM)), 
+                        Retrieves.retrieveCreditCard(results.getString(Tables.CREDIT_CARD_ATTR_CARDNUM)), 
                         GameQueriesHelper.retrieveFinalizedGame(results.getString(Tables.GAME_ATTR_NAME)),
                         new Date(results.getTimestamp(Tables.TRANSACTION_ATTR_TIME).getTime())));
             }
@@ -182,36 +179,6 @@ public class OracleCustomerAccessor implements ICustomerAccessor {
         }
         
         return transactions;
-    }
-
-    @Override
-    public float userPlayed(Customer aCustomer, FinalizedGame aFinalizedGame, float additionalHours) throws UserNotExistsException, GameNotExistException {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    private CreditCard retrieveCreditCard(Customer aCardOwner, String aCardNumber) {
-
-        try {
-            fGetCreditCardSQL.setString(1, aCardNumber);
-            ResultSet results = fGetCreditCardSQL.executeQuery();
-
-            if (results.next()) {
-                return new CreditCard(
-                        aCardOwner, 
-                        results.getString(Tables.CREDIT_CARD_ATTR_CARDNUM), 
-                        results.getString(Tables.CREDIT_CARD_ATTR_CCV), 
-                        results.getString(Tables.CREDIT_CARD_ATTR_ADDRESS));
-            } else {
-                log.error("Could not find credit card.");
-                throw new InternalConnectionException("Could not find credit card.");
-            }
-
-        } catch (SQLException e) {
-            log.error("Could not find credit card.", e);
-            throw new InternalConnectionException("Could not find credit card.", e);
-        }
-
     }
 
     @Override
@@ -231,6 +198,28 @@ public class OracleCustomerAccessor implements ICustomerAccessor {
             throw new UserNotExistsException("This user has incorrect credentials. No user with the given ID, email, and password exist in system.");
         }
     }
-    
+
+    @Override
+    public CreditCard updateCCV(String aCardNumber, String aNewCcv) {
+        
+        CreditCard oldCreditCard;
+        try {
+            oldCreditCard = Retrieves.retrieveCreditCard(aCardNumber);
+        } catch (SQLException e) {
+            log.error("Could not find old credit card.", e);
+            throw new IllegalArgumentException("Could not find old credit card.", e);
+        }
+        
+        String query = "UPDATE " +Tables.CREDIT_CARD_TABLENAME+ " SET " +Tables.CREDIT_CARD_ATTR_CCV+ "='"+ aNewCcv+ "'"
+                + " WHERE " +Tables.CREDIT_CARD_ATTR_CARDNUM+ "='" +oldCreditCard.getCardNumber()+ "'";
+        
+        try {
+            SteemOracleDbConnector.getDefaultConnection().createStatement().executeUpdate(query);
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Bad CCV", e);
+        }
+        
+        return new CreditCard(oldCreditCard.getCardOwner(), oldCreditCard.getCardNumber(), aNewCcv, oldCreditCard.getAddress());
+    }
     
 }

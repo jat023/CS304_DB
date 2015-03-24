@@ -29,15 +29,12 @@ public class OracleGameTesterAccessor implements IGameTesterAccessor {
 
     private static OracleGameTesterAccessor fInstance;
 
-    private final PreparedStatement fRetrieveTestsSQL;
-    private final PreparedStatement fRetrieveGameSQL;
+    private final PreparedStatement fCollectFeedbacksSQL;
 
     private OracleGameTesterAccessor() {
         try {
-            fRetrieveTestsSQL = SteemOracleDbConnector.getDefaultConnection().prepareStatement(
+            fCollectFeedbacksSQL = SteemOracleDbConnector.getDefaultConnection().prepareStatement(
                     "SELECT * FROM " +Tables.FEEDBACK_TABLENAME+ " WHERE " +Tables.FEEDBACK_ATTR_TIME+ " BETWEEN ? AND ? ORDER BY " + Tables.FEEDBACK_ATTR_TIME + " ASC");
-            fRetrieveGameSQL = SteemOracleDbConnector.getDefaultConnection().prepareStatement(
-                    "SELECT * FROM " +Tables.DEVELOPMENT_GAMETABLENAME+ " WHERE " +Tables.GAME_ATTR_NAME+ "=?");
         } catch (SQLException e) {
             log.error("Failed to prepare statements.", e);
             throw new InternalConnectionException("Failed to prepare statements.", e);
@@ -119,9 +116,9 @@ public class OracleGameTesterAccessor implements IGameTesterAccessor {
         ResultSet results;
 
         try {
-            fRetrieveTestsSQL.setDate(1, new java.sql.Date(afterThisDate.getTime()));
-            fRetrieveTestsSQL.setDate(2, new java.sql.Date(beforeThisDate.getTime()));
-            results = fRetrieveTestsSQL.executeQuery();
+            fCollectFeedbacksSQL.setDate(1, new java.sql.Date(afterThisDate.getTime()));
+            fCollectFeedbacksSQL.setDate(2, new java.sql.Date(beforeThisDate.getTime()));
+            results = fCollectFeedbacksSQL.executeQuery();
         } catch (SQLException e) {
             log.error("Could not execute query.", e);
             throw new InternalConnectionException("Could not execute query.", e);
@@ -133,7 +130,7 @@ public class OracleGameTesterAccessor implements IGameTesterAccessor {
 
             while (results.next()) {
 
-                GameInDevelopment game = retrieveGameInDevelopment(results.getString(Tables.GAME_ATTR_NAME));
+                GameInDevelopment game = Retrieves.retrieveGameInDevelopment(results.getString(Tables.GAME_ATTR_NAME));
                 
                 IUser user = QueriesHelper.retrieveUser(results.getInt(Tables.USER_ATTR_USERID), Tables.GAME_TESTER_TABLENAME);
                 
@@ -158,42 +155,6 @@ public class OracleGameTesterAccessor implements IGameTesterAccessor {
         } 
 
         return null;
-    }
-
-    private GameInDevelopment retrieveGameInDevelopment(String nameOfGame) throws GameNotExistException {
-        ResultSet results;
-        
-        try {
-            fRetrieveGameSQL.setString(1, nameOfGame);
-            results = fRetrieveGameSQL.executeQuery();
-        } catch (SQLException e) {
-            log.error("Could not execute query.", e);
-            throw new InternalConnectionException("Could not execute query.", e);
-        }
-        
-        try {
-            if (results.next()) {
-                
-                GameInDevelopment game = new GameInDevelopment(
-                        results.getString(Tables.GAME_ATTR_NAME), 
-                        results.getString(Tables.GAME_ATTR_DESCRIPTION),
-                        Genre.valueOf(results.getString(Tables.GAME_ATTR_GENRE)), 
-                        results.getString(Tables.GAME_ATTR_DEVELOPER),
-                        results.getString(Tables.DEVELOPMENT_GAME_ATTR_VERSION));
-                
-                if (results.next()) {
-                    throw new RuntimeException("Result returned more than one game with the supplied name.");
-                }
-                
-                return game;
-                
-            } else {
-                throw new GameNotExistException(nameOfGame);
-            }
-        } catch (SQLException e) {
-            log.error("Could not read results.", e);
-            throw new RuntimeException("Could not read results.", e);
-        }
     }
 
 }
