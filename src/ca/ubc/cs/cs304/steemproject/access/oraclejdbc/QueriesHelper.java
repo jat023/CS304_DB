@@ -30,7 +30,7 @@ final class QueriesHelper {
     }
 
     public static boolean userExists(String userEmail, String table) {
-        String userEmailExistsQuery = "SELECT * FROM " + table + " WHERE " + Tables.USER_ATTR_EMAIL + "=" + userEmail;
+        String userEmailExistsQuery = "SELECT * FROM " + table + " WHERE " + Tables.USER_ATTR_EMAIL + "='" + userEmail + "'";
         return exists(userEmailExistsQuery);
     }
 
@@ -40,7 +40,7 @@ final class QueriesHelper {
     }
     
     public static IUser retrieveUser(String userEmail, String table) throws UserNotExistsException {
-        String userEmailQuery = "SELECT * FROM " + table + " WHERE " + Tables.USER_ATTR_EMAIL + "=" + userEmail;
+        String userEmailQuery = "SELECT * FROM " + table + " WHERE " + Tables.USER_ATTR_EMAIL + "='" + userEmail + "'";
         return processUserQuery(userEmailQuery);
     }
     

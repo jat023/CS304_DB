@@ -9,6 +9,11 @@ import java.util.Random;
 
 import org.apache.log4j.Logger;
 
+import ca.ubc.cs.cs304.steemproject.access.Accessors;
+import ca.ubc.cs.cs304.steemproject.access.ICustomerAccessor;
+import ca.ubc.cs.cs304.steemproject.access.IGameTesterAccessor;
+import ca.ubc.cs.cs304.steemproject.access.ILoginAccessor;
+import ca.ubc.cs.cs304.steemproject.access.IPublicAccessor;
 import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.connection.SteemOracleDbConnector;
 import ca.ubc.cs.cs304.steemproject.base.Genre;
 import ca.ubc.cs.cs304.steemproject.base.development.GameInDevelopment;
@@ -247,6 +252,7 @@ final class InitializeDatabase {
         Inserts.insertFeedback(feedback3);
         Inserts.insertFeedback(feedback4);
         Inserts.insertFeedback(feedback5);
+        
     }
 
     private static void dropTableIfExists(Connection con, String aTableName) {

@@ -46,7 +46,7 @@ public class OracleLoginAccessor implements ILoginAccessor {
         }
 
         String query = "SELECT * FROM " +tablename+ 
-                " WHERE " +Tables.USER_ATTR_EMAIL+ "=" +email+ " AND " +Tables.USER_ATTR_PASSWORD+ "=" +password;
+                " WHERE " +Tables.USER_ATTR_EMAIL+ "='" +email+ "' AND " +Tables.USER_ATTR_PASSWORD+ "='" +password + "'";
 
         if (!QueriesHelper.exists(query)) {
             throw new PasswordIncorrectException();
@@ -90,7 +90,7 @@ public class OracleLoginAccessor implements ILoginAccessor {
         }
         
         String query = "SELECT * FROM " + table + " WHERE " 
-        + (email == null ? Tables.USER_ATTR_USERID + "=" + userId : Tables.USER_ATTR_EMAIL + "=" + email);
+        + (email == null ? Tables.USER_ATTR_USERID + "=" + userId : Tables.USER_ATTR_EMAIL + "='" + email + "'");
         
         try {
             

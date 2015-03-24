@@ -130,7 +130,7 @@ public class OracleCustomerAccessor implements ICustomerAccessor {
             throw new UserNotExistsException();
         } else if (!GameQueriesHelper.gameExists(aFinalizedGame.getName(), Tables.FINALIZED_GAME_TABLENAME)) {
             throw new GameNotExistException();
-        } else if (!QueriesHelper.exists("SELECT * FROM " +Tables.CREDIT_CARD_TABLENAME+ " WHERE " +Tables.CREDIT_CARD_ATTR_CARDNUM+ "=" +aCreditCard.getCardNumber())) {
+        } else if (!QueriesHelper.exists("SELECT * FROM " +Tables.CREDIT_CARD_TABLENAME+ " WHERE " +Tables.CREDIT_CARD_ATTR_CARDNUM+ "='" +aCreditCard.getCardNumber()+"'")) {
             throw new IllegalArgumentException("Credit card does not exist in system. Please add before making purchase.");
         }
 

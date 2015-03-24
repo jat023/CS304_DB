@@ -28,7 +28,7 @@ final class GameQueriesHelper {
             queryBuilder.append(" NATURAL JOIN " + Tables.OWNS_GAME_TABLENAME);
         }
 
-        if (matchName != null || matchGenre != null || matchDeveloper != null || matchLowestPrice != null || matchHighestPrice != null || onlyDiscountedGames) {
+        if (matchName != null || matchGenre != null || matchDeveloper != null || matchLowestPrice != null || matchHighestPrice != null || onlyDiscountedGames || ownerId != null) {
 
             queryBuilder.append(" WHERE ");
 
@@ -104,7 +104,7 @@ final class GameQueriesHelper {
     }
     
     public static boolean gameExists(String exactName, String table) {
-        String userEmailExistsQuery = "SELECT * FROM " + Tables.CUSTOMER_TABLENAME + " WHERE " + Tables.GAME_ATTR_NAME + "=" + exactName;
+        String userEmailExistsQuery = "SELECT * FROM " + Tables.CUSTOMER_TABLENAME + " WHERE " + Tables.GAME_ATTR_NAME + "='" + exactName + "'";
         return QueriesHelper.exists(userEmailExistsQuery);
     }
     
