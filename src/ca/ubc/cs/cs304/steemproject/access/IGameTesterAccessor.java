@@ -5,6 +5,7 @@ import java.util.List;
 
 import ca.ubc.cs.cs304.steemproject.access.options.GameSortByOption;
 import ca.ubc.cs.cs304.steemproject.access.options.SortDirection;
+import ca.ubc.cs.cs304.steemproject.base.Genre;
 import ca.ubc.cs.cs304.steemproject.base.development.GameInDevelopment;
 import ca.ubc.cs.cs304.steemproject.base.development.GameTester;
 import ca.ubc.cs.cs304.steemproject.base.development.GameTesterFeedback;
@@ -31,7 +32,7 @@ public interface IGameTesterAccessor {
      * @return
      */
     public List<GameInDevelopment> listGamesInDevelopment(
-            String matchName, String matchGenre, String matchPublisher, 
+            String matchName, Genre matchGenre, String matchDeveloper, 
             GameSortByOption sortByOption, SortDirection sortDirection);    
 
     /**

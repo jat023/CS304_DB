@@ -37,7 +37,7 @@ public class OraclePublicAccessor implements IPublicAccessor {
     }
     
     public List<FinalizedGame> listPurchasableGames(
-            String matchName, String matchGenre, String matchDeveloper, 
+            String matchName, Genre matchGenre, String matchDeveloper, 
             Float matchLowestPrice, Float matchHighestPrice, 
             GameSortByOption sortByOption, SortDirection sortDirection, 
             boolean listOnlyDiscountedGames) {
@@ -78,7 +78,7 @@ public class OraclePublicAccessor implements IPublicAccessor {
 
     public List<Playtime> listGamesOwned(
             int gameOwnerId, 
-            String matchName, String matchGenre, String matchDeveloper,
+            String matchName, Genre matchGenre, String matchDeveloper,
             GameSortByOption sortByOption, SortDirection sortDirection) throws UserNotExistsException {
 
         IUser user = QueriesHelper.retrieveUser(gameOwnerId, Tables.CUSTOMER_TABLENAME);
@@ -90,7 +90,7 @@ public class OraclePublicAccessor implements IPublicAccessor {
 
     public List<Playtime> listGamesOwned(
             String gameOwnerEmail, 
-            String matchName, String matchGenre, String matchDeveloper, 
+            String matchName, Genre matchGenre, String matchDeveloper, 
             GameSortByOption sortByOption, SortDirection sortDirection) throws UserNotExistsException {
 
         IUser user = QueriesHelper.retrieveUser(gameOwnerEmail, Tables.CUSTOMER_TABLENAME);

@@ -58,7 +58,7 @@ public class OracleGameTesterAccessor implements IGameTesterAccessor {
 
     @Override
     public List<GameInDevelopment> listGamesInDevelopment(
-            String matchName, String matchGenre, String matchDeveloper,
+            String matchName, Genre matchGenre, String matchDeveloper,
             GameSortByOption sortByOption, SortDirection sortDirection) {
 
         ResultSet results = GameQueriesHelper.queryGames(Tables.DEVELOPMENT_GAMETABLENAME, matchName, matchGenre, matchDeveloper, null, null, sortByOption, sortDirection, false, null);

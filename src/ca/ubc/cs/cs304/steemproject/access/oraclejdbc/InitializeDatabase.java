@@ -148,11 +148,11 @@ final class InitializeDatabase {
         Customer customer4 = new Customer(4, "customer4@gmail.com", "apple123");
         Customer customer5 = new Customer(5, "customer5@gmail.com", "pear123");
         
-        FinalizedGame game1 = new FinalizedGame("game1","fun game", Genre.RPG, "Bob", 10f, 1.00f, false, 0f);
-        FinalizedGame game2 = new FinalizedGame("game2","fun game", Genre.STRATEGY, "Dan Inc.", 8.8f, 9.99f, true, 0.4f);
-        FinalizedGame game3 = new FinalizedGame("game3","fun game", Genre.ACTION, "Dan", 5f, 59.99f, false, 0.2f);
-        FinalizedGame game4 = new FinalizedGame("game4","fun game", Genre.RPG, "Blazzard", 8.2f, 39.99f, true, 0.1f);
-        FinalizedGame game5 = new FinalizedGame("game5","fun game", Genre.SPORTS, "Dan", 3.5f, 29.99f, false, 0f);
+        FinalizedGame game1 = new FinalizedGame("Sneaky Thief","So sneaky.", Genre.RPG, "Bob", 10f, 1.00f, false, 0f);
+        FinalizedGame game2 = new FinalizedGame("Amazing Horse","RIDE TO GLORY!", Genre.STRATEGY, "Dan Inc.", 8.8f, 9.99f, true, 0.4f);
+        FinalizedGame game3 = new FinalizedGame("Amazing Irish Luck","Fun for the leprechauns.", Genre.ACTION, "Dan", 5f, 59.99f, false, 0.2f);
+        FinalizedGame game4 = new FinalizedGame("Fun Classroom Game","Fun for the whole family.", Genre.RPG, "Blazzard", 8.2f, 39.99f, true, 0.1f);
+        FinalizedGame game5 = new FinalizedGame("Some CS304 Project","So fun you won't even notice it isn't a game.", Genre.SPORTS, "Dan", 3.5f, 29.99f, false, 0f);
         
         GameTester tester1 = new GameTester(1, "gametester1@gmail.com", "Pass1");
         GameTester tester2 = new GameTester(2, "gametester2@gmail.com", "Pass2");
@@ -160,11 +160,11 @@ final class InitializeDatabase {
         GameTester tester4 = new GameTester(4, "gametester4@gmail.com", "Pass4");
         GameTester tester5 = new GameTester(5, "gametester5@gmail.com", "Pass5");
         
-        GameInDevelopment gameInDev1 = new GameInDevelopment("Developing Game 1","fun game", Genre.RPG, "Bob", "0.10.10");
-        GameInDevelopment gameInDev2 = new GameInDevelopment("Developing Game 2","not a fun game", Genre.INDIE, "Dude", "1.0.0");
-        GameInDevelopment gameInDev3 = new GameInDevelopment("Developing Game 3","????", Genre.CASUAL, "Blazzard", "0.1.2");
-        GameInDevelopment gameInDev4 = new GameInDevelopment("Developing Game 4","fun game", Genre.RPG, "Bobby", "0.3.5");
-        GameInDevelopment gameInDev5 = new GameInDevelopment("Developing Game 5","fun game", Genre.SIMULATION, "bobb", "0.3.5");
+        GameInDevelopment gameInDev1 = new GameInDevelopment("Dev1","Coming to theatres 2016.", Genre.RPG, "Bob", "0.10.10");
+        GameInDevelopment gameInDev2 = new GameInDevelopment("The Game","The description.", Genre.INDIE, "Captn Obvious", "1.0.0");
+        GameInDevelopment gameInDev3 = new GameInDevelopment("Mind Games","????", Genre.CASUAL, "Blazzard", "0.1.2");
+        GameInDevelopment gameInDev4 = new GameInDevelopment("Dev4","This is test game. Please don't upvote.", Genre.RPG, "Bobby", "0.0.0");
+        GameInDevelopment gameInDev5 = new GameInDevelopment("The Hack You Never Thought Of","Answer to life is 32.", Genre.SIMULATION, "32", "32");
         
         CreditCard card1 = new CreditCard(customer1, "1111222233334444", "922", "12 Neighbourhood Drive");
         CreditCard card2 = new CreditCard(customer2, "1111222233335555", "214", "100 Broadway Street");

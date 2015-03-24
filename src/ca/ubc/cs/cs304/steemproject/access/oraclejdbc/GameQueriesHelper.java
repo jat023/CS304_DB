@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import ca.ubc.cs.cs304.steemproject.access.options.GameSortByOption;
 import ca.ubc.cs.cs304.steemproject.access.options.SortDirection;
+import ca.ubc.cs.cs304.steemproject.base.Genre;
 
 final class GameQueriesHelper {
     
@@ -16,7 +17,7 @@ final class GameQueriesHelper {
     
     public static ResultSet queryGames(
             String table,
-            String matchName, String matchGenre, String matchDeveloper, Float matchLowestPrice, Float matchHighestPrice, 
+            String matchName, Genre matchGenre, String matchDeveloper, Float matchLowestPrice, Float matchHighestPrice, 
             GameSortByOption sortByOption, SortDirection sortDirection,
             boolean onlyDiscountedGames, Integer ownerId) {
 
@@ -43,7 +44,7 @@ final class GameQueriesHelper {
             }
 
             if (matchDeveloper != null) {
-                constraints.add(Tables.GAME_ATTR_DEVELOPER+ "='" + matchDeveloper + "'");
+                constraints.add("UPPER(" +Tables.GAME_ATTR_DEVELOPER+ ")='" + matchDeveloper.toUpperCase() + "'");
             }
 
             if (matchLowestPrice != null) {

@@ -4,6 +4,7 @@ import java.util.List;
 
 import ca.ubc.cs.cs304.steemproject.access.options.GameSortByOption;
 import ca.ubc.cs.cs304.steemproject.access.options.SortDirection;
+import ca.ubc.cs.cs304.steemproject.base.Genre;
 import ca.ubc.cs.cs304.steemproject.base.released.FinalizedGame;
 import ca.ubc.cs.cs304.steemproject.base.released.Playtime;
 import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
@@ -32,7 +33,7 @@ public interface IPublicAccessor {
      * @return
      */
     public List<FinalizedGame> listPurchasableGames(
-            String matchName, String matchGenre, String matchDeveloper, 
+            String matchName, Genre matchGenre, String matchDeveloper, 
             Float matchLowestPrice, Float matchHighestPrice, 
             GameSortByOption sortByOption, SortDirection sortDirection, 
             boolean listOnlyDiscountedGames);
@@ -67,7 +68,7 @@ public interface IPublicAccessor {
      */
     public List<Playtime> listGamesOwned(
             int gameOwnerId, 
-            String matchName, String matchGenre, String matchDeveloper,
+            String matchName, Genre matchGenre, String matchDeveloper,
             GameSortByOption sortByOption, SortDirection sortDirection) throws UserNotExistsException;
 
     /**
@@ -84,7 +85,7 @@ public interface IPublicAccessor {
      */
     public List<Playtime> listGamesOwned(
             String gameOwnerEmail, 
-            String matchName, String matchGenre, String matchDeveloper, 
+            String matchName, Genre matchGenre, String matchDeveloper, 
             GameSortByOption sortByOption, SortDirection sortDirection) throws UserNotExistsException;
 
 }
