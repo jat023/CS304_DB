@@ -25,21 +25,21 @@ final class InitializeDatabase {
 
     private static final String createCustomerSQL = "CREATE TABLE " +Tables.CUSTOMER_TABLENAME+ " (" +
             Tables.USER_ATTR_USERID+ " INT," +
-            Tables.USER_ATTR_EMAIL+ " VARCHAR(30) NOT NULL UNIQUE," +
-            Tables.USER_ATTR_PASSWORD+ " VARCHAR(30) NOT NULL," +
+            Tables.USER_ATTR_EMAIL+ " VARCHAR(50) NOT NULL UNIQUE," +
+            Tables.USER_ATTR_PASSWORD+ " VARCHAR(50) NOT NULL," +
             "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ") )";
 
     private static final String createGameTesterSQL = "CREATE TABLE " +Tables.GAME_TESTER_TABLENAME+ " (" +
             Tables.USER_ATTR_USERID+ " INT," +
-            Tables.USER_ATTR_EMAIL+ " VARCHAR(30) NOT NULL UNIQUE," +
-            Tables.USER_ATTR_PASSWORD+ " VARCHAR(30) NOT NULL," +
+            Tables.USER_ATTR_EMAIL+ " VARCHAR(50) NOT NULL UNIQUE," +
+            Tables.USER_ATTR_PASSWORD+ " VARCHAR(50) NOT NULL," +
             "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ") )";
 
     private static final String createFinalizedGameSQL = "CREATE TABLE " +Tables.FINALIZED_GAME_TABLENAME+ " (" +
-            Tables.GAME_ATTR_NAME+ " VARCHAR(15)," +
+            Tables.GAME_ATTR_NAME+ " VARCHAR(30)," +
             Tables.GAME_ATTR_DESCRIPTION+ " VARCHAR(2000) NOT NULL," +
             Tables.GAME_ATTR_GENRE+ " VARCHAR(15) NOT NULL," +
-            Tables.GAME_ATTR_DEVELOPER+ " VARCHAR(15) NOT NULL," +
+            Tables.GAME_ATTR_DEVELOPER+ " VARCHAR(30) NOT NULL," +
             Tables.FINALIZED_GAME_ATTR_RATING+ " NUMBER(3,1) NOT NULL," +
             Tables.FINALIZED_GAME_ATTR_FULLPRICE+ " NUMBER(4,2) NOT NULL," +
             Tables.FINALIZED_GAME_ATTR_ONSPECIAL+ " NUMBER(1) DEFAULT 0 NOT NULL," +
@@ -50,10 +50,10 @@ final class InitializeDatabase {
             "CONSTRAINT discountConstraint CHECK (" +Tables.FINALIZED_GAME_ATTR_DISCOUNTPERC+ " <= 1 AND " +Tables.FINALIZED_GAME_ATTR_DISCOUNTPERC+ " >= 0) )";
 
     private static final String createGameInDevelopmentSQL = "CREATE TABLE "+Tables.DEVELOPMENT_GAMETABLENAME+" ("+
-            Tables.GAME_ATTR_NAME+ " VARCHAR(15)," +
+            Tables.GAME_ATTR_NAME+ " VARCHAR(30)," +
             Tables.GAME_ATTR_DESCRIPTION+ " VARCHAR(2000) NOT NULL," +
             Tables.GAME_ATTR_GENRE+ " VARCHAR(15) NOT NULL,"+
-            Tables.GAME_ATTR_DEVELOPER+ " VARCHAR(15) NOT NULL,"+
+            Tables.GAME_ATTR_DEVELOPER+ " VARCHAR(30) NOT NULL,"+
             Tables.DEVELOPMENT_GAME_ATTR_VERSION+ " CHAR(10) NOT NULL," +
             "PRIMARY KEY (" +Tables.GAME_ATTR_NAME+ ") )";
 
@@ -64,28 +64,27 @@ final class InitializeDatabase {
             Tables.USER_ATTR_USERID+ " INT NOT NULL,"+
             "PRIMARY KEY (" + Tables.CREDIT_CARD_ATTR_CARDNUM+ "),"+
             "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ") REFERENCES " +Tables.CUSTOMER_TABLENAME+ " )";
+    
+    private static final String createTransactionSQL = "CREATE TABLE "+Tables.TRANSACTION_TABLENAME+" (" +
+            Tables.USER_ATTR_USERID+ " INT,"+
+            Tables.GAME_ATTR_NAME+ " VARCHAR(30),"+
+            Tables.CREDIT_CARD_ATTR_CARDNUM+ " CHAR(16),"+
+            Tables.TRANSACTION_ATTR_TIME+ " DATE NOT NULL,"+
+            "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ "),"+
+            "FOREIGN KEY (" + Tables.CREDIT_CARD_ATTR_CARDNUM+ ") REFERENCES " +Tables.CREDIT_CARD_TABLENAME+ " )";
 
     private static final String createOwnsGameSQL = "CREATE TABLE "+Tables.OWNS_GAME_TABLENAME+" (" +
             Tables.USER_ATTR_USERID+ " INT,"+
-            Tables.GAME_ATTR_NAME+ " VARCHAR(15),"+
+            Tables.GAME_ATTR_NAME+ " VARCHAR(30),"+
             Tables.OWNS_GAME_ATTR_HOURS+ " NUMBER(5) DEFAULT 0 NOT NULL,"+
             "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ "),"+
             "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ") REFERENCES " +Tables.CUSTOMER_TABLENAME+ ","+
+            "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.TRANSACTION_TABLENAME+ ","+
             "FOREIGN KEY (" +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.FINALIZED_GAME_TABLENAME+ " )";
-
-    private static final String createTransactionSQL = "CREATE TABLE "+Tables.TRANSACTION_TABLENAME+" (" +
-            Tables.USER_ATTR_USERID+ " INT,"+
-            Tables.GAME_ATTR_NAME+ " VARCHAR(15),"+
-            Tables.CREDIT_CARD_ATTR_CARDNUM+ " CHAR(16),"+
-            Tables.TRANSACTION_ATTR_TIME+ " DATE NOT NULL,"+
-            Tables.TRANSACTION_ATTR_TIME+ " DATE NOT NULL,"+
-            "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ "),"+
-            "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.OWNS_GAME_TABLENAME+ ","+
-            "FOREIGN KEY (" + Tables.CREDIT_CARD_ATTR_CARDNUM+ ") REFERENCES " +Tables.CREDIT_CARD_TABLENAME+ " )";
 
     private static final String createTestSQL = "CREATE TABLE "+Tables.FEEDBACK_TABLENAME+" (" +
             Tables.USER_ATTR_USERID+ " INT,"+
-            Tables.GAME_ATTR_NAME+ " VARCHAR(15),"+
+            Tables.GAME_ATTR_NAME+ " VARCHAR(30),"+
             Tables.FEEDBACK_ATTR_TIME+ " DATE NOT NULL,"+
             Tables.FEEDBACK_ATTR_RATING+ " NUMBER(2,1) NOT NULL,"+
             Tables.FEEDBACK_ATTR_FEEDBACK+ " VARCHAR(2000) NOT NULL,"+
@@ -130,11 +129,11 @@ final class InitializeDatabase {
         statement.execute(createCreditCardSQL);
         log.info("Created table " + Tables.CREDIT_CARD_TABLENAME);
 
-        statement.execute(createOwnsGameSQL);
-        log.info("Created table " + Tables.OWNS_GAME_TABLENAME);
-
         statement.execute(createTransactionSQL);
         log.info("Created table " + Tables.TRANSACTION_TABLENAME);
+        
+        statement.execute(createOwnsGameSQL);
+        log.info("Created table " + Tables.OWNS_GAME_TABLENAME);
 
         statement.execute(createTestSQL);
         log.info("Created table " + Tables.FEEDBACK_TABLENAME);
@@ -188,6 +187,7 @@ final class InitializeDatabase {
         GameTesterFeedback feedback4 = new GameTesterFeedback(gameInDev3, tester4, date3, 3.0f, "Early Development");
         GameTesterFeedback feedback5 = new GameTesterFeedback(gameInDev4, tester1, date4, 8.1f, "After 20 patches..");
         
+        log.info("Inserting customers.");
         
         Inserts.insertCustomer(customer1);
         Inserts.insertCustomer(customer2);
@@ -195,11 +195,15 @@ final class InitializeDatabase {
         Inserts.insertCustomer(customer4);
         Inserts.insertCustomer(customer5);
         
+        log.info("Inserting game testers.");
+        
         Inserts.insertGameTester(tester1);
         Inserts.insertGameTester(tester2);
         Inserts.insertGameTester(tester3);
         Inserts.insertGameTester(tester4);
         Inserts.insertGameTester(tester5);
+        
+        log.info("Inserting finalized games.");
         
         Inserts.insertFinalizedGame(game1);
         Inserts.insertFinalizedGame(game2);
@@ -207,17 +211,15 @@ final class InitializeDatabase {
         Inserts.insertFinalizedGame(game4);
         Inserts.insertFinalizedGame(game5);
         
+        log.info("Inserting games in development.");
+        
         Inserts.insertGameInDevelopment(gameInDev1);
         Inserts.insertGameInDevelopment(gameInDev2);
         Inserts.insertGameInDevelopment(gameInDev3);
         Inserts.insertGameInDevelopment(gameInDev4);
         Inserts.insertGameInDevelopment(gameInDev5);
         
-        Inserts.insertOwnsGame(new Playtime(customer1, game1, 5.2f));
-        Inserts.insertOwnsGame(new Playtime(customer2, game2, 5.2f));
-        Inserts.insertOwnsGame(new Playtime(customer3, game3, 5.2f));
-        Inserts.insertOwnsGame(new Playtime(customer4, game4, 5.2f));
-        Inserts.insertOwnsGame(new Playtime(customer5, game5, 5.2f));
+        log.info("Inserting credit cards.");
         
         Inserts.insertCreditCard(card1);
         Inserts.insertCreditCard(card2);
@@ -225,11 +227,23 @@ final class InitializeDatabase {
         Inserts.insertCreditCard(card4);
         Inserts.insertCreditCard(card5);
         
+        log.info("Inserting transactions");
+        
         Inserts.insertTransaction(transaction1);
         Inserts.insertTransaction(transaction2);
         Inserts.insertTransaction(transaction3);
         Inserts.insertTransaction(transaction4);
         Inserts.insertTransaction(transaction5);
+        
+        log.info("Inserting play times.");
+        
+        Inserts.insertOwnsGame(new Playtime(transaction1.getBuyer(), transaction1.getGame(), 5.2f));
+        Inserts.insertOwnsGame(new Playtime(transaction2.getBuyer(), transaction2.getGame(), 2.4f));
+        Inserts.insertOwnsGame(new Playtime(transaction3.getBuyer(), transaction3.getGame(), 0.2f));
+        Inserts.insertOwnsGame(new Playtime(transaction4.getBuyer(), transaction4.getGame(), 66f));
+        Inserts.insertOwnsGame(new Playtime(transaction5.getBuyer(), transaction5.getGame(), 0.0f));
+        
+        log.info("Inserting feedbacks.");
         
         Inserts.insertFeedback(feedback1);
         Inserts.insertFeedback(feedback2);
@@ -250,7 +264,7 @@ final class InitializeDatabase {
 
         try {
 
-            stmt.execute("DROP TABLE " + aTableName);
+            stmt.execute("DROP TABLE " + aTableName + " CASCADE CONSTRAINTS");
             log.debug("Dropped table " + aTableName);
 
         } catch (SQLException e) {

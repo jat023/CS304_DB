@@ -32,7 +32,7 @@ final class Inserts {
                     + "("
                     + Tables.USER_ATTR_USERID+ ","
                     + Tables.USER_ATTR_EMAIL+ ","
-                    + Tables.USER_ATTR_PASSWORD+ ","
+                    + Tables.USER_ATTR_PASSWORD
                     + ") VALUES "
                     + "(?,?,?)");
         }
@@ -51,7 +51,7 @@ final class Inserts {
                     + "("
                     + Tables.USER_ATTR_USERID+ ","
                     + Tables.USER_ATTR_EMAIL+ ","
-                    + Tables.USER_ATTR_PASSWORD+ ","
+                    + Tables.USER_ATTR_PASSWORD
                     + ") VALUES "
                     + "(?,?,?)");
         }
@@ -95,7 +95,7 @@ final class Inserts {
                     + Tables.GAME_ATTR_DESCRIPTION+ ","
                     + Tables.GAME_ATTR_GENRE+ ","
                     + Tables.GAME_ATTR_DEVELOPER+ ","
-                    + Tables.DEVELOPMENT_GAME_ATTR_VERSION+ ","
+                    + Tables.DEVELOPMENT_GAME_ATTR_VERSION
                     + ") VALUES "
                     + "(?,?,?,?,?)");
         }
@@ -115,7 +115,7 @@ final class Inserts {
                     + Tables.CREDIT_CARD_ATTR_CARDNUM+ ","
                     + Tables.CREDIT_CARD_ATTR_ADDRESS+ ","
                     + Tables.CREDIT_CARD_ATTR_CCV+ ","
-                    + Tables.USER_ATTR_USERID+ ","
+                    + Tables.USER_ATTR_USERID
                     + ") VALUES "
                     + "(?,?,?,?)");
         }
@@ -134,7 +134,7 @@ final class Inserts {
                     + "("
                     + Tables.USER_ATTR_USERID+ ","
                     + Tables.GAME_ATTR_NAME+ ","
-                    + Tables.OWNS_GAME_ATTR_HOURS+ ","
+                    + Tables.OWNS_GAME_ATTR_HOURS
                     + ") VALUES "
                     + "(?,?,?)");
         }
@@ -153,7 +153,7 @@ final class Inserts {
                     + Tables.USER_ATTR_USERID+ ","
                     + Tables.GAME_ATTR_NAME+ ","
                     + Tables.CREDIT_CARD_ATTR_CARDNUM+ ","
-                    + Tables.TRANSACTION_ATTR_TIME+ ","
+                    + Tables.TRANSACTION_ATTR_TIME
                     + ") VALUES "
                     + "(?,?,?,?)");
         }
@@ -174,7 +174,7 @@ final class Inserts {
                     + Tables.GAME_ATTR_NAME+ ","
                     + Tables.FEEDBACK_ATTR_TIME+ ","
                     + Tables.FEEDBACK_ATTR_RATING+ ","
-                    + Tables.FEEDBACK_ATTR_FEEDBACK+ ","
+                    + Tables.FEEDBACK_ATTR_FEEDBACK
                     + ") VALUES "
                     + "(?,?,?,?,?)");
         }
