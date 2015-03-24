@@ -81,7 +81,7 @@ public class OracleGameTesterAccessor implements IGameTesterAccessor {
             throw new RuntimeException("Could not read results.", e);
         }
 
-        return null;
+        return games;
     }
 
     @Override
