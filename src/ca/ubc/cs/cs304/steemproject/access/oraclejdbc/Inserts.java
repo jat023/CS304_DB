@@ -55,6 +55,11 @@ final class Inserts {
                     + ") VALUES "
                     + "(?,?,?)");
         }
+        
+        fInsertGameTesterStatement.setInt(1, aGameTester.getUserId());
+        fInsertGameTesterStatement.setString(2, aGameTester.getEmail());
+        fInsertGameTesterStatement.setString(3, aGameTester.getPassword());
+        fInsertGameTesterStatement.executeUpdate();
     }
 
     public static void insertFinalizedGame(FinalizedGame aPurchasableGame) throws SQLException {
@@ -184,6 +189,6 @@ final class Inserts {
         fInsertFeedbackStatement.setTimestamp(3, new Timestamp(aFeedback.getDate().getTime()));
         fInsertFeedbackStatement.setFloat(4, aFeedback.getRating());
         fInsertFeedbackStatement.setString(5, aFeedback.getFeedback());
-
+        fInsertFeedbackStatement.executeUpdate();
     }
 }

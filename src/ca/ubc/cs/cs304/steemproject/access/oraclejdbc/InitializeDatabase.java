@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 import org.apache.log4j.Logger;
 
@@ -92,6 +93,7 @@ final class InitializeDatabase {
             "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ") REFERENCES " +Tables.GAME_TESTER_TABLENAME+ ","+
             "FOREIGN KEY (" +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.DEVELOPMENT_GAMETABLENAME+ " )";
 
+    private static Random fRandom = new Random(123);
     
     private static Connection fConnection;
     
@@ -137,7 +139,7 @@ final class InitializeDatabase {
 
         statement.execute(createTestSQL);
         log.info("Created table " + Tables.FEEDBACK_TABLENAME);
-
+        
         // Insert at least five rows into all the tables.
         
         Customer customer1 = new Customer(1, "customer1@gmail.com", "apple123");
@@ -170,22 +172,17 @@ final class InitializeDatabase {
         CreditCard card4 = new CreditCard(customer4, "1111222233337777", "152", "14 Neighbourhood Drive");
         CreditCard card5 = new CreditCard(customer5, "1111222233338888", "177", "16 Neighbourhood Drive");
         
-        Date date1 = createDate(2009,05,15);
-        Date date2 = createDate(2010,06,22);
-        Date date3 = createDate(2011,06,22);
-        Date date4 = createDate(2012,02,25);
+        Transaction transaction1 = new Transaction( customer1, card1, game1, generateRandomDate() );
+        Transaction transaction2 = new Transaction( customer2, card2, game2, generateRandomDate() );
+        Transaction transaction3 = new Transaction( customer3, card3, game3, generateRandomDate() );
+        Transaction transaction4 = new Transaction( customer4, card4, game4, generateRandomDate() );
+        Transaction transaction5 = new Transaction( customer1, card1, game2, generateRandomDate() );
         
-        Transaction transaction1 = new Transaction( customer1, card1, game1, date1 );
-        Transaction transaction2 = new Transaction( customer2, card2, game2, date2 );
-        Transaction transaction3 = new Transaction( customer3, card3, game3, date3 );
-        Transaction transaction4 = new Transaction( customer4, card4, game4, date4 );
-        Transaction transaction5 = new Transaction( customer1, card1, game2, date2 );
-        
-        GameTesterFeedback feedback1 = new GameTesterFeedback(gameInDev1, tester1, date1, 2.1f, "Very Buggy");
-        GameTesterFeedback feedback2 = new GameTesterFeedback(gameInDev1, tester2, date2, 0.1f, "Game too hard");
-        GameTesterFeedback feedback3 = new GameTesterFeedback(gameInDev2, tester3, date3, 8.8f, "AWESOME");
-        GameTesterFeedback feedback4 = new GameTesterFeedback(gameInDev3, tester4, date3, 3.0f, "Early Development");
-        GameTesterFeedback feedback5 = new GameTesterFeedback(gameInDev4, tester1, date4, 8.1f, "After 20 patches..");
+        GameTesterFeedback feedback1 = new GameTesterFeedback(gameInDev1, tester1, generateRandomDate(), 2.1f, "Very Buggy");
+        GameTesterFeedback feedback2 = new GameTesterFeedback(gameInDev1, tester2, generateRandomDate(), 0.1f, "Game too hard");
+        GameTesterFeedback feedback3 = new GameTesterFeedback(gameInDev2, tester3, generateRandomDate(), 8.8f, "AWESOME");
+        GameTesterFeedback feedback4 = new GameTesterFeedback(gameInDev3, tester4, generateRandomDate(), 3.0f, "Early Development");
+        GameTesterFeedback feedback5 = new GameTesterFeedback(gameInDev4, tester1, generateRandomDate(), 8.1f, "After 20 patches..");
         
         log.info("Inserting customers.");
         
@@ -286,9 +283,30 @@ final class InitializeDatabase {
     private static Date createDate(int year, int month, int day) {
     	Calendar tempCal = Calendar.getInstance();
         tempCal.set(year, month, day);
-        Date tempDate = new Date();
-        tempDate = tempCal.getTime();
+        Date tempDate = tempCal.getTime();
+        tempDate.setTime(tempDate.getTime() + randInt(-86400000, 86400000)); // plus or minus a day
         return tempDate;
+    }
+    
+    private static Date generateRandomDate() {
+        return createDate(randInt(2000,2015), randInt(1,12), randInt(1,28));
+    }
+    
+    /**
+     * Returns a pseudo-random number between min and max, inclusive.
+     * The difference between min and max can be at most
+     * <code>Integer.MAX_VALUE - 1</code>.
+     *
+     * @param min Minimum value
+     * @param max Maximum value.  Must be greater than min.
+     * @return Integer between min and max, inclusive.
+     * @see java.util.Random#nextInt(int)
+     */
+    public static int randInt(int min, int max) {
+        
+        int randomNum = fRandom.nextInt((max - min) + 1) + min;
+
+        return randomNum;
     }
     
     public static void main(String[] args) {
