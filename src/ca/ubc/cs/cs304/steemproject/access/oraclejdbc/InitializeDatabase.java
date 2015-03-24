@@ -72,7 +72,7 @@ final class InitializeDatabase {
             Tables.CREDIT_CARD_ATTR_CARDNUM+ " CHAR(16),"+
             Tables.TRANSACTION_ATTR_TIME+ " DATE NOT NULL,"+
             "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ "),"+
-            "FOREIGN KEY (" + Tables.CREDIT_CARD_ATTR_CARDNUM+ ") REFERENCES " +Tables.CREDIT_CARD_TABLENAME+ " ON DELETE CASCADE )";
+            "FOREIGN KEY (" + Tables.CREDIT_CARD_ATTR_CARDNUM+ ") REFERENCES " +Tables.CREDIT_CARD_TABLENAME+ " ON DELETE RESTRICT )";
 
     private static final String createOwnsGameSQL = "CREATE TABLE "+Tables.OWNS_GAME_TABLENAME+" (" +
             Tables.USER_ATTR_USERID+ " INT,"+
