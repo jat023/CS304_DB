@@ -65,7 +65,7 @@ final class InitializeDatabase {
             Tables.USER_ATTR_USERID+ " INT NOT NULL,"+
             "PRIMARY KEY (" + Tables.CREDIT_CARD_ATTR_CARDNUM+ "),"+
             "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ") REFERENCES " +Tables.CUSTOMER_TABLENAME+ " ON DELETE CASCADE )";
-    
+
     private static final String createTransactionSQL = "CREATE TABLE "+Tables.TRANSACTION_TABLENAME+" (" +
             Tables.USER_ATTR_USERID+ " INT,"+
             Tables.GAME_ATTR_NAME+ " VARCHAR(30),"+
@@ -80,7 +80,8 @@ final class InitializeDatabase {
             Tables.OWNS_GAME_ATTR_HOURS+ " NUMBER(5) DEFAULT 0 NOT NULL,"+
             "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ "),"+
             "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ") REFERENCES " +Tables.CUSTOMER_TABLENAME+ " ON DELETE CASCADE ,"+
-            "FOREIGN KEY (" +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.FINALIZED_GAME_TABLENAME+ " ON DELETE CASCADE )";
+            "FOREIGN KEY (" +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.FINALIZED_GAME_TABLENAME+ " ON DELETE CASCADE ," +
+            "CONSTRAINT positivePlaytime CHECK(" +Tables.OWNS_GAME_ATTR_HOURS+ ">=0))";
 
     private static final String createTestSQL = "CREATE TABLE "+Tables.FEEDBACK_TABLENAME+" (" +
             Tables.USER_ATTR_USERID+ " INT,"+
@@ -93,13 +94,13 @@ final class InitializeDatabase {
             "FOREIGN KEY (" +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.DEVELOPMENT_GAMETABLENAME+ " ON DELETE CASCADE )";
 
     private static Random fRandom = new Random(123);
-    
+
     private static Connection fConnection;
-    
+
     private static void init() throws SQLException {
-        
+
         fConnection = SteemOracleDbConnector.getDefaultConnection();
-        
+
         Statement statement = fConnection.createStatement();
 
         // Drop existing tables.
@@ -132,121 +133,131 @@ final class InitializeDatabase {
 
         statement.execute(createTransactionSQL);
         log.info("Created table " + Tables.TRANSACTION_TABLENAME);
-        
+
         statement.execute(createOwnsGameSQL);
         log.info("Created table " + Tables.OWNS_GAME_TABLENAME);
 
         statement.execute(createTestSQL);
         log.info("Created table " + Tables.FEEDBACK_TABLENAME);
-        
+
         // Insert at least five rows into all the tables.
-        
+
         Customer customer1 = new Customer(1, "customer1@gmail.com", "apple123");
         Customer customer2 = new Customer(2, "customer2@gmail.com", "orange123");
         Customer customer3 = new Customer(3, "customer3@gmail.com", "banana123");
         Customer customer4 = new Customer(4, "customer4@gmail.com", "apple123");
         Customer customer5 = new Customer(5, "customer5@gmail.com", "pear123");
-        
+
         FinalizedGame game1 = new FinalizedGame("Sneaky Thief","So sneaky.", Genre.RPG, "Bob", 10f, 1.00f, false, 0f);
         FinalizedGame game2 = new FinalizedGame("Amazing Horse","RIDE TO GLORY!", Genre.STRATEGY, "Dan Inc.", 8.8f, 9.99f, true, 0.4f);
         FinalizedGame game3 = new FinalizedGame("Amazing Irish Luck","Fun for the leprechauns.", Genre.ACTION, "Dan", 5f, 59.99f, false, 0.2f);
         FinalizedGame game4 = new FinalizedGame("Fun Classroom Game","Fun for the whole family.", Genre.RPG, "Blazzard", 8.2f, 39.99f, true, 0.1f);
         FinalizedGame game5 = new FinalizedGame("Some CS304 Project","So fun you won't even notice it isn't a game.", Genre.SPORTS, "Dan", 3.5f, 29.99f, false, 0f);
-        
+
         GameTester tester1 = new GameTester(1, "gametester1@gmail.com", "Pass1");
         GameTester tester2 = new GameTester(2, "gametester2@gmail.com", "Pass2");
         GameTester tester3 = new GameTester(3, "gametester3@gmail.com", "Pass3");
         GameTester tester4 = new GameTester(4, "gametester4@gmail.com", "Pass4");
         GameTester tester5 = new GameTester(5, "gametester5@gmail.com", "Pass5");
-        
+
         GameInDevelopment gameInDev1 = new GameInDevelopment("Dev1","Coming to theatres 2016.", Genre.RPG, "Bob", "0.10.10");
         GameInDevelopment gameInDev2 = new GameInDevelopment("The Game","The description.", Genre.INDIE, "Captn Obvious", "1.0.0");
         GameInDevelopment gameInDev3 = new GameInDevelopment("Mind Games","????", Genre.CASUAL, "Blazzard", "0.1.2");
         GameInDevelopment gameInDev4 = new GameInDevelopment("Dev4","This is test game. Please don't upvote.", Genre.RPG, "Bobby", "0.0.0");
         GameInDevelopment gameInDev5 = new GameInDevelopment("The Hack You Never Thought Of","Answer to life is 32.", Genre.SIMULATION, "32", "32");
-        
+
         CreditCard card1 = new CreditCard(customer1, "1111222233334444", "922", "12 Neighbourhood Drive");
         CreditCard card2 = new CreditCard(customer2, "1111222233335555", "214", "100 Broadway Street");
         CreditCard card3 = new CreditCard(customer3, "1111222233336666", "522", "1202 Maple Street");
         CreditCard card4 = new CreditCard(customer4, "1111222233337777", "152", "14 Neighbourhood Drive");
         CreditCard card5 = new CreditCard(customer5, "1111222233338888", "177", "16 Neighbourhood Drive");
-        
+
         Transaction transaction1 = new Transaction( customer1, card1, game1, generateRandomDate() );
         Transaction transaction2 = new Transaction( customer2, card2, game2, generateRandomDate() );
         Transaction transaction3 = new Transaction( customer3, card3, game3, generateRandomDate() );
         Transaction transaction4 = new Transaction( customer4, card4, game4, generateRandomDate() );
         Transaction transaction5 = new Transaction( customer1, card1, game2, generateRandomDate() );
-        
+        Transaction transaction6 = new Transaction( customer3, card3, game2, generateRandomDate() );
+        Transaction transaction7 = new Transaction( customer4, card4, game2, generateRandomDate() );
+        Transaction transaction8 = new Transaction( customer5, card5, game2, generateRandomDate() );
+
         GameTesterFeedback feedback1 = new GameTesterFeedback(gameInDev1, tester1, generateRandomDate(), 2.1f, "Very Buggy");
         GameTesterFeedback feedback2 = new GameTesterFeedback(gameInDev1, tester2, generateRandomDate(), 0.1f, "Game too hard");
         GameTesterFeedback feedback3 = new GameTesterFeedback(gameInDev2, tester3, generateRandomDate(), 8.8f, "AWESOME");
         GameTesterFeedback feedback4 = new GameTesterFeedback(gameInDev3, tester4, generateRandomDate(), 3.0f, "Early Development");
         GameTesterFeedback feedback5 = new GameTesterFeedback(gameInDev4, tester1, generateRandomDate(), 8.1f, "After 20 patches..");
-        
+
         log.info("Inserting customers.");
-        
+
         Inserts.insertCustomer(customer1);
         Inserts.insertCustomer(customer2);
         Inserts.insertCustomer(customer3);
         Inserts.insertCustomer(customer4);
         Inserts.insertCustomer(customer5);
-        
+
         log.info("Inserting game testers.");
-        
+
         Inserts.insertGameTester(tester1);
         Inserts.insertGameTester(tester2);
         Inserts.insertGameTester(tester3);
         Inserts.insertGameTester(tester4);
         Inserts.insertGameTester(tester5);
-        
+
         log.info("Inserting finalized games.");
-        
+
         Inserts.insertFinalizedGame(game1);
         Inserts.insertFinalizedGame(game2);
         Inserts.insertFinalizedGame(game3);
         Inserts.insertFinalizedGame(game4);
         Inserts.insertFinalizedGame(game5);
-        
+
         log.info("Inserting games in development.");
-        
+
         Inserts.insertGameInDevelopment(gameInDev1);
         Inserts.insertGameInDevelopment(gameInDev2);
         Inserts.insertGameInDevelopment(gameInDev3);
         Inserts.insertGameInDevelopment(gameInDev4);
         Inserts.insertGameInDevelopment(gameInDev5);
-        
+
         log.info("Inserting credit cards.");
-        
+
         Inserts.insertCreditCard(card1);
         Inserts.insertCreditCard(card2);
         Inserts.insertCreditCard(card3);
         Inserts.insertCreditCard(card4);
         Inserts.insertCreditCard(card5);
-        
+
         log.info("Inserting transactions");
-        
+
         Inserts.insertTransaction(transaction1);
         Inserts.insertTransaction(transaction2);
         Inserts.insertTransaction(transaction3);
         Inserts.insertTransaction(transaction4);
         Inserts.insertTransaction(transaction5);
-        
+        Inserts.insertTransaction(transaction6);
+        Inserts.insertTransaction(transaction7);
+        Inserts.insertTransaction(transaction8);
+
         log.info("Inserting play times.");
-        
+
         Inserts.insertOwnsGame(new Playtime(transaction1.getBuyer(), transaction1.getGame(), 5.2f));
         Inserts.insertOwnsGame(new Playtime(transaction2.getBuyer(), transaction2.getGame(), 2.4f));
         Inserts.insertOwnsGame(new Playtime(transaction3.getBuyer(), transaction3.getGame(), 0.2f));
         Inserts.insertOwnsGame(new Playtime(transaction4.getBuyer(), transaction4.getGame(), 66f));
         Inserts.insertOwnsGame(new Playtime(transaction5.getBuyer(), transaction5.getGame(), 0.0f));
-        
+        Inserts.insertOwnsGame(new Playtime(transaction6.getBuyer(), transaction6.getGame(), 0.0f));
+        Inserts.insertOwnsGame(new Playtime(transaction7.getBuyer(), transaction7.getGame(), 0.0f));
+        Inserts.insertOwnsGame(new Playtime(transaction8.getBuyer(), transaction8.getGame(), 0.0f));
+
+
         log.info("Inserting feedbacks.");
-        
+
         Inserts.insertFeedback(feedback1);
         Inserts.insertFeedback(feedback2);
         Inserts.insertFeedback(feedback3);
         Inserts.insertFeedback(feedback4);
         Inserts.insertFeedback(feedback5);
-        
+
     }
 
     private static void dropTableIfExists(Connection con, String aTableName) {
@@ -275,23 +286,23 @@ final class InitializeDatabase {
 
         }
     }
-    
+
     /**
      * Creates a Date and sets the year, month, and day to specified values.
      * Hours, minutes, etc. set to current time.
      **/
     private static Date createDate(int year, int month, int day) {
-    	Calendar tempCal = Calendar.getInstance();
+        Calendar tempCal = Calendar.getInstance();
         tempCal.set(year, month, day);
         Date tempDate = tempCal.getTime();
         tempDate.setTime(tempDate.getTime() + randInt(-86400000, 86400000)); // plus or minus a day
         return tempDate;
     }
-    
+
     private static Date generateRandomDate() {
         return createDate(randInt(2000,2015), randInt(1,12), randInt(1,28));
     }
-    
+
     /**
      * Returns a pseudo-random number between min and max, inclusive.
      * The difference between min and max can be at most
@@ -303,12 +314,12 @@ final class InitializeDatabase {
      * @see java.util.Random#nextInt(int)
      */
     public static int randInt(int min, int max) {
-        
+
         int randomNum = fRandom.nextInt((max - min) + 1) + min;
 
         return randomNum;
     }
-    
+
     public static void main(String[] args) {
         try {
             init();
@@ -316,7 +327,7 @@ final class InitializeDatabase {
         } catch (Exception e) {
             log.error("Database initialization failed.", e);
         }
-        
+
     }
 
 }

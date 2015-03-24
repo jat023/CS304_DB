@@ -167,7 +167,7 @@ public class OracleCustomerAccessor implements ICustomerAccessor {
                 transactions.add(new Transaction(
                         aCustomer, 
                         Retrieves.retrieveCreditCard(results.getString(Tables.CREDIT_CARD_ATTR_CARDNUM)), 
-                        GameQueriesHelper.retrieveFinalizedGame(results.getString(Tables.GAME_ATTR_NAME)),
+                        Retrieves.retrieveFinalizedGame(results.getString(Tables.GAME_ATTR_NAME)),
                         new Date(results.getTimestamp(Tables.TRANSACTION_ATTR_TIME).getTime())));
             }
         } catch (SQLException e) {

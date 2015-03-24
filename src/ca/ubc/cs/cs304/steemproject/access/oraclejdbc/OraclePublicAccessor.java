@@ -30,22 +30,34 @@ public class OraclePublicAccessor implements IPublicAccessor {
     private final PreparedStatement fMostPopularGameSQL;
     private final PreparedStatement fMostExpensiveGenreSQL;
     private final PreparedStatement fLeastExpensiveGenreSQL;
+    private final PreparedStatement fGamesOwnedByAllSQL;
 
     private static OraclePublicAccessor fInstance;
 
     private OraclePublicAccessor() {
         try {
+            
             fMostPopularGameSQL = SteemOracleDbConnector.getDefaultConnection().prepareStatement(
                     "SELECT " +Tables.GAME_ATTR_NAME+ " FROM "  +Tables.OWNS_GAME_TABLENAME+ " GROUP BY " +Tables.GAME_ATTR_NAME
                     + " HAVING COUNT(*) >= ALL (SELECT COUNT(*) FROM " +Tables.OWNS_GAME_TABLENAME+ " GROUP BY " +Tables.GAME_ATTR_NAME+ ")");
+            
             fMostExpensiveGenreSQL = SteemOracleDbConnector.getDefaultConnection().prepareStatement(
                     "SELECT " +Tables.GAME_ATTR_GENRE+ " FROM "  +Tables.FINALIZED_GAME_TABLENAME+ " GROUP BY " +Tables.GAME_ATTR_GENRE
                     + " HAVING AVG("+Tables.FINALIZED_GAME_ATTR_FULLPRICE+") >= ALL "
                     + " (SELECT AVG(" +Tables.FINALIZED_GAME_ATTR_FULLPRICE+ ") FROM " +Tables.FINALIZED_GAME_TABLENAME+ " GROUP BY " +Tables.GAME_ATTR_GENRE+ ")");
+            
             fLeastExpensiveGenreSQL = SteemOracleDbConnector.getDefaultConnection().prepareStatement(
                     "SELECT " +Tables.GAME_ATTR_GENRE+ " FROM "  +Tables.FINALIZED_GAME_TABLENAME+ " GROUP BY " +Tables.GAME_ATTR_GENRE
                     + " HAVING AVG("+Tables.FINALIZED_GAME_ATTR_FULLPRICE+") <= ALL "
                     + " (SELECT AVG(" +Tables.FINALIZED_GAME_ATTR_FULLPRICE+ ") FROM " +Tables.FINALIZED_GAME_TABLENAME+ " GROUP BY " +Tables.GAME_ATTR_GENRE+ ")");
+            
+            fGamesOwnedByAllSQL = SteemOracleDbConnector.getDefaultConnection().prepareStatement("SELECT " +Tables.GAME_ATTR_NAME
+                    + " FROM " +Tables.OWNS_GAME_TABLENAME
+                    + " WHERE " +Tables.USER_ATTR_USERID+ " IN ( SELECT " +Tables.USER_ATTR_USERID+ " FROM " +Tables.CUSTOMER_TABLENAME+ " )"
+                    + " GROUP BY " +Tables.GAME_ATTR_NAME
+                    + " HAVING COUNT(*) ="
+                    + " ( SELECT COUNT (*) FROM " +Tables.CUSTOMER_TABLENAME+ " )");
+            
         } catch (SQLException e) {
             log.error("Could not prepare statements.", e);
             throw new InternalConnectionException("Could not prepare statements.", e);
@@ -166,7 +178,7 @@ public class OraclePublicAccessor implements IPublicAccessor {
             Collection<FinalizedGame> popularGames = new HashSet<FinalizedGame>();
 
             while (results.next()) {
-                popularGames.add(GameQueriesHelper.retrieveFinalizedGame(results.getString(Tables.GAME_ATTR_NAME)));
+                popularGames.add(Retrieves.retrieveFinalizedGame(results.getString(Tables.GAME_ATTR_NAME)));
             }
 
             return popularGames;
@@ -201,11 +213,11 @@ public class OraclePublicAccessor implements IPublicAccessor {
 
             if (results.next()) {
                 Genre ret = Genre.valueOf(results.getString(Tables.GAME_ATTR_GENRE));
-                
+
                 if (results.next()) {
                     throw new RuntimeException("Shoot.");
                 }
-                
+
                 return ret;
             } else {
                 throw new GameNotExistException("No games in database?");
@@ -215,6 +227,28 @@ public class OraclePublicAccessor implements IPublicAccessor {
         } catch (GameNotExistException e) {
             throw new RuntimeException("This shouldn't happen.");
         }
+    }
+
+    @Override
+    public Collection<FinalizedGame> findGamesOwnedByAllCustomers() {
+        
+        try {
+            ResultSet results = fGamesOwnedByAllSQL.executeQuery();
+            
+            Collection<FinalizedGame> games = new HashSet<FinalizedGame>();
+            
+            while (results.next()) {
+                games.add(Retrieves.retrieveFinalizedGame(results.getString(Tables.GAME_ATTR_NAME)));
+            }
+            
+            return games;
+            
+        } catch (SQLException e) {
+            throw new InternalConnectionException("Failed to execute query.", e);
+        } catch (GameNotExistException e) {
+            throw new IllegalStateException("Shouldn't happen.", e);
+        }
+        
     }
 
 }

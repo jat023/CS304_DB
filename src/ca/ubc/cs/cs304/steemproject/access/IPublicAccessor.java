@@ -104,4 +104,10 @@ public interface IPublicAccessor {
      * Find the least expensive genre. (ie. Genre where the games of this genre have the lowest average price out of all genres.)
      */
     public Genre findLeastExpensiveGenre();
+    
+    /**
+     * Find the set of games that are owned by every customer.
+     * @return
+     */
+    public Collection<FinalizedGame> findGamesOwnedByAllCustomers();
 }
