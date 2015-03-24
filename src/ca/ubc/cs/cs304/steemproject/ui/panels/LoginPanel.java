@@ -42,7 +42,7 @@ public class LoginPanel extends JPanel {
 
         this.setLayout(null);
 
-        JLabel userLabel = new JLabel("User");
+        JLabel userLabel = new JLabel("Email");
         userLabel.setBounds(10, 10, 80, 25);
         this.add(userLabel);
 
