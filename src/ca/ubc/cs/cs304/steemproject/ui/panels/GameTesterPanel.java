@@ -1,5 +1,6 @@
 package ca.ubc.cs.cs304.steemproject.ui.panels;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -73,6 +74,10 @@ public class GameTesterPanel extends JPanel {
         fGameSortDirectionField = new JComboBox<SortDirection>(SortDirection.values());
         fGameSortDirectionField.setBounds(210, 100, 80, 25);
         this.add(fGameSortDirectionField);
+        
+        JButton searchButton = new JButton("Search");
+        searchButton.setBounds(10, 130, 280, 25);
+        this.add(searchButton);
     }
     
     public static final void main(String[] args) {
