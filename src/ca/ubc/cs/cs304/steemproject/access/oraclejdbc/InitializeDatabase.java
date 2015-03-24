@@ -9,11 +9,6 @@ import java.util.Random;
 
 import org.apache.log4j.Logger;
 
-import ca.ubc.cs.cs304.steemproject.access.Accessors;
-import ca.ubc.cs.cs304.steemproject.access.ICustomerAccessor;
-import ca.ubc.cs.cs304.steemproject.access.IGameTesterAccessor;
-import ca.ubc.cs.cs304.steemproject.access.ILoginAccessor;
-import ca.ubc.cs.cs304.steemproject.access.IPublicAccessor;
 import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.connection.SteemOracleDbConnector;
 import ca.ubc.cs.cs304.steemproject.base.Genre;
 import ca.ubc.cs.cs304.steemproject.base.development.GameInDevelopment;
