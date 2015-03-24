@@ -37,4 +37,9 @@ public class Customer implements IUser {
         return fPassword;
     }
 
+    @Override
+    public String toString() {
+        return "Customer [fUserId=" + fUserId + ", fEmail=" + fEmail
+                + ", fPassword=" + fPassword + "]";
+    }
 }

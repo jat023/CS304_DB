@@ -84,12 +84,10 @@ public class FinalizedGame implements IGame {
 
     @Override
     public String toString() {
-        return "PurchasableGame [fName=" + fName + ", fDescription="
-                + fDescription + ", fGenre=" + fGenre + ", fPublisher="
+        return "FinalizedGame [fName=" + fName + ", fDescription="
+                + fDescription + ", fGenre=" + fGenre + ", fDeveloper="
                 + fDeveloper + ", fRating=" + fRating + ", fPrice=" + fPrice
-                + ", fOnSpecial=" + fOnSpecial + ", getSalePrice()="
-                + getSalePrice() + "]";
+                + ", fOnSpecial=" + fOnSpecial + ", fDiscount=" + fDiscount
+                + ", getSalePrice()=" + getSalePrice() + "]";
     }
-
-
 }

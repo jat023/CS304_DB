@@ -23,4 +23,10 @@ public class Playtime {
     public float getHoursSpent() {
         return fHours;
     }
+
+    @Override
+    public String toString() {
+        return "Playtime [fCustomer=" + fCustomer + ", fFinalizedGame="
+                + fFinalizedGame + ", fHours=" + fHours + "]";
+    }
 }

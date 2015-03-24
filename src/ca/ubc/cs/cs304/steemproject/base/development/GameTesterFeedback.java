@@ -54,4 +54,10 @@ public class GameTesterFeedback {
         return fFeedback;
     }
 
+    @Override
+    public String toString() {
+        return "GameTesterFeedback [fGameInDevelopment=" + fGameInDevelopment
+                + ", fGameTester=" + fGameTester + ", fDate=" + fDate
+                + ", fRating=" + fRating + ", fFeedback=" + fFeedback + "]";
+    }
 }

@@ -37,4 +37,9 @@ public class GameTester implements IUser {
         return fPassword;
     }
 
+    @Override
+    public String toString() {
+        return "GameTester [fUserId=" + fUserId + ", fEmail=" + fEmail
+                + ", fPassword=" + fPassword + "]";
+    }
 }

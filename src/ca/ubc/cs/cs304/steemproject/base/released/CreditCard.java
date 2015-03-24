@@ -43,4 +43,11 @@ public class CreditCard {
     public String getAddress() {
         return fAddress;
     }
+
+    @Override
+    public String toString() {
+        return "CreditCard [fCardOwner=" + fCardOwner + ", fCardNumber="
+                + fCardNumber + ", fCcv=" + fCcv + ", fAddress=" + fAddress
+                + "]";
+    }
 }

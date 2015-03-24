@@ -60,4 +60,10 @@ public class GameInDevelopment implements IGame {
         return fVersion;
     }
 
+    @Override
+    public String toString() {
+        return "GameInDevelopment [fName=" + fName + ", fDescription="
+                + fDescription + ", fGenre=" + fGenre + ", fDeveloper="
+                + fDeveloper + ", fVersion=" + fVersion + "]";
+    }
 }

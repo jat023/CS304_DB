@@ -47,4 +47,10 @@ public class Transaction {
     public Date getDateOfPurchase() {
         return fDate;
     }
+
+    @Override
+    public String toString() {
+        return "Transaction [fCustomer=" + fCustomer + ", fCreditCard="
+                + fCreditCard + ", fGame=" + fGame + ", fDate=" + fDate + "]";
+    }
 }
