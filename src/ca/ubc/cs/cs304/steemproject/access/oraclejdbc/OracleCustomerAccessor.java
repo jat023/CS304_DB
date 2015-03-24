@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 
 import ca.ubc.cs.cs304.steemproject.access.ICustomerAccessor;
 import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.connection.SteemOracleDbConnector;
+import ca.ubc.cs.cs304.steemproject.base.IUser;
 import ca.ubc.cs.cs304.steemproject.base.released.CreditCard;
 import ca.ubc.cs.cs304.steemproject.base.released.Customer;
 import ca.ubc.cs.cs304.steemproject.base.released.FinalizedGame;
@@ -212,4 +213,24 @@ public class OracleCustomerAccessor implements ICustomerAccessor {
         }
 
     }
+
+    @Override
+    public void removeAccount(Customer aCustomer) throws UserNotExistsException {
+        IUser user = QueriesHelper.retrieveUser(aCustomer.getUserId(), Tables.CUSTOMER_TABLENAME);
+        if (user.getUserId() == aCustomer.getUserId() && user.getEmail().equals(aCustomer.getEmail()) && user.getPassword().equals(aCustomer.getPassword())) {
+            
+            String query = "DELETE FROM " +Tables.CUSTOMER_TABLENAME+ " WHERE " +Tables.USER_ATTR_USERID+ "=" +aCustomer.getUserId();
+            
+            try {
+                SteemOracleDbConnector.getDefaultConnection().createStatement().executeUpdate(query);
+            } catch (SQLException e) {
+                throw new InternalConnectionException("Could not execute query: " +query, e);
+            }
+            
+        } else {
+            throw new UserNotExistsException("This user has incorrect credentials. No user with the given ID, email, and password exist in system.");
+        }
+    }
+    
+    
 }

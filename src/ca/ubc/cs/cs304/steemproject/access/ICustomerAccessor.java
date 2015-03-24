@@ -53,4 +53,8 @@ public interface ICustomerAccessor {
      */
     public float userPlayed(Customer aCustomer, FinalizedGame aFinalizedGame, float additionalHours) throws UserNotExistsException, GameNotExistException;
     
+    /**
+     * Removes user account from database and removes all associated entries. (ie. transaction and per-game playtime)
+     */
+    public void removeAccount(Customer aCustomer) throws UserNotExistsException;
 }

@@ -64,7 +64,7 @@ final class InitializeDatabase {
             Tables.CREDIT_CARD_ATTR_CCV+ " CHAR(3) NOT NULL,"+
             Tables.USER_ATTR_USERID+ " INT NOT NULL,"+
             "PRIMARY KEY (" + Tables.CREDIT_CARD_ATTR_CARDNUM+ "),"+
-            "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ") REFERENCES " +Tables.CUSTOMER_TABLENAME+ " )";
+            "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ") REFERENCES " +Tables.CUSTOMER_TABLENAME+ " ON DELETE CASCADE )";
     
     private static final String createTransactionSQL = "CREATE TABLE "+Tables.TRANSACTION_TABLENAME+" (" +
             Tables.USER_ATTR_USERID+ " INT,"+
@@ -72,16 +72,16 @@ final class InitializeDatabase {
             Tables.CREDIT_CARD_ATTR_CARDNUM+ " CHAR(16),"+
             Tables.TRANSACTION_ATTR_TIME+ " DATE NOT NULL,"+
             "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ "),"+
-            "FOREIGN KEY (" + Tables.CREDIT_CARD_ATTR_CARDNUM+ ") REFERENCES " +Tables.CREDIT_CARD_TABLENAME+ " )";
+            "FOREIGN KEY (" + Tables.CREDIT_CARD_ATTR_CARDNUM+ ") REFERENCES " +Tables.CREDIT_CARD_TABLENAME+ " ON DELETE CASCADE )";
 
     private static final String createOwnsGameSQL = "CREATE TABLE "+Tables.OWNS_GAME_TABLENAME+" (" +
             Tables.USER_ATTR_USERID+ " INT,"+
             Tables.GAME_ATTR_NAME+ " VARCHAR(30),"+
             Tables.OWNS_GAME_ATTR_HOURS+ " NUMBER(5) DEFAULT 0 NOT NULL,"+
             "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ "),"+
-            "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ") REFERENCES " +Tables.CUSTOMER_TABLENAME+ ","+
-            "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.TRANSACTION_TABLENAME+ ","+
-            "FOREIGN KEY (" +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.FINALIZED_GAME_TABLENAME+ " )";
+            "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ") REFERENCES " +Tables.CUSTOMER_TABLENAME+ " ON DELETE CASCADE ,"+
+            "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.TRANSACTION_TABLENAME+ " ON DELETE CASCADE ,"+
+            "FOREIGN KEY (" +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.FINALIZED_GAME_TABLENAME+ " ON DELETE CASCADE )";
 
     private static final String createTestSQL = "CREATE TABLE "+Tables.FEEDBACK_TABLENAME+" (" +
             Tables.USER_ATTR_USERID+ " INT,"+
@@ -90,8 +90,8 @@ final class InitializeDatabase {
             Tables.FEEDBACK_ATTR_RATING+ " NUMBER(2,1) NOT NULL,"+
             Tables.FEEDBACK_ATTR_FEEDBACK+ " VARCHAR(2000) NOT NULL,"+
             "PRIMARY KEY (" +Tables.USER_ATTR_USERID+ ", " +Tables.GAME_ATTR_NAME+ ", " +Tables.FEEDBACK_ATTR_TIME+ "),"+
-            "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ") REFERENCES " +Tables.GAME_TESTER_TABLENAME+ ","+
-            "FOREIGN KEY (" +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.DEVELOPMENT_GAMETABLENAME+ " )";
+            "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ") REFERENCES " +Tables.GAME_TESTER_TABLENAME+ " ON DELETE CASCADE ,"+
+            "FOREIGN KEY (" +Tables.GAME_ATTR_NAME+ ") REFERENCES " +Tables.DEVELOPMENT_GAMETABLENAME+ " ON DELETE CASCADE )";
 
     private static Random fRandom = new Random(123);
     
@@ -105,14 +105,14 @@ final class InitializeDatabase {
 
         // Drop existing tables.
 
-        dropTableIfExists(fConnection, Tables.FEEDBACK_TABLENAME);
-        dropTableIfExists(fConnection, Tables.TRANSACTION_TABLENAME);
-        dropTableIfExists(fConnection, Tables.OWNS_GAME_TABLENAME);
-        dropTableIfExists(fConnection, Tables.CREDIT_CARD_TABLENAME);
-        dropTableIfExists(fConnection, Tables.DEVELOPMENT_GAMETABLENAME);
-        dropTableIfExists(fConnection, Tables.FINALIZED_GAME_TABLENAME);
-        dropTableIfExists(fConnection, Tables.GAME_TESTER_TABLENAME);
         dropTableIfExists(fConnection, Tables.CUSTOMER_TABLENAME);
+        dropTableIfExists(fConnection, Tables.GAME_TESTER_TABLENAME);
+        dropTableIfExists(fConnection, Tables.FINALIZED_GAME_TABLENAME);
+        dropTableIfExists(fConnection, Tables.DEVELOPMENT_GAMETABLENAME);
+        dropTableIfExists(fConnection, Tables.CREDIT_CARD_TABLENAME);
+        dropTableIfExists(fConnection, Tables.OWNS_GAME_TABLENAME);
+        dropTableIfExists(fConnection, Tables.TRANSACTION_TABLENAME);
+        dropTableIfExists(fConnection, Tables.FEEDBACK_TABLENAME);
 
         // Create tables.
 
