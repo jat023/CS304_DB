@@ -49,12 +49,14 @@ public interface ICustomerAccessor {
     public List<Transaction> history(Customer aCustomer, Date aBeforeDate, Date aAfterDate) throws UserNotExistsException;
 
     /**
+     * UPDATE QUERY.
      * Update the CCV of an existing credit card.
      * @return new credit card with the CCV changed.
      */
     public CreditCard updateCCV(String aCardNumber, String aNewCcv);
     
     /**
+     * DELETION QUERY.
      * Removes user account from database and removes all associated entries. (ie. transaction and per-game playtime)
      */
     public void removeAccount(Customer aCustomer) throws UserNotExistsException;

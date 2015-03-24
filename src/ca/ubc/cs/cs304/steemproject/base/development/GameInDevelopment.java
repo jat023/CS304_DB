@@ -66,4 +66,55 @@ public class GameInDevelopment implements IGame {
                 + fDescription + ", fGenre=" + fGenre + ", fDeveloper="
                 + fDeveloper + ", fVersion=" + fVersion + "]";
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((fDescription == null) ? 0 : fDescription.hashCode());
+        result = prime * result
+                + ((fDeveloper == null) ? 0 : fDeveloper.hashCode());
+        result = prime * result + ((fGenre == null) ? 0 : fGenre.hashCode());
+        result = prime * result + ((fName == null) ? 0 : fName.hashCode());
+        result = prime * result
+                + ((fVersion == null) ? 0 : fVersion.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        GameInDevelopment other = (GameInDevelopment) obj;
+        if (fDescription == null) {
+            if (other.fDescription != null)
+                return false;
+        } else if (!fDescription.equals(other.fDescription))
+            return false;
+        if (fDeveloper == null) {
+            if (other.fDeveloper != null)
+                return false;
+        } else if (!fDeveloper.equals(other.fDeveloper))
+            return false;
+        if (fGenre != other.fGenre)
+            return false;
+        if (fName == null) {
+            if (other.fName != null)
+                return false;
+        } else if (!fName.equals(other.fName))
+            return false;
+        if (fVersion == null) {
+            if (other.fVersion != null)
+                return false;
+        } else if (!fVersion.equals(other.fVersion))
+            return false;
+        return true;
+    }
+    
+    
 }
