@@ -7,19 +7,19 @@ import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.OraclePublicAccessor;
 
 public class Accessors {
     
-    public ILoginAccessor getLoginAccessor() {
+    public static ILoginAccessor getLoginAccessor() {
         return OracleLoginAccessor.getInstance();
     }
     
-    public IPublicAccessor getPublicAccessor() {
+    public static IPublicAccessor getPublicAccessor() {
         return OraclePublicAccessor.getInstance();
     }
     
-    public IGameTesterAccessor getGameTesterAccessor() {
+    public static IGameTesterAccessor getGameTesterAccessor() {
         return OracleGameTesterAccessor.getInstance();
     }
 
-    public ICustomerAccessor getCustomerAccessor() {
+    public static ICustomerAccessor getCustomerAccessor() {
         return OracleCustomerAccessor.getInstance();
     }
 }
