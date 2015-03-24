@@ -62,45 +62,63 @@ public class LoginPanel extends JPanel {
         loginButton.setBounds(10, 80, 80, 25);
         loginButton.addActionListener(new ActionListener() {
 
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                String email = fEmailField.getText();
-                String password = String.valueOf(fPasswordField.getPassword());
-                UserType type = (UserType) fTypeField.getSelectedItem();
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				String email = fEmailField.getText();
+				String password = String.valueOf(fPasswordField.getPassword());
+				UserType type = (UserType) fTypeField.getSelectedItem();
 
-                switch (type) {
-                case REGULAR_USER:
-                    try {
-                        fLoginAccessor.loginCustomer(email, password);
-                        loggedInCustomer = fLoginAccessor.lookupCustomer(email);
-                        loginStatus = LoginStatus.CUSTOMER;
-                        JOptionPane.showMessageDialog(null, "Welcome " + email, "LOGIN SUCCESS", JOptionPane.INFORMATION_MESSAGE);
-                    } catch (UserNotExistsException e) {
-                        JOptionPane.showMessageDialog(null, "No user with given this email exists.", "LOGIN FAILED", JOptionPane.INFORMATION_MESSAGE);
-                    } catch (PasswordIncorrectException e) {
-                        JOptionPane.showMessageDialog(null, "Incorrect password.", "LOGIN FAILED", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                    break;
-                case GAME_TESTER:
-                    try {
-                        fLoginAccessor.loginGametester(email, password);
-                        loggedInCustomer = fLoginAccessor.lookupCustomer(email);
-                        loginStatus = LoginStatus.GAMETESTER;
-                        JOptionPane.showMessageDialog(null, "Welcome " + email, "LOGIN SUCCESS", JOptionPane.INFORMATION_MESSAGE);
-                    } catch (UserNotExistsException e) {
-                        JOptionPane.showMessageDialog(null, "No game tester with this email exists.", "LOGIN FAILED", JOptionPane.INFORMATION_MESSAGE);
-                    } catch (PasswordIncorrectException e) {
-                        JOptionPane.showMessageDialog(null, "Incorrect password.", "LOGIN FAILED", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                    break;
-                default:
-                    throw new IllegalStateException("User type is " +type);
-                }
-                
-                fEmailField.setText("");
-                fPasswordField.setText("");
-            }
-        });
+				switch (type) {
+				case REGULAR_USER:
+					try {
+						fLoginAccessor.loginCustomer(email, password);
+						loggedInCustomer = fLoginAccessor.lookupCustomer(email);
+						loginStatus = LoginStatus.CUSTOMER;
+						JOptionPane.showMessageDialog(null, "Welcome " + email,
+								"LOGIN SUCCESS",
+								JOptionPane.INFORMATION_MESSAGE);
+					} catch (UserNotExistsException e) {
+						JOptionPane
+								.showMessageDialog(
+										null,
+										"No user with given this email exists.",
+										"LOGIN FAILED",
+										JOptionPane.INFORMATION_MESSAGE);
+					} catch (PasswordIncorrectException e) {
+						JOptionPane.showMessageDialog(null,
+								"Incorrect password.", "LOGIN FAILED",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+					break;
+				case GAME_TESTER:
+					try {
+						fLoginAccessor.loginGametester(email, password);
+						loggedInCustomer = fLoginAccessor.lookupCustomer(email);
+						loginStatus = LoginStatus.GAMETESTER;
+						JOptionPane.showMessageDialog(null, "Welcome " + email,
+								"LOGIN SUCCESS",
+								JOptionPane.INFORMATION_MESSAGE);
+					} catch (UserNotExistsException e) {
+						JOptionPane
+								.showMessageDialog(
+										null,
+										"No game tester with this email exists.",
+										"LOGIN FAILED",
+										JOptionPane.INFORMATION_MESSAGE);
+					} catch (PasswordIncorrectException e) {
+						JOptionPane.showMessageDialog(null,
+								"Incorrect password.", "LOGIN FAILED",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+					break;
+				default:
+					throw new IllegalStateException("User type is " + type);
+				}
+
+				fEmailField.setText("");
+				fPasswordField.setText("");
+			}
+		});
 
         this.add(loginButton);
 

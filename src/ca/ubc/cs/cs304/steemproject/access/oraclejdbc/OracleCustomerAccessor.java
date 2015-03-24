@@ -32,6 +32,8 @@ public class OracleCustomerAccessor implements ICustomerAccessor {
     private final PreparedStatement fListCreditCardsSQL;
     private final PreparedStatement fDeleteCreditCardSQL;
     private final PreparedStatement fListTransactionHistorySQL;
+    
+    
     private OracleCustomerAccessor() {
 
         Connection con = SteemOracleDbConnector.getDefaultConnection();

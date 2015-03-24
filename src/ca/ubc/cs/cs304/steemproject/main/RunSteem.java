@@ -6,7 +6,7 @@ import java.sql.*;
 import org.apache.log4j.Logger;
 
 import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.connection.SteemOracleDbConnector;
-import ca.ubc.cs.cs304.steemproject.ui.ConsoleUI;
+import ca.ubc.cs.cs304.steemproject.ui.MainPanelUI;
 
 
 
@@ -18,7 +18,7 @@ public class RunSteem {
 	 * Basic constructor function for building the UI interface
 	 */
 	public static void createUI() {
-		ConsoleUI mainConsole = new ConsoleUI();
+		MainPanelUI mainConsole = new MainPanelUI();
 		mainConsole.buildGUI();
 	}
 	
