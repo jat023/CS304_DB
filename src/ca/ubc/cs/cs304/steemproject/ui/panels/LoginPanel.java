@@ -78,9 +78,7 @@ public class LoginPanel extends JPanel {
 					} catch (UserNotExistsException e) {
 						JOptionPane.showMessageDialog(null, "No user with given this email exists.", "LOGIN FAILED", JOptionPane.ERROR_MESSAGE);
 					} catch (PasswordIncorrectException e) {
-						JOptionPane.showMessageDialog(null,
-								"Incorrect password.", "LOGIN FAILED",
-								JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(null,"Incorrect password.", "LOGIN FAILED", JOptionPane.ERROR_MESSAGE);
 					}
 					break;
 				case GAME_TESTER:
