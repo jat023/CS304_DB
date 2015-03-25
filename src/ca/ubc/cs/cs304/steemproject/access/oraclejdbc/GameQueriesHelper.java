@@ -105,7 +105,7 @@ final class GameQueriesHelper {
     }
     
     public static boolean gameExists(String exactName, String table) {
-        String userEmailExistsQuery = "SELECT * FROM " + Tables.CUSTOMER_TABLENAME + " WHERE " + Tables.GAME_ATTR_NAME + "='" + exactName + "'";
+        String userEmailExistsQuery = "SELECT * FROM " + table + " WHERE " + Tables.GAME_ATTR_NAME + "='" + exactName + "'";
         return QueriesHelper.exists(userEmailExistsQuery);
     }
 }
