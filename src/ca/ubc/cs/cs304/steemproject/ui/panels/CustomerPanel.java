@@ -78,11 +78,54 @@ public class CustomerPanel extends JPanel {
         searchButton.setBounds(10, 170, 280, 25);
         this.add(searchButton);
        
+        JButton deleteAccountButton = new JButton("Delete account");
+        deleteAccountButton.setBounds(300,170,150,25);
+        this.add(deleteAccountButton);
+        
+        JButton updateCVV = new JButton("Update CVV");
+        updateCVV.setBounds(300, 140, 100, 25);
+        this.add(updateCVV);
+        
 		output.setBounds(10, 200, 450, 300);
 		this.add(output);
 		output.setLineWrap(true);
 		output.setEditable(false);
 		
+		//Updates the CVV of the current user's credit card
+		updateCVV.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String changeThisCardCVV = addCreditCardField.getText();
+				String newCVV = cvvField.getText();
+				
+				if (newCVV == "" || changeThisCardCVV == "") {
+					JOptionPane.showMessageDialog(null,
+							"Invalid entries",
+							"FAILED TO UPDATE CVV",
+							JOptionPane.INFORMATION_MESSAGE);
+				}
+				else {
+					fCustomerAccessor.updateCCV(changeThisCardCVV, newCVV);
+				}
+			}
+		});
+		
+		// Deletes the current user account from the database
+		deleteAccountButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					fCustomerAccessor.removeAccount(fCustomer);
+				} catch (UserNotExistsException e1) {
+					JOptionPane.showMessageDialog(null,
+							"No user exists",
+							"FAILED TO REMOVE ACCOUNT",
+							JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+		});
 		
 		// Queries for the list of cards owned by the user
 		searchButton.addActionListener(new ActionListener() {

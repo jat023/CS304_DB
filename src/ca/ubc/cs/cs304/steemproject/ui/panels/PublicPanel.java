@@ -14,6 +14,7 @@ import ca.ubc.cs.cs304.steemproject.base.released.FinalizedGame;
 import ca.ubc.cs.cs304.steemproject.base.released.Playtime;
 import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
 
+import java.awt.Font;
 import java.awt.event.*;
 
 @SuppressWarnings("serial")
@@ -43,46 +44,52 @@ public class PublicPanel extends JPanel {
 
 //--------SET FIELDS, BUTTONS, LABELS, ETC with absolute positioning --------------------------------
 //---------------------------------------------------------------------------------------------------
+		JLabel searchLabel = new JLabel("SEARCH FOR AVAILABLE GAMES");
+        searchLabel.setFont(new Font("Serif", Font.BOLD, 14));
+        searchLabel.setHorizontalAlignment(JLabel.CENTER);
+        searchLabel.setBounds(10, 10, 280, 25);
+        this.add(searchLabel);
+		
 		JLabel nameLabel = new JLabel("Game Title");
-		nameLabel.setBounds(10, 10, 80, 25);
+		nameLabel.setBounds(10, 40, 80, 25);
 		this.add(nameLabel);
 		
 				// the setBounds() API for each field or button is
 					///					setBounds(int x-coord, int y-coord, int length, int height)
 		fGameNameField = new JTextField("", 15);
-		fGameNameField.setBounds(100, 10, 190, 25);
+		fGameNameField.setBounds(100, 40, 190, 25);
 		this.add(fGameNameField);
 
 		JLabel developerLabel = new JLabel("Developer");
-		developerLabel.setBounds(10, 40, 80, 25);
+		developerLabel.setBounds(10, 70, 80, 25);
 		this.add(developerLabel);
 
 		fGameDeveloperField = new JTextField("", 20);
-		fGameDeveloperField.setBounds(100, 40, 190, 25);
+		fGameDeveloperField.setBounds(100, 70, 190, 25);
 		this.add(fGameDeveloperField);
 
 		JLabel genreLabel = new JLabel("Genre");
-		genreLabel.setBounds(10, 70, 80, 25);
+		genreLabel.setBounds(10, 100, 80, 25);
 		this.add(genreLabel);
 
 		fGameGenreField = new JComboBox<Genre>(Genre.values());
-		fGameGenreField.setBounds(100, 70, 190, 25);
+		fGameGenreField.setBounds(100, 100, 190, 25);
 		fGameGenreField.addItem(null);
 		fGameGenreField.setSelectedIndex(-1);
 		this.add(fGameGenreField);
 
 		JLabel sortByLabel = new JLabel("Sort By");
-		sortByLabel.setBounds(10, 100, 80, 25);
+		sortByLabel.setBounds(10, 130, 80, 25);
 		this.add(sortByLabel);
 
 		fGameSortOptionField = new JComboBox<GameSortByOption>(GameSortByOption.values());
-		fGameSortOptionField.setBounds(100, 100, 100, 25);
+		fGameSortOptionField.setBounds(100, 130, 100, 25);
 		fGameSortOptionField.addItem(null);
 		fGameSortOptionField.setSelectedIndex(-1);
 		this.add(fGameSortOptionField);
 
 		fGameSortDirectionField = new JComboBox<SortDirection>(SortDirection.values());
-		fGameSortDirectionField.setBounds(210, 100, 80, 25);
+		fGameSortDirectionField.setBounds(210, 130, 80, 25);
 		fGameSortDirectionField.addItem(null);
 		fGameSortDirectionField.setSelectedIndex(-1);
 		this.add(fGameSortDirectionField);
@@ -94,10 +101,10 @@ public class PublicPanel extends JPanel {
 		this.add(owned);
 		
 		JLabel userLabel = new JLabel("User ID");
-		userLabel.setBounds(10, 130, 110, 25);
+		userLabel.setBounds(130, 190, 90, 25);
 		this.add(userLabel);
 		
-		userIDField.setBounds(100, 130, 130, 25);
+		userIDField.setBounds(200, 190, 130, 25);
 		this.add(userIDField);
 
 		output.setBounds(10, 270, 450, 300);
@@ -160,8 +167,6 @@ public class PublicPanel extends JPanel {
 						output.append("\n");
 					}
 					else {
-						output.append("Here are the games available for purchase:\n");
-				
 						for (int i = 0; i < storeGeneralList.size(); i++) {
 							output.append(storeGeneralList.get(i).getName().toString() + "\n");
 						}
@@ -185,7 +190,7 @@ public class PublicPanel extends JPanel {
 						output.append("\n");
 					}
 					else {
-						output.append("Here are the list of discounted games:");
+						output.append("Here is the list of discounted games:");
 						output.append("\n");
 						
 						for (int i = 0; i < storeDiscountedList.size(); i++) {
@@ -201,8 +206,6 @@ public class PublicPanel extends JPanel {
 						List<Playtime> storeOwnedList = new ArrayList<Playtime>();
 						
 						storeOwnedList = iPublic.listGamesOwned(storeUserID);
-						
-						output.append(storeUserID + ", here are the games in your library:\n");
 						
 						for (int i = 0; i < storeOwnedList.size(); i++) {
 							output.append(storeOwnedList.get(i).getGame().getName().toString() + "\n");
