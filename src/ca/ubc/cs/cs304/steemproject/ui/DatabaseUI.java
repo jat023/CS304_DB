@@ -5,23 +5,33 @@ import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 
+import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.DBCustomerAccessor;
+//import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.InitializeDatabase;
+import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.connection.SteemOracleDbConnector;
+import ca.ubc.cs.cs304.steemproject.base.released.Customer;
+
 public class DatabaseUI {
 	
-	JFrame mainWindow;
-	JPanel optionsPanel;
-	JPanel buttonPanel;
-	JCheckBox option1check;
-	JCheckBox option2check;
-	JCheckBox option3check;
-	JCheckBox option4check;
-	JButton refreshButton;
+	private JFrame mainWindow;
+	private JPanel optionsPanel;
+	private JPanel buttonPanel;
+	private JCheckBox option1check;
+	private JCheckBox option2check;
+	private JCheckBox option3check;
+	private JCheckBox option4check;
+	private JButton refreshButton;
+	private DBCustomerAccessor customerAccessorDB;
 	
-	
-	DatabaseUI() {
+	DatabaseUI() throws SQLException {		
 		mainWindow = new JFrame("Database UI");
 		mainWindow.setSize(700,700);
 		mainWindow.setLayout(null);
@@ -35,21 +45,44 @@ public class DatabaseUI {
 		mainWindow.add(buttonPanel);
 		
 		setComponentLocations();
+		customerAccessorDB = new DBCustomerAccessor();
 		
 		refreshButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if(option1check.isSelected()) {
-					System.out.printf("aa");
+					List<Integer> userIDs = new ArrayList<Integer>();
+					List<String> userEmails = new ArrayList<String>();
+					List<String> userPasswords = new ArrayList<String>();
+					try {
+						userIDs = customerAccessorDB.getIDs();
+						userEmails = customerAccessorDB.getEmails();
+						userPasswords = customerAccessorDB.getPasswords();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					System.out.println("All user IDs:");
+					for( int i = 0; i < userIDs.size(); i++) {
+						System.out.println(userIDs.get(i).toString());
+					}
+					System.out.println("All user Emails:");
+					for( int i = 0; i < userEmails.size(); i++) {
+						System.out.println(userEmails.get(i).toString());
+					}
+					System.out.println("All user Passwords:");
+					for( int i = 0; i < userPasswords.size(); i++) {
+						System.out.println(userPasswords.get(i).toString());
+					}
 				}
 				if(option2check.isSelected()) {
-					System.out.printf("bb");
+					System.out.println("N/A");
 				}
 				if(option3check.isSelected()) {
-					System.out.printf("cc");
+					System.out.println("N/A");
 				}
 				if(option4check.isSelected()) {
-					System.out.printf("dd");
+					System.out.println("N/A");
 				}
 			}
 		});
@@ -96,7 +129,24 @@ public class DatabaseUI {
 		mainWindow.setVisible(true);
 	}
 	
-	public static void main(String args[]) {
+	public static void main(String args[]) throws SQLException {
+        Connection con = SteemOracleDbConnector.getDefaultConnection();
+        
+        if (con != null) {
+        	System.out.println("Connection established");
+        }
+        else {
+        	System.out.println("Connected failed to connect");
+        }
+     /*
+        try {
+            InitializeDatabase initDB;
+            initDB.init();
+            log.info("Database and tables have been successfully reset.");
+        } catch (Exception e) {
+            log.error("Database initialization failed.", e);
+        }
+		*/
 		DatabaseUI tablesUI = new DatabaseUI();
 		tablesUI.show();
 		
