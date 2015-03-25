@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
 
 import ca.ubc.cs.cs304.steemproject.access.IPublicAccessor;
@@ -31,7 +32,8 @@ public class OraclePublicAccessor implements IPublicAccessor {
     private final PreparedStatement fMostExpensiveGenreSQL;
     private final PreparedStatement fLeastExpensiveGenreSQL;
     private final PreparedStatement fGamesOwnedByAllSQL;
-
+    private final static String AVERAGE_PRICE = "avgPrice";
+   
     private static OraclePublicAccessor fInstance;
 
     private OraclePublicAccessor() {
@@ -42,12 +44,14 @@ public class OraclePublicAccessor implements IPublicAccessor {
                     + " HAVING COUNT(*) >= ALL (SELECT COUNT(*) FROM " +Tables.OWNS_GAME_TABLENAME+ " GROUP BY " +Tables.GAME_ATTR_NAME+ ")");
             
             fMostExpensiveGenreSQL = SteemOracleDbConnector.getDefaultConnection().prepareStatement(
-                    "SELECT " +Tables.GAME_ATTR_GENRE+ " FROM "  +Tables.FINALIZED_GAME_TABLENAME+ " GROUP BY " +Tables.GAME_ATTR_GENRE
+                    "SELECT " +Tables.GAME_ATTR_GENRE+ ", AVG(" +Tables.FINALIZED_GAME_ATTR_FULLPRICE+ ") AS " +AVERAGE_PRICE
+                    + " FROM "  +Tables.FINALIZED_GAME_TABLENAME+ " GROUP BY " +Tables.GAME_ATTR_GENRE
                     + " HAVING AVG("+Tables.FINALIZED_GAME_ATTR_FULLPRICE+") >= ALL "
                     + " (SELECT AVG(" +Tables.FINALIZED_GAME_ATTR_FULLPRICE+ ") FROM " +Tables.FINALIZED_GAME_TABLENAME+ " GROUP BY " +Tables.GAME_ATTR_GENRE+ ")");
             
             fLeastExpensiveGenreSQL = SteemOracleDbConnector.getDefaultConnection().prepareStatement(
-                    "SELECT " +Tables.GAME_ATTR_GENRE+ " FROM "  +Tables.FINALIZED_GAME_TABLENAME+ " GROUP BY " +Tables.GAME_ATTR_GENRE
+                    "SELECT " +Tables.GAME_ATTR_GENRE+ ",AVG(" +Tables.FINALIZED_GAME_ATTR_FULLPRICE+ ") AS " +AVERAGE_PRICE
+                    + " FROM "  +Tables.FINALIZED_GAME_TABLENAME+ " GROUP BY " +Tables.GAME_ATTR_GENRE
                     + " HAVING AVG("+Tables.FINALIZED_GAME_ATTR_FULLPRICE+") <= ALL "
                     + " (SELECT AVG(" +Tables.FINALIZED_GAME_ATTR_FULLPRICE+ ") FROM " +Tables.FINALIZED_GAME_TABLENAME+ " GROUP BY " +Tables.GAME_ATTR_GENRE+ ")");
             
@@ -193,12 +197,12 @@ public class OraclePublicAccessor implements IPublicAccessor {
     }
 
     @Override
-    public Genre findMostExpensiveGenre() {
+    public Pair<Genre, Float> findMostExpensiveGenre() {
         try {
             ResultSet results = fMostExpensiveGenreSQL.executeQuery();
 
             if (results.next()) {
-                return Genre.valueOf(results.getString(Tables.GAME_ATTR_GENRE));
+                return Pair.of(Genre.valueOf(results.getString(Tables.GAME_ATTR_GENRE)), Float.valueOf(results.getString(AVERAGE_PRICE)));
             } else {
                 throw new GameNotExistException("No games in database?");
             }
@@ -210,18 +214,12 @@ public class OraclePublicAccessor implements IPublicAccessor {
     }
 
     @Override
-    public Genre findLeastExpensiveGenre() {
+    public Pair<Genre, Float> findLeastExpensiveGenre() {
         try {
             ResultSet results = fLeastExpensiveGenreSQL.executeQuery();
 
             if (results.next()) {
-                Genre ret = Genre.valueOf(results.getString(Tables.GAME_ATTR_GENRE));
-
-                if (results.next()) {
-                    throw new RuntimeException("Shoot.");
-                }
-
-                return ret;
+                return Pair.of(Genre.valueOf(results.getString(Tables.GAME_ATTR_GENRE)), Float.valueOf(results.getString(AVERAGE_PRICE)));
             } else {
                 throw new GameNotExistException("No games in database?");
             }
