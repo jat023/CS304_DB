@@ -10,7 +10,6 @@ import java.util.Properties;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -25,7 +24,6 @@ import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
-import ca.ubc.cs.cs304.steemproject.access.Accessors;
 import ca.ubc.cs.cs304.steemproject.access.IGameTesterAccessor;
 import ca.ubc.cs.cs304.steemproject.access.options.GameSortByOption;
 import ca.ubc.cs.cs304.steemproject.access.options.SortDirection;
