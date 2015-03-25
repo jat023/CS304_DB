@@ -1,18 +1,21 @@
 package ca.ubc.cs.cs304.steemproject.ui.panels;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
+
+import java.util.List;
 
 import ca.ubc.cs.cs304.steemproject.access.Accessors;
 import ca.ubc.cs.cs304.steemproject.access.IPublicAccessor;
 import ca.ubc.cs.cs304.steemproject.access.options.GameSortByOption;
 import ca.ubc.cs.cs304.steemproject.access.options.SortDirection;
 import ca.ubc.cs.cs304.steemproject.base.Genre;
-import ca.ubc.cs.cs304.steemproject.base.development.GameTester;
+import ca.ubc.cs.cs304.steemproject.base.released.FinalizedGame;
+import ca.ubc.cs.cs304.steemproject.base.released.Playtime;
+import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
 
-import java.awt.*;
 import java.awt.event.*;
 
+@SuppressWarnings("serial")
 public class PublicPanel extends JPanel {
     
 	private final IPublicAccessor iPublic;
@@ -21,6 +24,10 @@ public class PublicPanel extends JPanel {
     private final JComboBox<Genre> fGameGenreField;
     private final JComboBox<GameSortByOption> fGameSortOptionField;
     private final JComboBox<SortDirection> fGameSortDirectionField;
+    private final JRadioButton discount = new JRadioButton("Discounted");
+    private final JRadioButton owned = new JRadioButton("Owned");
+    private final JTextField userID = new JTextField(25);
+    private final JTextArea output = new JTextArea(10,10);
 	
 	public PublicPanel(IPublicAccessor aPublicAccessor) {
 
@@ -68,11 +75,9 @@ public class PublicPanel extends JPanel {
 		fGameSortDirectionField.setBounds(210, 100, 80, 25);
 		this.add(fGameSortDirectionField);
 		
-		JRadioButton discount = new JRadioButton("Disounted");
 		discount.setBounds(10, 160, 150, 25);
 		this.add(discount);
-		
-		JRadioButton owned = new JRadioButton("Owned");
+	
 		owned.setBounds(10, 190, 100, 25);
 		this.add(owned);
 		
@@ -80,17 +85,64 @@ public class PublicPanel extends JPanel {
 		userLabel.setBounds(10, 130, 110, 25);
 		this.add(userLabel);
 		
-		JTextField userID = new JTextField(20);
 		userID.setBounds(100, 130, 130, 25);
 		this.add(userID);
+
+		output.setBounds(10, 270, 450, 300);
+		this.add(output);
 		
 		JButton searchButton = new JButton("Search");
 		searchButton.setBounds(10, 230, 280, 25);
 		this.add(searchButton);
 		
-		JTextArea output = new JTextArea(10,10);
-		output.setBounds(10, 270, 450, 300);
-		this.add(output);
+		searchButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				String gameName = fGameNameField.getText();
+				Genre gameGenre = (Genre)fGameGenreField.getSelectedItem();	
+				String gameDeveloper = fGameDeveloperField.getText();
+				SortDirection sortDirection = (SortDirection)fGameSortDirectionField.getSelectedItem();
+				GameSortByOption sortField = (GameSortByOption)fGameSortOptionField.getSelectedItem();
+				boolean discounted = discount.isSelected();
+				boolean isOwned = owned.isSelected();
+				String storeUserID = userID.getText();
+								
+				if (!isOwned && !discounted) {
+					List<FinalizedGame> storeGeneralList = iPublic.listPurchasableGames(
+						gameName, gameGenre, gameDeveloper, null, null, sortField, sortDirection, discounted);
+				}
+				
+				else if (discounted) {
+					List<FinalizedGame> storeGeneralList = iPublic.listPurchasableGames(
+							gameName, gameGenre, gameDeveloper, null, null, sortField, sortDirection, discounted);
+				}
+				else if (isOwned) {
+					try {
+						List<Playtime> storeOwnedList = iPublic.listGamesOwned(storeUserID);
+					} catch (UserNotExistsException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					try {
+						List<Playtime> storeOwnedList = iPublic.listGamesOwned(storeUserID);
+					} catch (UserNotExistsException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					try {
+						List<Playtime> storeOwnedList = iPublic.listGamesOwned(
+								storeUserID, gameName, gameGenre, gameDeveloper, sortField, sortDirection);
+					} catch (UserNotExistsException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+			
+		});
+		
+
 	}
 
 	public static final void main(String[] args) {
