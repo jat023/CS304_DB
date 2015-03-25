@@ -67,6 +67,7 @@ public class PublicPanel extends JPanel {
 
 		fGameGenreField = new JComboBox<Genre>(Genre.values());
 		fGameGenreField.setBounds(100, 70, 190, 25);
+		fGameGenreField.addItem(null);
 		fGameGenreField.setSelectedIndex(-1);
 		this.add(fGameGenreField);
 
@@ -76,11 +77,13 @@ public class PublicPanel extends JPanel {
 
 		fGameSortOptionField = new JComboBox<GameSortByOption>(GameSortByOption.values());
 		fGameSortOptionField.setBounds(100, 100, 100, 25);
+		fGameSortOptionField.addItem(null);
 		fGameSortOptionField.setSelectedIndex(-1);
 		this.add(fGameSortOptionField);
 
 		fGameSortDirectionField = new JComboBox<SortDirection>(SortDirection.values());
 		fGameSortDirectionField.setBounds(210, 100, 80, 25);
+		fGameSortDirectionField.addItem(null);
 		fGameSortDirectionField.setSelectedIndex(-1);
 		this.add(fGameSortDirectionField);
 		
@@ -135,19 +138,22 @@ public class PublicPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 					// Retrieve all the variables from the JTextFields created earlier
-				String gameName = fGameNameField.getText();
-				Genre gameGenre = (Genre)fGameGenreField.getSelectedItem();	
-				String gameDeveloper = fGameDeveloperField.getText();
-				SortDirection sortDirection = (SortDirection)fGameSortDirectionField.getSelectedItem();
-				GameSortByOption sortField = (GameSortByOption)fGameSortOptionField.getSelectedItem();
+				String gameName = fGameNameField.getText().equals("") ? null : fGameNameField.getText();	
+				String gameDeveloper = fGameDeveloperField.getText().equals("") ? null : fGameDeveloperField.getText();
 				boolean discounted = discount.isSelected();
 				boolean isOwned = owned.isSelected();
-				String storeUserID = userIDField.getText();
-								
+				String storeUserID = userIDField.getText().equals("") ? null : userIDField.getText();
+                
 				if (!isOwned && !discounted) {
 					List<FinalizedGame> storeGeneralList = new ArrayList<FinalizedGame>();
 					
-					storeGeneralList = iPublic.listPurchasableGames();
+					storeGeneralList = iPublic.listPurchasableGames(
+							gameName,
+							(Genre)fGameGenreField.getSelectedItem(),
+							gameDeveloper, null, null,
+							(GameSortByOption)fGameSortOptionField.getSelectedItem(),
+							(SortDirection)fGameSortDirectionField.getSelectedItem(),
+							discounted);
 				
 					if (storeGeneralList.size() == 0) {
 						output.append("There are currently no games available for purchase.");
@@ -168,7 +174,11 @@ public class PublicPanel extends JPanel {
 					List<FinalizedGame> storeDiscountedList = new ArrayList<FinalizedGame>();
 					
 					storeDiscountedList = iPublic.listPurchasableGames(
-							gameName, gameGenre, gameDeveloper, null, null, sortField, sortDirection, discounted);
+							gameName,
+							(Genre)fGameGenreField.getSelectedItem(),
+							gameDeveloper, null, null,
+							(GameSortByOption)fGameSortOptionField.getSelectedItem(),
+							(SortDirection)fGameSortDirectionField.getSelectedItem(), discounted);
 					
 					if (storeDiscountedList.size() == 0) {
 						output.append("There are currently no games on discount.");
@@ -176,6 +186,7 @@ public class PublicPanel extends JPanel {
 					}
 					else {
 						output.append("Here are the list of discounted games:");
+						output.append("\n");
 						
 						for (int i = 0; i < storeDiscountedList.size(); i++) {
 							output.append(storeDiscountedList.get(i).getName().toString());
