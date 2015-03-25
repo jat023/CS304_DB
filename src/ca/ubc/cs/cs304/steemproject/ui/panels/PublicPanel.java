@@ -112,36 +112,21 @@ public class PublicPanel extends JPanel {
 				if (!isOwned && !discounted) {
 					List<FinalizedGame> storeGeneralList = iPublic.listPurchasableGames(
 						gameName, gameGenre, gameDeveloper, null, null, sortField, sortDirection, discounted);
+				
 				}
 				
 				else if (discounted) {
 					List<FinalizedGame> storeGeneralList = iPublic.listPurchasableGames(
 							gameName, gameGenre, gameDeveloper, null, null, sortField, sortDirection, discounted);
+				
 				}
 				else if (isOwned) {
 					try {
 						List<Playtime> storeOwnedList = iPublic.listGamesOwned(storeUserID);
 					} catch (UserNotExistsException e) {
 						JOptionPane.showMessageDialog(null,
-								"No game tester with this email exists.",
-								"LOGIN FAILED",
-								JOptionPane.INFORMATION_MESSAGE);
-					}
-					try {
-						List<Playtime> storeOwnedList = iPublic.listGamesOwned(storeUserID);
-					} catch (UserNotExistsException e) {
-						JOptionPane.showMessageDialog(null,
-								"No game tester with this email exists.",
-								"LOGIN FAILED",
-								JOptionPane.INFORMATION_MESSAGE);
-					}
-					try {
-						List<Playtime> storeOwnedList = iPublic.listGamesOwned(
-								storeUserID, gameName, gameGenre, gameDeveloper, sortField, sortDirection);
-					} catch (UserNotExistsException e) {
-						JOptionPane.showMessageDialog(null,
-								"No game tester with this email exists.",
-								"LOGIN FAILED",
+								"No user with this email exists.",
+								"ERROR",
 								JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
