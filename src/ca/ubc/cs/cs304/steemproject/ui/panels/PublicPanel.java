@@ -2,6 +2,7 @@ package ca.ubc.cs.cs304.steemproject.ui.panels;
 
 import javax.swing.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ca.ubc.cs.cs304.steemproject.access.Accessors;
@@ -122,9 +123,9 @@ public class PublicPanel extends JPanel {
 				radioButtonGroup.clearSelection();
 				fGameSortOptionField.setSelectedIndex(-1);
 				fGameSortDirectionField.setSelectedIndex(-1);
+				fGameGenreField.setSelectedIndex(-1);
 				userIDField.setText("");
 				fGameNameField.setText("");
-				fGameGenreField.setSelectedIndex(-1);
 				fGameDeveloperField.setText("");
 			}
 		});
@@ -144,8 +145,9 @@ public class PublicPanel extends JPanel {
 				String storeUserID = userIDField.getText();
 								
 				if (!isOwned && !discounted) {
-					List<FinalizedGame> storeGeneralList = iPublic.listPurchasableGames(
-						gameName, gameGenre, gameDeveloper, null, null, sortField, sortDirection, discounted);
+					List<FinalizedGame> storeGeneralList = new ArrayList<FinalizedGame>();
+					
+					storeGeneralList = iPublic.listPurchasableGames();
 				
 					if (storeGeneralList.size() == 0) {
 						output.append("There are currently no games available for purchase.");
@@ -163,7 +165,9 @@ public class PublicPanel extends JPanel {
 				}
 				
 				if (discounted) {
-					List<FinalizedGame> storeDiscountedList = iPublic.listPurchasableGames(
+					List<FinalizedGame> storeDiscountedList = new ArrayList<FinalizedGame>();
+					
+					storeDiscountedList = iPublic.listPurchasableGames(
 							gameName, gameGenre, gameDeveloper, null, null, sortField, sortDirection, discounted);
 					
 					if (storeDiscountedList.size() == 0) {
@@ -183,7 +187,9 @@ public class PublicPanel extends JPanel {
 				
 				if (isOwned) {
 					try {
-						List<Playtime> storeOwnedList = iPublic.listGamesOwned(storeUserID);
+						List<Playtime> storeOwnedList = new ArrayList<Playtime>();
+						
+						storeOwnedList = iPublic.listGamesOwned(storeUserID);
 						
 						output.append(storeUserID + ", here are the games in your library:\n");
 						
