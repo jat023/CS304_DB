@@ -64,7 +64,7 @@ final class InitializeDatabase {
             Tables.CREDIT_CARD_ATTR_CCV+ " CHAR(3) NOT NULL,"+
             Tables.USER_ATTR_USERID+ " INT NOT NULL,"+
             "PRIMARY KEY (" + Tables.CREDIT_CARD_ATTR_CARDNUM+ "),"+
-            "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ") REFERENCES " +Tables.CUSTOMER_TABLENAME+ " ON DELETE CASCADE )";
+            "FOREIGN KEY (" +Tables.USER_ATTR_USERID+ ") REFERENCES " +Tables.CUSTOMER_TABLENAME+ " )";
 
     private static final String createTransactionSQL = "CREATE TABLE "+Tables.TRANSACTION_TABLENAME+" (" +
             Tables.USER_ATTR_USERID+ " INT,"+
