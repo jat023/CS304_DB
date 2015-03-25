@@ -1,21 +1,31 @@
 package ca.ubc.cs.cs304.steemproject.ui.panels;
 
 import java.awt.event.*;
+
 import javax.swing.*;
+
 import java.awt.*;
+
 import ca.ubc.cs.cs304.steemproject.access.Accessors;
 import ca.ubc.cs.cs304.steemproject.access.ICustomerAccessor;
 import ca.ubc.cs.cs304.steemproject.access.options.GameSortByOption;
 import ca.ubc.cs.cs304.steemproject.access.options.SortDirection;
 import ca.ubc.cs.cs304.steemproject.base.Genre;
 import ca.ubc.cs.cs304.steemproject.base.development.GameTester;
+import ca.ubc.cs.cs304.steemproject.base.released.CreditCard;
 import ca.ubc.cs.cs304.steemproject.base.released.Customer;
+import ca.ubc.cs.cs304.steemproject.base.released.CreditCard;
+import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
 
 public class CustomerPanel extends JPanel {
 
 	private final ICustomerAccessor fCustomerAccessor;
     private final Customer fCustomer;
     private final JTextArea output = new JTextArea(10,10);
+    private final JTextField deleteCreditCardField = new JTextField(50);
+    private final JTextField addCreditCardField = new JTextField(50);
+    private final JTextField cvvField = new JTextField(5);
+    private final JTextField addressWithCardField = new JTextField(50);
     
     public CustomerPanel(ICustomerAccessor aCustomerAccessor, Customer aCustomer) {
         
@@ -34,7 +44,6 @@ public class CustomerPanel extends JPanel {
         addCreditCardButton.setBounds(10,10,80,25);
         this.add(addCreditCardButton);
         
-        JTextField addCreditCardField = new JTextField(50);
         addCreditCardField.setBounds(90,10,200,25);
         this.add(addCreditCardField);
         
@@ -42,27 +51,40 @@ public class CustomerPanel extends JPanel {
         deleteCreditCardButton.setBounds(10,40,80,25);
         this.add(deleteCreditCardButton);
         
-        JTextField deleteCreditCardField = new JTextField(50);
         deleteCreditCardField.setBounds(90,40, 200, 25);
         this.add(deleteCreditCardField);
         
+        JLabel cvvCreditCardField = new JLabel("CVV");
+        cvvCreditCardField.setBounds(315, 40, 50, 25);
+        this.add(cvvCreditCardField);
+        
+        cvvField.setBounds(355, 40, 50, 25);
+        this.add(cvvField);
+        
+        JLabel addressWithCard = new JLabel("Address");
+        addressWithCard.setBounds(20, 75, 100, 25);
+        this.add(addressWithCard);
+        
+        addressWithCardField.setBounds(90, 75, 200, 25);
+        this.add(addressWithCardField);
+        
         JButton purchaseButton = new JButton("Purchase");
-        purchaseButton.setBounds(10, 70, 80, 25);
+        purchaseButton.setBounds(10, 110, 80, 25);
         this.add(purchaseButton);
         
         JButton historyButton = new JButton("Transaction History");
-        historyButton.setBounds(10,100, 280, 25);
+        historyButton.setBounds(10,140, 280, 25);
         this.add(historyButton);
         
-        JButton searchButton = new JButton("Search");
-        searchButton.setBounds(10, 130, 280, 25);
+        JButton searchButton = new JButton("List Cards");
+        searchButton.setBounds(10, 170, 280, 25);
         this.add(searchButton);
        
-		output.setBounds(10, 160, 450, 300);
+		output.setBounds(10, 200, 450, 300);
 		this.add(output);
 		
 		
-		
+		// Queries for the list of cards owned by the user
 		searchButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -72,21 +94,51 @@ public class CustomerPanel extends JPanel {
 			}
 		});
 		
+		// Adds a card to the current user
 		addCreditCardButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				String cardToBeAdded = addCreditCardField.getText();
+				String cvvOfCardToAdd = cvvField.getText();
+				String addressWithCard = addressWithCardField.getText();
 				
+				CreditCard addThisCard = new CreditCard(fCustomer, cardToBeAdded, cvvOfCardToAdd, addressWithCard);
 				
+				try {
+					fCustomerAccessor.addNewCreditCard(addThisCard);
+					JOptionPane.showMessageDialog(null,cardToBeAdded, 
+							"Card added!", JOptionPane.INFORMATION_MESSAGE);
+				} catch (UserNotExistsException e) {
+					JOptionPane.showMessageDialog(null,
+							"No user exists",
+							"ADD CARD FAILED",
+							JOptionPane.INFORMATION_MESSAGE);
+				}
 			}
 		});
 		
+		// Deletes the given card of the user from the database
 		deleteCreditCardButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				String cardToBeDeleted = deleteCreditCardField.getText();
+				String cvvOfCardToDelete = cvvField.getText();
+				String addressWithCard = addressWithCardField.getText();
 				
+				CreditCard deleteThisCard = new CreditCard(fCustomer, cardToBeDeleted, cvvOfCardToDelete, addressWithCard);
 				
+				try {
+					fCustomerAccessor.deleteCreditCard(deleteThisCard);
+					JOptionPane.showMessageDialog(null,cardToBeDeleted, 
+							"Card deleted!", JOptionPane.INFORMATION_MESSAGE);
+				} catch (UserNotExistsException e) {
+					JOptionPane.showMessageDialog(null,
+							"No user exists",
+							"DELETE CARD FAILED",
+							JOptionPane.INFORMATION_MESSAGE);
+				}
 			}
 		});
 		

@@ -81,7 +81,10 @@ public class OraclePublicAccessor implements IPublicAccessor {
             GameSortByOption sortByOption, SortDirection sortDirection, 
             boolean listOnlyDiscountedGames) {
 
-        ResultSet results = GameQueriesHelper.queryGames(Tables.FINALIZED_GAME_TABLENAME, matchName, matchGenre, matchDeveloper, matchLowestPrice, matchHighestPrice, sortByOption, sortDirection, listOnlyDiscountedGames, null);
+        ResultSet results = GameQueriesHelper.queryGames(
+        		Tables.FINALIZED_GAME_TABLENAME, matchName, matchGenre, 
+        		matchDeveloper, matchLowestPrice, matchHighestPrice, sortByOption, 
+        		sortDirection, listOnlyDiscountedGames, null);
 
         List<FinalizedGame> games = new ArrayList<FinalizedGame>();
 
