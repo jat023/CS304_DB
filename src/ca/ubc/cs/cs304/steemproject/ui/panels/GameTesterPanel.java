@@ -205,13 +205,6 @@ public class GameTesterPanel extends JPanel {
 
     }
 
-    public static final void main(String[] args) {
-        JFrame frame = new JFrame();
-        frame.add(new GameTesterPanel(Accessors.getGameTesterAccessor(),  new GameTester(1, "gametester1@gmail.com", "Pass1")));
-        frame.setSize(600,220);
-        frame.setVisible(true);
-    }
-
     private class DisplayGameInDevelopment extends JDialog {
 
         public DisplayGameInDevelopment(final IGameTesterAccessor aGameTestAccessor, final List<GameInDevelopment> aListOfGames, final GameTester aGameTester) {
