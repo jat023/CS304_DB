@@ -81,6 +81,7 @@ public class CustomerPanel extends JPanel {
 		output.setBounds(10, 200, 450, 300);
 		this.add(output);
 		output.setLineWrap(true);
+		output.setEditable(false);
 		
 		
 		// Queries for the list of cards owned by the user
