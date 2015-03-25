@@ -74,16 +74,9 @@ public class LoginPanel extends JPanel {
 						fLoginAccessor.loginCustomer(email, password);
 						loggedInCustomer = fLoginAccessor.lookupCustomer(email);
 						loginStatus = LoginStatus.CUSTOMER;
-						JOptionPane.showMessageDialog(null, "Welcome " + email,
-								"LOGIN SUCCESS",
-								JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(null, "Welcome " + email, "LOGIN SUCCESS", JOptionPane.INFORMATION_MESSAGE);
 					} catch (UserNotExistsException e) {
-						JOptionPane
-								.showMessageDialog(
-										null,
-										"No user with given this email exists.",
-										"LOGIN FAILED",
-										JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(null, "No user with given this email exists.", "LOGIN FAILED", JOptionPane.ERROR_MESSAGE);
 					} catch (PasswordIncorrectException e) {
 						JOptionPane.showMessageDialog(null,
 								"Incorrect password.", "LOGIN FAILED",
@@ -95,20 +88,11 @@ public class LoginPanel extends JPanel {
 						fLoginAccessor.loginGametester(email, password);
 						loggedInCustomer = fLoginAccessor.lookupCustomer(email);
 						loginStatus = LoginStatus.GAMETESTER;
-						JOptionPane.showMessageDialog(null, "Welcome " + email,
-								"LOGIN SUCCESS",
-								JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(null, "Welcome " + email,"LOGIN SUCCESS", JOptionPane.INFORMATION_MESSAGE);
 					} catch (UserNotExistsException e) {
-						JOptionPane
-								.showMessageDialog(
-										null,
-										"No game tester with this email exists.",
-										"LOGIN FAILED",
-										JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(null, "No game tester with this email exists.", "LOGIN FAILED", JOptionPane.ERROR_MESSAGE);
 					} catch (PasswordIncorrectException e) {
-						JOptionPane.showMessageDialog(null,
-								"Incorrect password.", "LOGIN FAILED",
-								JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(null, "Incorrect password.", "LOGIN FAILED", JOptionPane.ERROR_MESSAGE);
 					}
 					break;
 				default:
