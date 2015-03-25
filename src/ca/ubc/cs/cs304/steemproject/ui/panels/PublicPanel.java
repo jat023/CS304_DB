@@ -1,7 +1,6 @@
 package ca.ubc.cs.cs304.steemproject.ui.panels;
 
 import javax.swing.*;
-
 import java.util.List;
 
 import ca.ubc.cs.cs304.steemproject.access.Accessors;
@@ -89,6 +88,8 @@ public class PublicPanel extends JPanel {
 		this.add(userID);
 
 		output.setBounds(10, 270, 450, 300);
+		output.setLineWrap(true);
+		output.setEditable(false);
 		this.add(output);
 		
 		JButton searchButton = new JButton("Search");
@@ -121,21 +122,27 @@ public class PublicPanel extends JPanel {
 					try {
 						List<Playtime> storeOwnedList = iPublic.listGamesOwned(storeUserID);
 					} catch (UserNotExistsException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						JOptionPane.showMessageDialog(null,
+								"No game tester with this email exists.",
+								"LOGIN FAILED",
+								JOptionPane.INFORMATION_MESSAGE);
 					}
 					try {
 						List<Playtime> storeOwnedList = iPublic.listGamesOwned(storeUserID);
 					} catch (UserNotExistsException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						JOptionPane.showMessageDialog(null,
+								"No game tester with this email exists.",
+								"LOGIN FAILED",
+								JOptionPane.INFORMATION_MESSAGE);
 					}
 					try {
 						List<Playtime> storeOwnedList = iPublic.listGamesOwned(
 								storeUserID, gameName, gameGenre, gameDeveloper, sortField, sortDirection);
 					} catch (UserNotExistsException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						JOptionPane.showMessageDialog(null,
+								"No game tester with this email exists.",
+								"LOGIN FAILED",
+								JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
 			}

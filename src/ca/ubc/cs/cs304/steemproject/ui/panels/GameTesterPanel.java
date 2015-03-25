@@ -1,9 +1,14 @@
 package ca.ubc.cs.cs304.steemproject.ui.panels;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -14,6 +19,9 @@ import ca.ubc.cs.cs304.steemproject.access.options.GameSortByOption;
 import ca.ubc.cs.cs304.steemproject.access.options.SortDirection;
 import ca.ubc.cs.cs304.steemproject.base.Genre;
 import ca.ubc.cs.cs304.steemproject.base.development.GameTester;
+import ca.ubc.cs.cs304.steemproject.base.released.FinalizedGame;
+import ca.ubc.cs.cs304.steemproject.base.released.Playtime;
+import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
 
 @SuppressWarnings("serial")
 public class GameTesterPanel extends JPanel {
@@ -26,6 +34,7 @@ public class GameTesterPanel extends JPanel {
     private final JComboBox<Genre> fGameGenreField;
     private final JComboBox<GameSortByOption> fGameSortOptionField;
     private final JComboBox<SortDirection> fGameSortDirectionField;
+    private final JTextArea output = new JTextArea(10,10);
     
     public GameTesterPanel(IGameTesterAccessor aGameTesterAccessor, GameTester aGameTester) {
         
@@ -79,10 +88,19 @@ public class GameTesterPanel extends JPanel {
         JButton searchButton = new JButton("Search");
         searchButton.setBounds(10, 130, 280, 25);
         this.add(searchButton);
-        
-		JTextArea output = new JTextArea(10,10);
+       
 		output.setBounds(10, 160, 450, 300);
 		this.add(output);
+		
+		searchButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				
+			}
+			
+		});
     }
     
     public static final void main(String[] args) {
