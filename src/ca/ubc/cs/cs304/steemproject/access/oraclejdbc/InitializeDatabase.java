@@ -145,7 +145,7 @@ final class InitializeDatabase {
         Customer customer1 = new Customer(1, "customer1@gmail.com", "apple123");
         Customer customer2 = new Customer(2, "customer2@gmail.com", "orange123");
         Customer customer3 = new Customer(3, "customer3@gmail.com", "banana123");
-        Customer customer4 = new Customer(4, "customer4@gmail.com", "apple123");
+        Customer customer4 = new Customer(4, "customer4@gmail.com", "watermelon123");
         Customer customer5 = new Customer(5, "customer5@gmail.com", "pear123");
 
         FinalizedGame game1 = new FinalizedGame("Sneaky Thief","So sneaky.", Genre.RPG, "Bob", 10f, 1.00f, false, 0f);

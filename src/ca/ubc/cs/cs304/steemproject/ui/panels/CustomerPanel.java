@@ -5,18 +5,16 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import ca.ubc.cs.cs304.steemproject.access.Accessors;
 import ca.ubc.cs.cs304.steemproject.access.ICustomerAccessor;
-import ca.ubc.cs.cs304.steemproject.access.options.GameSortByOption;
-import ca.ubc.cs.cs304.steemproject.access.options.SortDirection;
-import ca.ubc.cs.cs304.steemproject.base.Genre;
-import ca.ubc.cs.cs304.steemproject.base.development.GameTester;
 import ca.ubc.cs.cs304.steemproject.base.released.CreditCard;
 import ca.ubc.cs.cs304.steemproject.base.released.Customer;
-import ca.ubc.cs.cs304.steemproject.base.released.CreditCard;
 import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
 
+@SuppressWarnings("serial")
 public class CustomerPanel extends JPanel {
 
 	private final ICustomerAccessor fCustomerAccessor;
@@ -82,6 +80,7 @@ public class CustomerPanel extends JPanel {
        
 		output.setBounds(10, 200, 450, 300);
 		this.add(output);
+		output.setLineWrap(true);
 		
 		
 		// Queries for the list of cards owned by the user
@@ -89,7 +88,21 @@ public class CustomerPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				List<CreditCard> creditCards = new ArrayList<CreditCard>();
 				
+				try {
+					creditCards = fCustomerAccessor.listCreditCards(fCustomer);
+				} catch (UserNotExistsException e) {
+					JOptionPane.showMessageDialog(null,
+							"No user exists",
+							"FAILED TO GET CREDIT CARDS",
+							JOptionPane.INFORMATION_MESSAGE);
+				}
+				
+				for (int i = 0; i < creditCards.size(); i++) {
+					output.append(creditCards.get(i).getCardNumber());
+					output.append("\n");
+				}
 				
 			}
 		});
