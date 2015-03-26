@@ -36,6 +36,10 @@ public class CustomerPanel extends JPanel {
     private final JDatePickerImpl fEarliestDatePicker;
     private final JDatePickerImpl fLatestDatePicker;
     
+    private final JTextField purchaseGameField = new JTextField(30);
+    private final JTextField purchaseCardField = new JTextField(30);
+    private final JTextField purchaseCvvField = new JTextField(10);
+    
     public CustomerPanel(ICustomerAccessor aCustomerAccessor, Customer aCustomer) {
         
         if (aCustomerAccessor == null) {
@@ -49,64 +53,116 @@ public class CustomerPanel extends JPanel {
         
         setLayout(null);
  
-        JLabel titleLabel = new JLabel("Account Options");
-        titleLabel.setFont(new Font("Serif", Font.BOLD, 18));
-        titleLabel.setHorizontalAlignment(JLabel.CENTER);
+        	// MAIN TITLE
+        JLabel titleLabel = new JLabel("Customer Account Options");
+        titleLabel.setFont(new Font("Serif", Font.BOLD, 20));
+        titleLabel.setHorizontalAlignment(JLabel.LEFT);
         titleLabel.setBounds(10, 10, 280, 25);
         this.add(titleLabel);
         
+        	// UPDATE CREDIT CARD INFORMATION
+        JLabel creditCardLabel = new JLabel("Update Credit Card Information");
+        creditCardLabel.setFont(new Font("Serif", Font.BOLD, 12));
+        creditCardLabel.setHorizontalAlignment(JLabel.LEFT);
+        creditCardLabel.setBounds(10, 40, 280, 25);
+        this.add(creditCardLabel);
+        
         JButton addCreditCardButton = new JButton("Add Credit Card");
-        addCreditCardButton.setBounds(10,40,140,25);
+        addCreditCardButton.setBounds(10,70,140,25);
         this.add(addCreditCardButton);
         
-        addCreditCardField.setBounds(150,40,200,25);
+        addCreditCardField.setBounds(150,70,200,25);
         this.add(addCreditCardField);
         
         JButton deleteCreditCardButton = new JButton("Delete Credit Card");
-        deleteCreditCardButton.setBounds(10,70,140,25);
+        deleteCreditCardButton.setBounds(10,100,140,25);
         this.add(deleteCreditCardButton);
         
-        deleteCreditCardField.setBounds(150 ,70, 200, 25);
+        deleteCreditCardField.setBounds(150, 100, 200, 25);
         this.add(deleteCreditCardField);
         
         JLabel cvvCreditCardField = new JLabel("CVV");
-        cvvCreditCardField.setBounds(380, 70, 50, 25);
+        cvvCreditCardField.setBounds(380, 100, 50, 25);
         this.add(cvvCreditCardField);
         
-        cvvField.setBounds(420, 70, 50, 25);
+        cvvField.setBounds(420, 100, 50, 25);
         this.add(cvvField);
         
         JButton updateCVV = new JButton("Update CVV");
-        updateCVV.setBounds(10, 100, 140, 25);
+        updateCVV.setBounds(10, 130, 140, 25);
         this.add(updateCVV);
         
         JLabel addressWithCard = new JLabel("Address");
-        addressWithCard.setBounds(20, 130, 100, 25);
+        addressWithCard.setBounds(20, 160, 100, 25);
         this.add(addressWithCard);
         
-        addressWithCardField.setBounds(150, 130, 200, 25);
+        addressWithCardField.setBounds(150, 160, 200, 25);
         this.add(addressWithCardField);
         
-        JButton purchaseButton = new JButton("Purchase");
-        purchaseButton.setBounds(10, 160, 80, 25);
-        this.add(purchaseButton);
-        
-        JButton historyButton = new JButton("Transaction History");
-        historyButton.setBounds(10,220, 280, 25);
-        this.add(historyButton);
-        
         JButton searchButton = new JButton("List Cards");
-        searchButton.setBounds(10, 190, 280, 25);
+        searchButton.setBounds(100, 200, 280, 25);
         this.add(searchButton);
        
         JButton deleteAccountButton = new JButton("Delete account");
-        deleteAccountButton.setBounds(300,190,150,25);
+        deleteAccountButton.setBounds(350,10,150,25);
+        deleteAccountButton.setHorizontalAlignment(JButton.RIGHT);
         this.add(deleteAccountButton);
         
-		output.setBounds(10, 350, 450, 300);
+		output.setBounds(10, 240, 450, 100);
 		this.add(output);
 		output.setLineWrap(true);
 		output.setEditable(false);
+        	
+        	// SEE TRANSACTION HISTORY
+        JLabel historyLabel = new JLabel("See transaction history:");
+        historyLabel.setFont(new Font("Serif", Font.BOLD, 12));
+        historyLabel.setHorizontalAlignment(JLabel.LEFT);
+        historyLabel.setBounds(10, 360, 280, 25);
+        this.add(historyLabel);
+        
+        JButton historyButton = new JButton("Transaction History");
+        historyButton.setBounds(10, 390, 280, 25);
+        this.add(historyButton); 
+        
+        	// MAKE PURCHASES
+        JLabel purchaseLabel = new JLabel("Make a purchase (enter game name and credit card number):");
+        purchaseLabel.setFont(new Font("Serif", Font.BOLD, 12));
+        purchaseLabel.setHorizontalAlignment(JLabel.LEFT);
+        purchaseLabel.setBounds(10, 490, 350, 25);
+        this.add(purchaseLabel);
+     
+        JButton purchaseButton = new JButton("Purchase");
+        purchaseButton.setBounds(10, 520, 80, 25);
+        this.add(purchaseButton);
+        
+        JLabel purchaseGameName = new JLabel("Game name:");
+        purchaseGameName.setBounds(100, 520, 80, 25);
+        this.add(purchaseGameName);
+        
+        JLabel buyWithThisCreditCard = new JLabel("Credit Card:");
+        buyWithThisCreditCard.setBounds(100, 550, 80, 25);
+        this.add(buyWithThisCreditCard);
+        
+        JLabel buyWithThisCVV = new JLabel("CVV:");
+        buyWithThisCVV.setBounds(100, 580, 80, 25);
+        this.add(buyWithThisCVV);
+        
+        purchaseGameField.setBounds(190, 520, 200, 25);
+        this.add(purchaseGameField);
+        purchaseCardField.setBounds(190, 550, 200, 25);
+        this.add(purchaseCardField);
+        purchaseCvvField.setBounds(190, 580, 100, 25);
+        this.add(purchaseCvvField);
+
+		// Purchase a game with a given credit card and game name
+		purchaseButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				
+			}
+		});
 		
 		//Updates the CVV of the current user's credit card
 		updateCVV.addActionListener(new ActionListener() {
@@ -162,7 +218,7 @@ public class CustomerPanel extends JPanel {
 				
 				for (int i = 0; i < creditCards.size(); i++) {
 					output.append(creditCards.get(i).getCardNumber());
-					output.append("\n");
+					output.append(" ");
 				}
 				
 			}
@@ -218,11 +274,11 @@ public class CustomerPanel extends JPanel {
 		
 		// labels and setup for the date pickers
 		JLabel afterLabel = new JLabel("Earliest");
-        afterLabel.setBounds(10, 250, 80, 25);
+        afterLabel.setBounds(10, 420, 80, 25);
         this.add(afterLabel);
 
         JLabel beforeLabel = new JLabel("Latest");
-        beforeLabel.setBounds(10, 280, 80, 25);
+        beforeLabel.setBounds(10, 450, 80, 25);
         this.add(beforeLabel);
 
         UtilDateModel afterModel = new UtilDateModel();
@@ -232,7 +288,7 @@ public class CustomerPanel extends JPanel {
         afterProperties.put("text.year", "Year");
         JDatePanelImpl afterDatePanel = new JDatePanelImpl(afterModel, afterProperties);
         fEarliestDatePicker = new JDatePickerImpl(afterDatePanel, new DateLabelFormatter());
-        fEarliestDatePicker.setBounds(100, 250, 190, 25);
+        fEarliestDatePicker.setBounds(100, 420, 190, 25);
         this.add(fEarliestDatePicker);
 
         UtilDateModel beforeModel = new UtilDateModel();
@@ -242,7 +298,7 @@ public class CustomerPanel extends JPanel {
         beforeProperties.put("text.year", "Year");
         JDatePanelImpl beforeDatePanel = new JDatePanelImpl(beforeModel, beforeProperties);
         fLatestDatePicker = new JDatePickerImpl(beforeDatePanel, new DateLabelFormatter());
-        fLatestDatePicker.setBounds(100, 280, 190, 25);
+        fLatestDatePicker.setBounds(100, 450, 190, 25);
         this.add(fLatestDatePicker);
         
         final JTable table = new JTable();
@@ -280,15 +336,6 @@ public class CustomerPanel extends JPanel {
 							JOptionPane.INFORMATION_MESSAGE);
 				}
                 		
-			}
-		});
-		
-		purchaseButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				
-				
 			}
 		});
     }
