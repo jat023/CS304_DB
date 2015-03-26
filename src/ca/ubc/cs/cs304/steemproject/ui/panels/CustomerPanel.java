@@ -242,7 +242,7 @@ public class CustomerPanel extends JPanel {
 				
 				for (int i = 0; i < creditCards.size(); i++) {
 					output.append(creditCards.get(i).getCardNumber());
-					output.append(" ");
+					output.append("\n");
 				}
 				
 			}

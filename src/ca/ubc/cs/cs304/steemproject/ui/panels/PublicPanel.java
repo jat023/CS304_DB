@@ -47,7 +47,7 @@ public class PublicPanel extends JPanel {
 //--------SET FIELDS, BUTTONS, LABELS, ETC with absolute positioning --------------------------------
 //---------------------------------------------------------------------------------------------------
 		JLabel searchLabel = new JLabel("SEARCH FOR AVAILABLE GAMES");
-        searchLabel.setFont(new Font("Serif", Font.BOLD, 16));
+        searchLabel.setFont(new Font("Serif", Font.BOLD, 20));
         searchLabel.setHorizontalAlignment(JLabel.LEFT);
         searchLabel.setBounds(10, 10, 280, 25);
         this.add(searchLabel);
@@ -244,7 +244,7 @@ public class PublicPanel extends JPanel {
         private static final String[] COLUMN_NAMES = {"Game Title", "Description", "Developer",
         												"Genre", "Rating", "Full Price", "Sale Price", "Discount (%)"};
         private final List<FinalizedGame> fGameList;
-
+        
         public FeedbackTableModel(List<FinalizedGame> aGameList) {
         	fGameList = aGameList;
         }
