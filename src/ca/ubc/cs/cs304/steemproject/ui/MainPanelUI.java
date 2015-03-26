@@ -1,26 +1,35 @@
 package ca.ubc.cs.cs304.steemproject.ui;
 
-import java.awt.*;
+import javax.swing.*;
+import ca.ubc.cs.cs304.steemproject.access.Accessors;
+import ca.ubc.cs.cs304.steemproject.base.development.GameTester;
+import ca.ubc.cs.cs304.steemproject.base.released.Customer;
+import ca.ubc.cs.cs304.steemproject.ui.panels.CustomerPanel;
+import ca.ubc.cs.cs304.steemproject.ui.panels.GameTesterPanel;
+import ca.ubc.cs.cs304.steemproject.ui.panels.LoginPanel;
+import ca.ubc.cs.cs304.steemproject.ui.panels.PublicPanel;
 
-import javax.swing.*;public class MainPanelUI {
-	
+
+public class MainPanelUI {
+		
 	/*
 	 * The main function for building the GUI
 	 * 				that is called from main in RunSteem.java
 	 */
 	public void buildGUI() {
 		JFrame mainWindow = new JFrame();
-		mainWindow.setSize(700,700);
+		JTabbedPane tabbedPane = new JTabbedPane();
+		
+		mainWindow.setSize(550,700);
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		JPanel mainPanel = new JPanel(new GridLayout(2,2));
-		
-		//mainPanel.add(new PublicPanel());
-		//mainPanel.add(new CustomerPanel());
-		//mainPanel.add(new GameTesterPanel());
-		//mainPanel.add(new LoginPanel());
+		tabbedPane.add(new LoginPanel(Accessors.getLoginAccessor()));
+		tabbedPane.add(new PublicPanel(Accessors.getPublicAccessor()));
+		tabbedPane.add(new GameTesterPanel(Accessors.getGameTesterAccessor(), new GameTester(1, "gametester1@gmail.com", "Pass1")));
+		tabbedPane.add(new CustomerPanel(Accessors.getCustomerAccessor(), new Customer(1, "customer1@gmail.com", "apple123")));
 
-		mainWindow.add(mainPanel);
+		mainWindow.add(tabbedPane);
+
 		mainWindow.setVisible(true);
 	}
 }

@@ -62,56 +62,62 @@ public class GameTesterPanel extends JPanel {
 
         setLayout(null);
 
+        JLabel titleLabel = new JLabel("GAME TESTER CENTER");
+        titleLabel.setFont(new Font("Serif", Font.BOLD, 20));
+        titleLabel.setHorizontalAlignment(JLabel.LEFT);
+        titleLabel.setBounds(10, 10, 280, 25);
+        this.add(titleLabel);
+
         JLabel searchLabel = new JLabel("SEARCH FOR AVAILABLE GAMES");
         searchLabel.setFont(new Font("Serif", Font.BOLD, 14));
-        searchLabel.setHorizontalAlignment(JLabel.CENTER);
-        searchLabel.setBounds(10, 10, 280, 25);
+        searchLabel.setHorizontalAlignment(JLabel.LEFT);
+        searchLabel.setBounds(10, 40, 280, 25);
         this.add(searchLabel);
-
+        
         JLabel nameLabel = new JLabel("Game Title");
-        nameLabel.setBounds(10, 40, 80, 25);
+        nameLabel.setBounds(10, 70, 80, 25);
         this.add(nameLabel);
 
         fGameNameField = new JTextField("", 15);
-        fGameNameField.setBounds(100, 40, 190, 25);
+        fGameNameField.setBounds(100, 70, 190, 25);
         this.add(fGameNameField);
 
         JLabel developerLabel = new JLabel("Developer");
-        developerLabel.setBounds(10, 70, 80, 25);
+        developerLabel.setBounds(10, 100, 80, 25);
         this.add(developerLabel);
 
         fGameDeveloperField = new JTextField("", 20);
-        fGameDeveloperField.setBounds(100, 70, 190, 25);
+        fGameDeveloperField.setBounds(100, 100, 190, 25);
         this.add(fGameDeveloperField);
 
         JLabel genreLabel = new JLabel("Genre");
-        genreLabel.setBounds(10, 100, 80, 25);
+        genreLabel.setBounds(10, 130, 80, 25);
         this.add(genreLabel);
 
         fGameGenreField = new JComboBox<Genre>(Genre.values());
         fGameGenreField.addItem(null);
         fGameGenreField.setSelectedIndex(-1);
-        fGameGenreField.setBounds(100, 100, 190, 25);
+        fGameGenreField.setBounds(100, 130, 190, 25);
         this.add(fGameGenreField);
 
         JLabel sortByLabel = new JLabel("Sort By");
-        sortByLabel.setBounds(10, 130, 80, 25);
+        sortByLabel.setBounds(10, 160, 80, 25);
         this.add(sortByLabel);
 
         fGameSortOptionField = new JComboBox<GameSortByOption>(GameSortByOption.values());
         fGameSortOptionField.addItem(null);
         fGameSortOptionField.setSelectedIndex(-1);
-        fGameSortOptionField.setBounds(100, 130, 100, 25);
+        fGameSortOptionField.setBounds(100, 160, 100, 25);
         this.add(fGameSortOptionField);
 
         fGameSortDirectionField = new JComboBox<SortDirection>(SortDirection.values());
         fGameSortDirectionField.addItem(null);
         fGameSortDirectionField.setSelectedIndex(-1);
-        fGameSortDirectionField.setBounds(210, 130, 80, 25);
+        fGameSortDirectionField.setBounds(210, 160, 80, 25);
         this.add(fGameSortDirectionField);
 
         JButton searchButton = new JButton("Search");
-        searchButton.setBounds(10, 160, 280, 25);
+        searchButton.setBounds(10, 190, 280, 25);
         this.add(searchButton);
 
         searchButton.addActionListener(new ActionListener() {
@@ -138,16 +144,16 @@ public class GameTesterPanel extends JPanel {
         // Table dialog for showing game tester feedbacks.
         JLabel collectLabel = new JLabel("DISPLAY PREVIOUS TESTS");
         collectLabel.setFont(new Font("Serif", Font.BOLD, 14));
-        collectLabel.setHorizontalAlignment(JLabel.CENTER);
-        collectLabel.setBounds(300, 10, 280, 25);
+        collectLabel.setHorizontalAlignment(JLabel.LEFT);
+        collectLabel.setBounds(10, 230, 280, 25);
         this.add(collectLabel);
 
         JLabel afterLabel = new JLabel("Earliest");
-        afterLabel.setBounds(300, 40, 80, 25);
+        afterLabel.setBounds(10, 260, 80, 25);
         this.add(afterLabel);
 
         JLabel beforeLabel = new JLabel("Latest");
-        beforeLabel.setBounds(300, 70, 80, 25);
+        beforeLabel.setBounds(10, 290, 80, 25);
         this.add(beforeLabel);
 
         UtilDateModel afterModel = new UtilDateModel();
@@ -157,7 +163,7 @@ public class GameTesterPanel extends JPanel {
         afterProperties.put("text.year", "Year");
         JDatePanelImpl afterDatePanel = new JDatePanelImpl(afterModel, afterProperties);
         fEarliestDatePicker = new JDatePickerImpl(afterDatePanel, new DateLabelFormatter());
-        fEarliestDatePicker.setBounds(390, 40, 190, 25);
+        fEarliestDatePicker.setBounds(90, 260, 190, 25);
         this.add(fEarliestDatePicker);
 
         UtilDateModel beforeModel = new UtilDateModel();
@@ -167,7 +173,7 @@ public class GameTesterPanel extends JPanel {
         beforeProperties.put("text.year", "Year");
         JDatePanelImpl beforeDatePanel = new JDatePanelImpl(beforeModel, beforeProperties);
         fLatestDatePicker = new JDatePickerImpl(beforeDatePanel, new DateLabelFormatter());
-        fLatestDatePicker.setBounds(390, 70, 190, 25);
+        fLatestDatePicker.setBounds(90, 290, 190, 25);
         this.add(fLatestDatePicker);
 
         final JTable table = new JTable();
@@ -178,7 +184,7 @@ public class GameTesterPanel extends JPanel {
         dialog.add(scrollPane);
 
         JButton collectButton = new JButton("Display");
-        collectButton.setBounds(300, 100, 290, 25);
+        collectButton.setBounds(10, 325, 290, 25);
         this.add(collectButton);
 
         collectButton.addActionListener(new ActionListener() {

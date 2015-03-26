@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-import ca.ubc.cs.cs304.steemproject.access.Accessors;
 import ca.ubc.cs.cs304.steemproject.access.ICustomerAccessor;
 import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.Retrieves;
 import ca.ubc.cs.cs304.steemproject.base.released.CreditCard;
@@ -242,7 +241,7 @@ public class CustomerPanel extends JPanel {
 				
 				for (int i = 0; i < creditCards.size(); i++) {
 					output.append(creditCards.get(i).getCardNumber());
-					output.append(" ");
+					output.append("\n");
 				}
 				
 			}
@@ -410,14 +409,5 @@ public class CustomerPanel extends JPanel {
                 throw new IllegalArgumentException("Column index higher than anticipated.");
             }
         }
-
     }
-
-    /*
-    public static final void main(String[] args) {
-        JFrame frame = new JFrame();
-        frame.add(new CustomerPanel(Accessors.getCustomerAccessor(),  new Customer(1, "customer1@gmail.com", "apple123")));
-        frame.setSize(500,700);
-        frame.setVisible(true);
-    }*/
 }
