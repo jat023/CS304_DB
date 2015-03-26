@@ -3,6 +3,8 @@ package ca.ubc.cs.cs304.steemproject.ui.panels;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -143,6 +145,34 @@ public class PublicPanel extends JPanel {
 		
 //--------Add ActionListeners for events  --------------------------
 //------------------------------------------------------------------
+		
+		mostExpensive.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Pair<Genre,Float> game = iPublic.findMostExpensiveGenre();
+				
+				output.append("The most expensive genre is ");
+				output.append(game.getKey().toString());
+				output.append(" at a price of ");
+				output.append(game.getValue().toString());
+				output.append(".\n");
+			}	
+		});
+		
+		leastExpensive.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Pair<Genre,Float> game = iPublic.findLeastExpensiveGenre();
+				
+				output.append("The least expensive genre is ");
+				output.append(game.getKey().toString());
+				output.append(" at a price of ");
+				output.append(game.getValue().toString());
+				output.append(".\n");
+			}	
+		});
 		
 		mostPopular.addActionListener(new ActionListener() {
 
