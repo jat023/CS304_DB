@@ -179,12 +179,11 @@ public class PublicPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Collection<FinalizedGame> mostPopularGame = iPublic.findMostPopularGame();
-				
-				//Like this????
+			
+				output.append("This game is most popular: ");
 				for (FinalizedGame obj : mostPopularGame) {
 					output.append(obj.getName().toString() + "\n");
 				}
-				// TODO : HOW DO I GET INFO FROM COLLECTIONS??
 			}	
 		});
 		
@@ -259,8 +258,11 @@ public class PublicPanel extends JPanel {
 				}
 				else if (isOwnedByAll) {
 					Collection<FinalizedGame> ownedAll = iPublic.findGamesOwnedByAllCustomers();
-		
-					// TODO : HOW DO I GET INFO FROM COLLECTIONS??
+						
+					output.append("This game is owned by all customers: ");
+					for (FinalizedGame obj : ownedAll) {
+						output.append(obj.getName().toString() + "\n");
+					}
 				}
 				else {
 					List<FinalizedGame> storeGeneralList = new ArrayList<FinalizedGame>();
