@@ -88,9 +88,6 @@ public class DatabaseUI {
 						e.printStackTrace();
 					}
 				}else {
-					tablePanel.removeAll();
-					tablePanel.revalidate();
-					tablePanel.repaint();
 					tablePanel.setVisible(false);
 				}
 				if(option2check.isSelected()) {
@@ -123,9 +120,6 @@ public class DatabaseUI {
 						e.printStackTrace();
 					}
 				}else {
-					tablePanel2.removeAll();
-					tablePanel2.revalidate();
-					tablePanel2.repaint();
 					tablePanel2.setVisible(false);
 				}
 				if(option3check.isSelected()) {

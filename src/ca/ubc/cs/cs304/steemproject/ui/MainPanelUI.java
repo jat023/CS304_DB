@@ -17,7 +17,7 @@ public class MainPanelUI {
 	 * 				that is called from main in RunSteem.java
 	 */
 	public void buildGUI() {
-		JFrame mainWindow = new JFrame();
+		JFrame mainWindow = new JFrame("Steem");
 		JTabbedPane tabbedPane = new JTabbedPane();
 		
 		mainWindow.setSize(550,700);
