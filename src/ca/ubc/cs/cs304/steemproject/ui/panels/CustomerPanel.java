@@ -17,7 +17,6 @@ import java.util.Properties;
 
 import ca.ubc.cs.cs304.steemproject.access.Accessors;
 import ca.ubc.cs.cs304.steemproject.access.ICustomerAccessor;
-import ca.ubc.cs.cs304.steemproject.base.development.GameTesterFeedback;
 import ca.ubc.cs.cs304.steemproject.base.released.CreditCard;
 import ca.ubc.cs.cs304.steemproject.base.released.Customer;
 import ca.ubc.cs.cs304.steemproject.base.released.Transaction;
@@ -333,7 +332,7 @@ public class CustomerPanel extends JPanel {
             case 1:
                 return fTransactionHistory.get(rowIndex).getGame().getName();
             case 2:
-                return fTransactionHistory.get(rowIndex).getCreditCard();
+                return fTransactionHistory.get(rowIndex).getCreditCard().getCardNumber();
             case 3:
                 return fTransactionHistory.get(rowIndex).getDateOfPurchase();
             default:

@@ -1,17 +1,8 @@
 package ca.ubc.cs.cs304.steemproject.ui;
 
 import java.awt.*;
-import java.awt.event.*;
 
-import javax.swing.*;
-import ca.ubc.cs.cs304.steemproject.ui.panels.CustomerPanel;
-import ca.ubc.cs.cs304.steemproject.ui.panels.GameTesterPanel;
-import ca.ubc.cs.cs304.steemproject.ui.panels.LoginPanel;
-import ca.ubc.cs.cs304.steemproject.ui.panels.PublicPanel;
-
-import java.sql.*;
-
-public class MainPanelUI {
+import javax.swing.*;public class MainPanelUI {
 	
 	/*
 	 * The main function for building the GUI
