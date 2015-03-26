@@ -19,7 +19,6 @@ public class MainPanelUI {
 	public void buildGUI() {
 		JFrame mainWindow = new JFrame();
 		JTabbedPane tabbedPane = new JTabbedPane();
-		//LoginPanel loginScreen = new LoginPanel(Accessors.getLoginAccessor());
 		
 		mainWindow.setSize(550,700);
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -30,7 +29,6 @@ public class MainPanelUI {
 		tabbedPane.add(new CustomerPanel(Accessors.getCustomerAccessor(), new Customer(1, "customer1@gmail.com", "apple123")));
 
 		mainWindow.add(tabbedPane);
-		//mainWindow.add(loginScreen);
 
 		mainWindow.setVisible(true);
 	}

@@ -295,12 +295,4 @@ public class PublicPanel extends JPanel {
         }
 
     }
-
-    /*
-	public static final void main(String[] args) {
-		JFrame frame = new JFrame();
-		frame.add(new PublicPanel(Accessors.getPublicAccessor()));
-		frame.setSize(500,650);
-		frame.setVisible(true);
-	}*/
 }
