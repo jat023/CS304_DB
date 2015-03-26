@@ -1,5 +1,7 @@
 package ca.ubc.cs.cs304.steemproject.ui;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -9,21 +11,26 @@ import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 
-import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.DBCustomerAccessor;
+import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.DBGeneralAccessor;
 import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.connection.SteemOracleDbConnector;
+import ca.ubc.cs.cs304.steemproject.base.released.Transaction;
 
 public class DatabaseUI {
 	
 	private JFrame mainWindow;
 	private JPanel optionsPanel;
 	private JPanel buttonPanel;
+	private JPanel tablePanel;
+	private JPanel tablePanel2;
 	private JCheckBox option1check;
 	private JCheckBox option2check;
 	private JCheckBox option3check;
 	private JCheckBox option4check;
 	private JButton refreshButton;
-	private DBCustomerAccessor customerAccessorDB;
+	private DBGeneralAccessor generalAccessorDB;
 	
 	DatabaseUI() throws SQLException {		
 		mainWindow = new JFrame("Database UI");
@@ -33,44 +40,93 @@ public class DatabaseUI {
 		
 		optionsPanel = initCheckBoxesPanel();
 		buttonPanel = initRefreshButton();
-		//JTable table = new JTable(data, columnNames);
+		tablePanel = new JPanel();
+		tablePanel.setLayout(new BorderLayout());
+		tablePanel.setSize(600, 100);
+		tablePanel2 = new JPanel();
+		tablePanel2.setLayout(new BorderLayout());
+		tablePanel2.setSize(600, 100);
 		
 		mainWindow.add(optionsPanel);
 		mainWindow.add(buttonPanel);
+		mainWindow.add(tablePanel);
+		mainWindow.add(tablePanel2);
 		
 		setComponentLocations();
-		customerAccessorDB = new DBCustomerAccessor();
+		generalAccessorDB = new DBGeneralAccessor();
 		
 		refreshButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if(option1check.isSelected()) {
-					List<Integer> userIDs = new ArrayList<Integer>();
-					List<String> userEmails = new ArrayList<String>();
-					List<String> userPasswords = new ArrayList<String>();
+					List<Integer> userIDs;
+					List<String> userEmails;
+					List<String> userPasswords;
 					try {
-						userIDs = customerAccessorDB.getIDs();
-						userEmails = customerAccessorDB.getEmails();
-						userPasswords = customerAccessorDB.getPasswords();
+						userIDs = generalAccessorDB.getCustomers().getIDs();
+						userEmails = generalAccessorDB.getCustomers().getEmails();
+						userPasswords = generalAccessorDB.getCustomers().getPasswords();
+						
+						String columnNames[] = {"Customer ID","Customer Email","Customer Password"};
+						DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+						JTable customerTable = new JTable(tableModel);
+
+						for( int i = 0; i < userIDs.size(); i++ ) {
+							Object[] rowObj = {userIDs.get(i).toString(), userEmails.get(i).toString(),
+									userPasswords.get(i).toString()};
+							tableModel.addRow(rowObj);
+						}
+						
+						JScrollPane scrollPane = new JScrollPane(customerTable);
+					    tablePanel.add(scrollPane, BorderLayout.CENTER);
+						
+					    tablePanel.setVisible(true);
+						tablePanel.revalidate();
+						tablePanel.repaint();
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					System.out.println("All user IDs:");
-					for( int i = 0; i < userIDs.size(); i++) {
-						System.out.println(userIDs.get(i).toString());
-					}
-					System.out.println("All user Emails:");
-					for( int i = 0; i < userEmails.size(); i++) {
-						System.out.println(userEmails.get(i).toString());
-					}
-					System.out.println("All user Passwords:");
-					for( int i = 0; i < userPasswords.size(); i++) {
-						System.out.println(userPasswords.get(i).toString());
-					}
+				}else {
+					tablePanel.removeAll();
+					tablePanel.revalidate();
+					tablePanel.repaint();
+					tablePanel.setVisible(false);
 				}
 				if(option2check.isSelected()) {
-					System.out.println("N/A");
+					List<Integer> testerIDs;
+					List<String> testerEmails;
+					List<String> testerPasswords;
+					try {
+						testerIDs = generalAccessorDB.getTesters().getIDs();
+						testerEmails = generalAccessorDB.getTesters().getEmails();
+						testerPasswords = generalAccessorDB.getTesters().getPasswords();
+						
+						String columnNames[] = {"Tester ID","Tester Email","Tester Password"};
+						DefaultTableModel tableModel2 = new DefaultTableModel(columnNames, 0);
+						JTable testerTable = new JTable(tableModel2);
+
+						for( int i = 0; i < testerIDs.size(); i++ ) {
+							Object[] rowObj = {testerIDs.get(i).toString(), testerEmails.get(i).toString(),
+									testerPasswords.get(i).toString()};
+							tableModel2.addRow(rowObj);
+						}
+						
+						JScrollPane scrollPane2 = new JScrollPane(testerTable);
+					    tablePanel2.add(scrollPane2, BorderLayout.CENTER);
+						
+					    tablePanel2.setVisible(true);
+						tablePanel2.revalidate();
+						tablePanel2.repaint();
+					}catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}else {
+					tablePanel2.removeAll();
+					tablePanel2.revalidate();
+					tablePanel2.repaint();
+					tablePanel2.setVisible(false);
 				}
 				if(option3check.isSelected()) {
 					System.out.println("N/A");
@@ -85,11 +141,13 @@ public class DatabaseUI {
 	private void setComponentLocations() {
 		optionsPanel.setLocation(100, 25);
 		buttonPanel.setLocation(225, 125);
+		tablePanel.setLocation(50,175);
+		tablePanel2.setLocation(50,280);
 	}
 	
 	private JPanel initRefreshButton() {
 		JPanel aButtonPanel = new JPanel();
-		aButtonPanel.setSize(250, 100);
+		aButtonPanel.setSize(250, 50);
 		
 		refreshButton = new JButton("Refresh");
 		aButtonPanel.add(refreshButton);
@@ -137,4 +195,6 @@ public class DatabaseUI {
 		tablesUI.show();
 		
 	}
+	
+	
 }
