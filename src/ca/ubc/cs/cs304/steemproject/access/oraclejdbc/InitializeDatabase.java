@@ -143,16 +143,22 @@ final class InitializeDatabase {
         // Insert at least five rows into all the tables.
 
         Customer customer1 = new Customer(1, "customer1@gmail.com", "apple123");
-        Customer customer2 = new Customer(2, "customer2@gmail.com", "orange123");
-        Customer customer3 = new Customer(3, "customer3@gmail.com", "banana123");
-        Customer customer4 = new Customer(4, "customer4@gmail.com", "watermelon123");
-        Customer customer5 = new Customer(5, "customer5@gmail.com", "pear123");
+        Customer customer2 = new Customer(2, "customer2@gmail.com", "banana123");
+        Customer customer3 = new Customer(3, "customer3@gmail.com", "cherry123");
+        Customer customer4 = new Customer(4, "customer4@gmail.com", "date123");
+        Customer customer5 = new Customer(5, "customer5@gmail.com", "fig123");
 
         FinalizedGame game1 = new FinalizedGame("Sneaky Thief","So sneaky.", Genre.RPG, "Bob", 10f, 1.00f, false, 0f);
         FinalizedGame game2 = new FinalizedGame("Amazing Horse","RIDE TO GLORY!", Genre.STRATEGY, "Dan Inc.", 8.8f, 9.99f, true, 0.4f);
         FinalizedGame game3 = new FinalizedGame("Amazing Irish Luck","Fun for the leprechauns.", Genre.ACTION, "Dan", 5f, 59.99f, false, 0.2f);
         FinalizedGame game4 = new FinalizedGame("Fun Classroom Game","Fun for the whole family.", Genre.RPG, "Blazzard", 8.2f, 39.99f, true, 0.1f);
         FinalizedGame game5 = new FinalizedGame("Some CS304 Project","So fun you won't even notice it isn't a game.", Genre.SPORTS, "Dan", 3.5f, 29.99f, false, 0f);
+        
+        FinalizedGame game6 = new FinalizedGame("Bunjee","Test your jumping skills!", Genre.CASUAL, "Beema Studios", 7f, 1.00f, false, 0f);
+        FinalizedGame game7 = new FinalizedGame("Car 2 GO","Be the first at the finish line!", Genre.RACING, "EC Sports", 6.6f, 1.00f, false, 0f);
+        FinalizedGame game8 = new FinalizedGame("Truck Smash","Like Monster trucks, but better.", Genre.RACING, "EC Sports", 8.2f, 1.00f, false, 0f);
+        FinalizedGame game9 = new FinalizedGame("Tunnel Run","How long can you go?", Genre.CASUAL, "Beema Studios", 9f, 1.00f, false, 0f);
+        FinalizedGame game10 = new FinalizedGame("Dancing with the Stars","Rock it, Shake it, Move it.", Genre.CASUAL, "Cumon Entertainment", 9.7f, 1.00f, false, 0f);
 
         GameTester tester1 = new GameTester(1, "gametester1@gmail.com", "Pass1");
         GameTester tester2 = new GameTester(2, "gametester2@gmail.com", "Pass2");
@@ -180,6 +186,14 @@ final class InitializeDatabase {
         Transaction transaction6 = new Transaction( customer3, card3, game2, generateRandomDate() );
         Transaction transaction7 = new Transaction( customer4, card4, game2, generateRandomDate() );
         Transaction transaction8 = new Transaction( customer5, card5, game2, generateRandomDate() );
+        
+        Transaction transaction9 = new Transaction( customer2, card2, game6, generateRandomDate() );
+        Transaction transaction10 = new Transaction( customer3, card3, game7, generateRandomDate() );
+        Transaction transaction11 = new Transaction( customer1, card1, game8, generateRandomDate() );
+        Transaction transaction12 = new Transaction( customer5, card5, game9, generateRandomDate() );
+        Transaction transaction13 = new Transaction( customer5, card5, game10, generateRandomDate() );
+        Transaction transaction14 = new Transaction( customer5, card5, game4, generateRandomDate() );
+        Transaction transaction15 = new Transaction( customer5, card5, game3, generateRandomDate() );
 
         GameTesterFeedback feedback1 = new GameTesterFeedback(gameInDev1, tester1, generateRandomDate(), 2.1f, "Very Buggy");
         GameTesterFeedback feedback2 = new GameTesterFeedback(gameInDev1, tester2, generateRandomDate(), 0.1f, "Game too hard");
@@ -210,6 +224,11 @@ final class InitializeDatabase {
         Inserts.insertFinalizedGame(game3);
         Inserts.insertFinalizedGame(game4);
         Inserts.insertFinalizedGame(game5);
+        Inserts.insertFinalizedGame(game6);
+        Inserts.insertFinalizedGame(game7);
+        Inserts.insertFinalizedGame(game8);
+        Inserts.insertFinalizedGame(game9);
+        Inserts.insertFinalizedGame(game10);
 
         log.info("Inserting games in development.");
 
@@ -237,6 +256,14 @@ final class InitializeDatabase {
         Inserts.insertTransaction(transaction6);
         Inserts.insertTransaction(transaction7);
         Inserts.insertTransaction(transaction8);
+        
+        Inserts.insertTransaction(transaction9);
+        Inserts.insertTransaction(transaction10);
+        Inserts.insertTransaction(transaction11);
+        Inserts.insertTransaction(transaction12);
+        Inserts.insertTransaction(transaction13);
+        Inserts.insertTransaction(transaction14);
+        Inserts.insertTransaction(transaction15);
 
         log.info("Inserting play times.");
 
@@ -244,11 +271,18 @@ final class InitializeDatabase {
         Inserts.insertOwnsGame(new Playtime(transaction2.getBuyer(), transaction2.getGame(), 2.4f));
         Inserts.insertOwnsGame(new Playtime(transaction3.getBuyer(), transaction3.getGame(), 0.2f));
         Inserts.insertOwnsGame(new Playtime(transaction4.getBuyer(), transaction4.getGame(), 66f));
-        Inserts.insertOwnsGame(new Playtime(transaction5.getBuyer(), transaction5.getGame(), 0.0f));
-        Inserts.insertOwnsGame(new Playtime(transaction6.getBuyer(), transaction6.getGame(), 0.0f));
-        Inserts.insertOwnsGame(new Playtime(transaction7.getBuyer(), transaction7.getGame(), 0.0f));
-        Inserts.insertOwnsGame(new Playtime(transaction8.getBuyer(), transaction8.getGame(), 0.0f));
-
+        Inserts.insertOwnsGame(new Playtime(transaction5.getBuyer(), transaction5.getGame(), 742.0f));
+        Inserts.insertOwnsGame(new Playtime(transaction6.getBuyer(), transaction6.getGame(), 14.8f));
+        Inserts.insertOwnsGame(new Playtime(transaction7.getBuyer(), transaction7.getGame(), 19.0f));
+        Inserts.insertOwnsGame(new Playtime(transaction8.getBuyer(), transaction8.getGame(), 36.4f));
+        
+        Inserts.insertOwnsGame(new Playtime(transaction9.getBuyer(), transaction9.getGame(), 19.0f));
+        Inserts.insertOwnsGame(new Playtime(transaction10.getBuyer(), transaction10.getGame(), 12.2f));
+        Inserts.insertOwnsGame(new Playtime(transaction11.getBuyer(), transaction11.getGame(), 6.0f));
+        Inserts.insertOwnsGame(new Playtime(transaction12.getBuyer(), transaction12.getGame(), 7.1f));
+        Inserts.insertOwnsGame(new Playtime(transaction13.getBuyer(), transaction13.getGame(), 164.4f));
+        Inserts.insertOwnsGame(new Playtime(transaction14.getBuyer(), transaction14.getGame(), 1086.0f));
+        Inserts.insertOwnsGame(new Playtime(transaction15.getBuyer(), transaction15.getGame(), 41.0f));
 
         log.info("Inserting feedbacks.");
 

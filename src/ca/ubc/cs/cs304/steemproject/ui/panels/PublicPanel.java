@@ -2,11 +2,11 @@ package ca.ubc.cs.cs304.steemproject.ui.panels;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import ca.ubc.cs.cs304.steemproject.access.Accessors;
 import ca.ubc.cs.cs304.steemproject.access.IPublicAccessor;
 import ca.ubc.cs.cs304.steemproject.access.options.GameSortByOption;
 import ca.ubc.cs.cs304.steemproject.access.options.SortDirection;
@@ -49,7 +49,7 @@ public class PublicPanel extends JPanel {
 		JLabel searchLabel = new JLabel("SEARCH FOR AVAILABLE GAMES");
         searchLabel.setFont(new Font("Serif", Font.BOLD, 20));
         searchLabel.setHorizontalAlignment(JLabel.LEFT);
-        searchLabel.setBounds(10, 10, 280, 25);
+        searchLabel.setBounds(10, 10, 350, 25);
         this.add(searchLabel);
 		
 		JLabel nameLabel = new JLabel("Game Title");
@@ -166,6 +166,13 @@ public class PublicPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(table);
         table.setFillsViewportHeight(true);
         dialog.add(scrollPane);
+        
+        final JTable ownedTable = new JTable();
+        final JDialog ownedDialog = new JDialog();
+        ownedDialog.setSize(720, 420);
+        JScrollPane ownedScrollPane = new JScrollPane(ownedTable);
+        ownedTable.setFillsViewportHeight(true);
+        ownedDialog.add(ownedScrollPane);
 		
 		searchButton.addActionListener(new ActionListener() {
 
@@ -198,11 +205,8 @@ public class PublicPanel extends JPanel {
 						
 						storeOwnedList = iPublic.listGamesOwned(storeUserID);
 						
-						for (int i = 0; i < storeOwnedList.size(); i++) {
-							output.append(storeOwnedList.get(i).getGame().getName().toString() + "\n");
-						}
-						
-						output.append("\n");
+		                ownedTable.setModel(new ownedGamesTableModel(storeOwnedList));
+		                ownedDialog.setVisible(true);
 						
 					} catch (UserNotExistsException e) {
 						JOptionPane.showMessageDialog(null,
@@ -238,7 +242,7 @@ public class PublicPanel extends JPanel {
 	}
 	
 
-    // table class for displaying the games
+    // table class for displaying the all and discounted games
     private static class FeedbackTableModel extends AbstractTableModel {
 
         private static final String[] COLUMN_NAMES = {"Game Title", "Description", "Developer",
@@ -293,6 +297,51 @@ public class PublicPanel extends JPanel {
                 throw new IllegalArgumentException("Column index higher than anticipated.");
             }
         }
+    }
+    
+ // table class for displaying the all and discounted games
+    private static class ownedGamesTableModel extends AbstractTableModel {
 
+        private static final String[] COLUMN_NAMES = {"Game Title", "Owned by", "Hours Played"};
+        private final List<Playtime> fGameList;
+        
+        public ownedGamesTableModel(List<Playtime> aGameList) {
+        	fGameList = aGameList;
+        }
+
+        @Override
+        public int getColumnCount() {
+            return COLUMN_NAMES.length;
+        }
+
+        @Override
+        public int getRowCount() {
+            return fGameList.size();
+        }
+        
+        @Override
+        public String getColumnName(int column) {
+            return COLUMN_NAMES[column];
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+
+            switch (columnIndex) {
+            case 0:
+                return fGameList.get(rowIndex).getGame().getName();
+            case 1:
+                return fGameList.get(rowIndex).getUser().getEmail();
+            case 2:
+                return fGameList.get(rowIndex).getHoursSpent();
+            default:
+                throw new IllegalArgumentException("Column index higher than anticipated.");
+            }
+        }
     }
 }

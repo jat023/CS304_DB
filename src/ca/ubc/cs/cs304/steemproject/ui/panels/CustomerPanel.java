@@ -104,8 +104,12 @@ public class CustomerPanel extends JPanel {
         this.add(addressWithCardField);
         
         JButton searchButton = new JButton("List Cards");
-        searchButton.setBounds(100, 200, 280, 25);
+        searchButton.setBounds(20, 200, 280, 25);
         this.add(searchButton);
+        
+        JButton clearButton = new JButton("Clear");
+        clearButton.setBounds(320,200,100,25);
+        this.add(clearButton);
        
         JButton deleteAccountButton = new JButton("Delete account");
         deleteAccountButton.setBounds(350,10,150,25);
@@ -116,7 +120,7 @@ public class CustomerPanel extends JPanel {
 		this.add(output);
 		output.setLineWrap(true);
 		output.setEditable(false);
-        	
+		
         	// SEE TRANSACTION HISTORY
         JLabel historyLabel = new JLabel("See transaction history:");
         historyLabel.setFont(new Font("Serif", Font.BOLD, 12));
@@ -158,6 +162,19 @@ public class CustomerPanel extends JPanel {
         purchaseCvvField.setBounds(190, 580, 100, 25);
         this.add(purchaseCvvField);
 
+        // clear all field with the clear button
+        clearButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+		        addCreditCardField.setText("");
+		        deleteCreditCardField.setText("");
+		        cvvField.setText("");
+		        addressWithCardField.setText("");
+		        output.setText("");
+			}
+        });
+        
 		// Purchase a game with a given credit card and game name
 		purchaseButton.addActionListener(new ActionListener() {
 
@@ -203,6 +220,10 @@ public class CustomerPanel extends JPanel {
 				}
 				else {
 					fCustomerAccessor.updateCCV(changeThisCardCVV, newCVV);
+					JOptionPane.showMessageDialog(null,
+							"CVV Updated",
+							"SUCCESS",
+							JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 		});
@@ -223,6 +244,13 @@ public class CustomerPanel extends JPanel {
 			}
 		});
 		
+        final JTable creditCardTable = new JTable();
+        final JDialog creditCardDialog = new JDialog();
+        creditCardDialog.setSize(720, 420);
+        JScrollPane creditCardScrollPane = new JScrollPane(creditCardTable);
+        creditCardTable.setFillsViewportHeight(true);
+        creditCardDialog.add(creditCardScrollPane);
+        
 		// Queries for the list of cards owned by the user
 		searchButton.addActionListener(new ActionListener() {
 
@@ -238,11 +266,9 @@ public class CustomerPanel extends JPanel {
 							"FAILED TO GET CREDIT CARDS",
 							JOptionPane.INFORMATION_MESSAGE);
 				}
-				
-				for (int i = 0; i < creditCards.size(); i++) {
-					output.append(creditCards.get(i).getCardNumber());
-					output.append("\n");
-				}
+			
+				creditCardTable.setModel(new CreditCardTableModel(creditCards));
+				creditCardDialog.setVisible(true);
 				
 			}
 		});
@@ -405,6 +431,56 @@ public class CustomerPanel extends JPanel {
                 return fTransactionHistory.get(rowIndex).getCreditCard().getCardNumber();
             case 3:
                 return fTransactionHistory.get(rowIndex).getDateOfPurchase();
+            default:
+                throw new IllegalArgumentException("Column index higher than anticipated.");
+            }
+        }
+    }
+    
+ // table class for displaying the credit cards of customer
+    private static class CreditCardTableModel extends AbstractTableModel {
+
+        private static final String[] COLUMN_NAMES = {"Customer Email", "Customer ID", "Credit Card", "CVV", "Address"};
+        private final List<CreditCard> fCreditCardRecord;
+
+        public CreditCardTableModel(List<CreditCard> aCreditCardRecord) {
+        	fCreditCardRecord = aCreditCardRecord;
+        }
+
+        @Override
+        public int getColumnCount() {
+            return COLUMN_NAMES.length;
+        }
+
+        @Override
+        public int getRowCount() {
+            return fCreditCardRecord.size();
+        }
+        
+        @Override
+        public String getColumnName(int column) {
+            return COLUMN_NAMES[column];
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+
+            switch (columnIndex) {
+            case 0:
+                return fCreditCardRecord.get(rowIndex).getCardOwner().getEmail();
+            case 1:
+            	return fCreditCardRecord.get(rowIndex).getCardOwner().getUserId();
+            case 2:
+                return fCreditCardRecord.get(rowIndex).getCardNumber();
+            case 3:
+                return fCreditCardRecord.get(rowIndex).getCcv();
+            case 4:
+                return fCreditCardRecord.get(rowIndex).getAddress();
             default:
                 throw new IllegalArgumentException("Column index higher than anticipated.");
             }
