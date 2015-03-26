@@ -43,9 +43,7 @@ public class PublicPanel extends JPanel {
 
 		iPublic = aPublicAccessor;
 		setLayout(null);
-
-//--------SET FIELDS, BUTTONS, LABELS, ETC with absolute positioning --------------------------------
-//---------------------------------------------------------------------------------------------------
+		
 		JLabel searchLabel = new JLabel("SEARCH FOR AVAILABLE GAMES");
         searchLabel.setFont(new Font("Serif", Font.BOLD, 20));
         searchLabel.setHorizontalAlignment(JLabel.LEFT);
@@ -100,6 +98,7 @@ public class PublicPanel extends JPanel {
 		owned.setBounds(10, 190, 150, 25);
 		this.add(owned);
 		
+			// division query
 		ownedByAll.setBounds(10, 220, 150, 25);
 		this.add(ownedByAll);
 		
@@ -123,13 +122,24 @@ public class PublicPanel extends JPanel {
 		searchButton.setBounds(10, 300, 280, 25);
 		this.add(searchButton);
 		
+			// aggregation query
 		JButton mostPopular = new JButton("Most Popular");
-		mostPopular.setBounds(330, 40, 120, 25);
+		mostPopular.setBounds(330, 40, 150, 25);
 		this.add(mostPopular);
+		
+			// Nested aggregation with group-by query
+		JButton mostExpensive = new JButton("Most Expensive");
+		mostExpensive.setBounds(330, 70, 150,25);
+		this.add(mostExpensive);
+		
+		JButton leastExpensive = new JButton("Least Expensive");
+		leastExpensive.setBounds(330, 100, 150,25);
+		this.add(leastExpensive);
 		
 		radioButtonGroup.add(discount);
 		radioButtonGroup.add(owned);
 		radioButtonGroup.add(ownedByAll);
+		
 		
 //--------Add ActionListeners for events  --------------------------
 //------------------------------------------------------------------
@@ -196,7 +206,7 @@ public class PublicPanel extends JPanel {
 							(GameSortByOption)fGameSortOptionField.getSelectedItem(),
 							(SortDirection)fGameSortDirectionField.getSelectedItem(), discounted);
 					
-	                table.setModel(new FeedbackTableModel(storeDiscountedList));
+	                table.setModel(new DisplayGamesTableModel(storeDiscountedList));
 	                dialog.setVisible(true);
 				}
 				else if (isOwned) {
@@ -217,10 +227,8 @@ public class PublicPanel extends JPanel {
 				}
 				else if (isOwnedByAll) {
 					Collection<FinalizedGame> ownedAll = iPublic.findGamesOwnedByAllCustomers();
+		
 					
-					for (Object obj : ownedAll) {
-						output.append(ownedAll.toString() + "\n");
-					}
 				}
 				else {
 					List<FinalizedGame> storeGeneralList = new ArrayList<FinalizedGame>();
@@ -233,7 +241,7 @@ public class PublicPanel extends JPanel {
 							(SortDirection)fGameSortDirectionField.getSelectedItem(),
 							discounted);
 					
-	                table.setModel(new FeedbackTableModel(storeGeneralList));
+	                table.setModel(new DisplayGamesTableModel(storeGeneralList));
 	                dialog.setVisible(true);
 				}
 			}
@@ -243,13 +251,13 @@ public class PublicPanel extends JPanel {
 	
 
     // table class for displaying the all and discounted games
-    private static class FeedbackTableModel extends AbstractTableModel {
+    private static class DisplayGamesTableModel extends AbstractTableModel {
 
         private static final String[] COLUMN_NAMES = {"Game Title", "Description", "Developer",
         												"Genre", "Rating", "Full Price", "Sale Price", "Discount (%)"};
         private final List<FinalizedGame> fGameList;
         
-        public FeedbackTableModel(List<FinalizedGame> aGameList) {
+        public DisplayGamesTableModel(List<FinalizedGame> aGameList) {
         	fGameList = aGameList;
         }
 
