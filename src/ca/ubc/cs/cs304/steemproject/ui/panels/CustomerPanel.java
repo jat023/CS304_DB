@@ -3,16 +3,26 @@ package ca.ubc.cs.cs304.steemproject.ui.panels;
 import java.awt.event.*;
 
 import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
+
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 import ca.ubc.cs.cs304.steemproject.access.Accessors;
 import ca.ubc.cs.cs304.steemproject.access.ICustomerAccessor;
+import ca.ubc.cs.cs304.steemproject.base.development.GameTesterFeedback;
 import ca.ubc.cs.cs304.steemproject.base.released.CreditCard;
 import ca.ubc.cs.cs304.steemproject.base.released.Customer;
+import ca.ubc.cs.cs304.steemproject.base.released.Transaction;
 import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
+import ca.ubc.cs.cs304.steemproject.ui.panels.datepicker.DateLabelFormatter;
 
 @SuppressWarnings("serial")
 public class CustomerPanel extends JPanel {
@@ -24,6 +34,8 @@ public class CustomerPanel extends JPanel {
     private final JTextField addCreditCardField = new JTextField(50);
     private final JTextField cvvField = new JTextField(5);
     private final JTextField addressWithCardField = new JTextField(50);
+    private final JDatePickerImpl fEarliestDatePicker;
+    private final JDatePickerImpl fLatestDatePicker;
     
     public CustomerPanel(ICustomerAccessor aCustomerAccessor, Customer aCustomer) {
         
@@ -38,55 +50,61 @@ public class CustomerPanel extends JPanel {
         
         setLayout(null);
  
-        JButton addCreditCardButton = new JButton("Add");
-        addCreditCardButton.setBounds(10,10,80,25);
+        JLabel titleLabel = new JLabel("Account Options");
+        titleLabel.setFont(new Font("Serif", Font.BOLD, 18));
+        titleLabel.setHorizontalAlignment(JLabel.CENTER);
+        titleLabel.setBounds(10, 10, 280, 25);
+        this.add(titleLabel);
+        
+        JButton addCreditCardButton = new JButton("Add Credit Card");
+        addCreditCardButton.setBounds(10,40,140,25);
         this.add(addCreditCardButton);
         
-        addCreditCardField.setBounds(90,10,200,25);
+        addCreditCardField.setBounds(150,40,200,25);
         this.add(addCreditCardField);
         
-        JButton deleteCreditCardButton = new JButton("Delete");
-        deleteCreditCardButton.setBounds(10,40,80,25);
+        JButton deleteCreditCardButton = new JButton("Delete Credit Card");
+        deleteCreditCardButton.setBounds(10,70,140,25);
         this.add(deleteCreditCardButton);
         
-        deleteCreditCardField.setBounds(90,40, 200, 25);
+        deleteCreditCardField.setBounds(150 ,70, 200, 25);
         this.add(deleteCreditCardField);
         
         JLabel cvvCreditCardField = new JLabel("CVV");
-        cvvCreditCardField.setBounds(315, 40, 50, 25);
+        cvvCreditCardField.setBounds(380, 70, 50, 25);
         this.add(cvvCreditCardField);
         
-        cvvField.setBounds(355, 40, 50, 25);
+        cvvField.setBounds(420, 70, 50, 25);
         this.add(cvvField);
         
+        JButton updateCVV = new JButton("Update CVV");
+        updateCVV.setBounds(10, 100, 140, 25);
+        this.add(updateCVV);
+        
         JLabel addressWithCard = new JLabel("Address");
-        addressWithCard.setBounds(20, 75, 100, 25);
+        addressWithCard.setBounds(20, 130, 100, 25);
         this.add(addressWithCard);
         
-        addressWithCardField.setBounds(90, 75, 200, 25);
+        addressWithCardField.setBounds(150, 130, 200, 25);
         this.add(addressWithCardField);
         
         JButton purchaseButton = new JButton("Purchase");
-        purchaseButton.setBounds(10, 110, 80, 25);
+        purchaseButton.setBounds(10, 160, 80, 25);
         this.add(purchaseButton);
         
         JButton historyButton = new JButton("Transaction History");
-        historyButton.setBounds(10,140, 280, 25);
+        historyButton.setBounds(10,220, 280, 25);
         this.add(historyButton);
         
         JButton searchButton = new JButton("List Cards");
-        searchButton.setBounds(10, 170, 280, 25);
+        searchButton.setBounds(10, 190, 280, 25);
         this.add(searchButton);
        
         JButton deleteAccountButton = new JButton("Delete account");
-        deleteAccountButton.setBounds(300,170,150,25);
+        deleteAccountButton.setBounds(300,190,150,25);
         this.add(deleteAccountButton);
         
-        JButton updateCVV = new JButton("Update CVV");
-        updateCVV.setBounds(300, 140, 100, 25);
-        this.add(updateCVV);
-        
-		output.setBounds(10, 200, 450, 300);
+		output.setBounds(10, 350, 450, 300);
 		this.add(output);
 		output.setLineWrap(true);
 		output.setEditable(false);
@@ -199,6 +217,73 @@ public class CustomerPanel extends JPanel {
 			}
 		});
 		
+		// labels and setup for the date pickers
+		JLabel afterLabel = new JLabel("Earliest");
+        afterLabel.setBounds(10, 250, 80, 25);
+        this.add(afterLabel);
+
+        JLabel beforeLabel = new JLabel("Latest");
+        beforeLabel.setBounds(10, 280, 80, 25);
+        this.add(beforeLabel);
+
+        UtilDateModel afterModel = new UtilDateModel();
+        Properties afterProperties = new Properties();
+        afterProperties.put("text.today", "Today");
+        afterProperties.put("text.month", "Month");
+        afterProperties.put("text.year", "Year");
+        JDatePanelImpl afterDatePanel = new JDatePanelImpl(afterModel, afterProperties);
+        fEarliestDatePicker = new JDatePickerImpl(afterDatePanel, new DateLabelFormatter());
+        fEarliestDatePicker.setBounds(100, 250, 190, 25);
+        this.add(fEarliestDatePicker);
+
+        UtilDateModel beforeModel = new UtilDateModel();
+        Properties beforeProperties = new Properties();
+        beforeProperties.put("text.today", "Today");
+        beforeProperties.put("text.month", "Month");
+        beforeProperties.put("text.year", "Year");
+        JDatePanelImpl beforeDatePanel = new JDatePanelImpl(beforeModel, beforeProperties);
+        fLatestDatePicker = new JDatePickerImpl(beforeDatePanel, new DateLabelFormatter());
+        fLatestDatePicker.setBounds(100, 280, 190, 25);
+        this.add(fLatestDatePicker);
+        
+        final JTable table = new JTable();
+        final JDialog dialog = new JDialog();
+        dialog.setSize(720, 420);
+        JScrollPane scrollPane = new JScrollPane(table);
+        table.setFillsViewportHeight(true);
+        dialog.add(scrollPane);
+		
+        // display history of transactions for the current customer
+        // table class for displaying transaction history located below
+		historyButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				Date earliestDate = (Date) fEarliestDatePicker.getModel().getValue();
+                Date latestDate = (Date) fLatestDatePicker.getModel().getValue();
+
+                if (earliestDate == null || latestDate == null) {
+                    JOptionPane.showMessageDialog(null, "Dates must be selected.", "ACTION FAILED", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                try {
+					List<Transaction> retrieveTransactionHistory = fCustomerAccessor.history(
+																			fCustomer, earliestDate, latestDate);
+					
+	                table.setModel(new FeedbackTableModel(retrieveTransactionHistory));
+	                dialog.setVisible(true);
+	                
+				} catch (UserNotExistsException e) {
+					JOptionPane.showMessageDialog(null,
+							"No user exists",
+							"FAILED TO GET TRANSACTION HISTORY",
+							JOptionPane.INFORMATION_MESSAGE);
+				}
+                		
+			}
+		});
+		
 		purchaseButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -207,23 +292,61 @@ public class CustomerPanel extends JPanel {
 				
 			}
 		});
-		
-		historyButton.addActionListener(new ActionListener() {
+    }
+    
+    // table class for displaying the transaction history
+    private static class FeedbackTableModel extends AbstractTableModel {
 
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				
-				
-			}
-		});
-		
-	
+        private static final String[] COLUMN_NAMES = {"Customer Email", "Game Title", "Credit Card", "Date Purchased"};
+        private final List<Transaction> fTransactionHistory;
+
+        public FeedbackTableModel(List<Transaction> aTransactionHistory) {
+        	fTransactionHistory = aTransactionHistory;
+        }
+
+        @Override
+        public int getColumnCount() {
+            return COLUMN_NAMES.length;
+        }
+
+        @Override
+        public int getRowCount() {
+            return fTransactionHistory.size();
+        }
+        
+        @Override
+        public String getColumnName(int column) {
+            return COLUMN_NAMES[column];
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+
+            switch (columnIndex) {
+            case 0:
+                return fTransactionHistory.get(rowIndex).getBuyer().getEmail();
+            case 1:
+                return fTransactionHistory.get(rowIndex).getGame().getName();
+            case 2:
+                return fTransactionHistory.get(rowIndex).getCreditCard();
+            case 3:
+                return fTransactionHistory.get(rowIndex).getDateOfPurchase();
+            default:
+                throw new IllegalArgumentException("Column index higher than anticipated.");
+            }
+        }
+
     }
     
     public static final void main(String[] args) {
         JFrame frame = new JFrame();
         frame.add(new CustomerPanel(Accessors.getCustomerAccessor(),  new Customer(1, "customer1@gmail.com", "apple123")));
-        frame.setSize(500,500);
+        frame.setSize(500,700);
         frame.setVisible(true);
     }
 }
