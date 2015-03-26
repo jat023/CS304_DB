@@ -3,6 +3,8 @@ package ca.ubc.cs.cs304.steemproject.access;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import ca.ubc.cs.cs304.steemproject.access.options.GameSortByOption;
 import ca.ubc.cs.cs304.steemproject.access.options.SortDirection;
 import ca.ubc.cs.cs304.steemproject.base.Genre;
@@ -96,14 +98,14 @@ public interface IPublicAccessor {
     public Collection<FinalizedGame> findMostPopularGame();
 
     /**
-     * Find the most expensive genre. (ie. Genre where the games of this genre have the highest average price out of all genres.)
+     * Find the most expensive genre and its average price. (ie. Genre where the games of this genre have the highest average price out of all genres.)
      */
-    public Genre findMostExpensiveGenre();
+    public Pair<Genre,Float> findMostExpensiveGenre();
     
     /**
-     * Find the least expensive genre. (ie. Genre where the games of this genre have the lowest average price out of all genres.)
+     * Find the least expensive genre and its average price. (ie. Genre where the games of this genre have the lowest average price out of all genres.)
      */
-    public Genre findLeastExpensiveGenre();
+    public Pair<Genre,Float> findLeastExpensiveGenre();
     
     /**
      * Find the set of games that are owned by every customer.

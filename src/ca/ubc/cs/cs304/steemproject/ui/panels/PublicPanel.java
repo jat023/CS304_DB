@@ -1,8 +1,9 @@
 package ca.ubc.cs.cs304.steemproject.ui.panels;
 
 import javax.swing.*;
-
+import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import ca.ubc.cs.cs304.steemproject.access.Accessors;
@@ -14,6 +15,7 @@ import ca.ubc.cs.cs304.steemproject.base.released.FinalizedGame;
 import ca.ubc.cs.cs304.steemproject.base.released.Playtime;
 import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
 
+import java.awt.Font;
 import java.awt.event.*;
 
 @SuppressWarnings("serial")
@@ -25,8 +27,9 @@ public class PublicPanel extends JPanel {
     private final JComboBox<Genre> fGameGenreField;
     private final JComboBox<GameSortByOption> fGameSortOptionField;
     private final JComboBox<SortDirection> fGameSortDirectionField;
-    private final JRadioButton discount = new JRadioButton("Discounted");
-    private final JRadioButton owned = new JRadioButton("Owned");
+    private final JRadioButton discount = new JRadioButton("Discounted games");
+    private final JRadioButton owned = new JRadioButton("Owned by you");
+    private final JRadioButton ownedByAll = new JRadioButton("Owned by all");
     private final JTextField userIDField = new JTextField(25);
     private final JTextArea output = new JTextArea(10,10);
     private final ButtonGroup radioButtonGroup = new ButtonGroup();
@@ -43,78 +46,105 @@ public class PublicPanel extends JPanel {
 
 //--------SET FIELDS, BUTTONS, LABELS, ETC with absolute positioning --------------------------------
 //---------------------------------------------------------------------------------------------------
+		JLabel searchLabel = new JLabel("SEARCH FOR AVAILABLE GAMES");
+        searchLabel.setFont(new Font("Serif", Font.BOLD, 16));
+        searchLabel.setHorizontalAlignment(JLabel.LEFT);
+        searchLabel.setBounds(10, 10, 280, 25);
+        this.add(searchLabel);
+		
 		JLabel nameLabel = new JLabel("Game Title");
-		nameLabel.setBounds(10, 10, 80, 25);
+		nameLabel.setBounds(10, 40, 80, 25);
 		this.add(nameLabel);
 		
-				// the setBounds() API for each field or button is
-					///					setBounds(int x-coord, int y-coord, int length, int height)
 		fGameNameField = new JTextField("", 15);
-		fGameNameField.setBounds(100, 10, 190, 25);
+		fGameNameField.setBounds(100, 40, 190, 25);
 		this.add(fGameNameField);
 
 		JLabel developerLabel = new JLabel("Developer");
-		developerLabel.setBounds(10, 40, 80, 25);
+		developerLabel.setBounds(10, 70, 80, 25);
 		this.add(developerLabel);
 
 		fGameDeveloperField = new JTextField("", 20);
-		fGameDeveloperField.setBounds(100, 40, 190, 25);
+		fGameDeveloperField.setBounds(100, 70, 190, 25);
 		this.add(fGameDeveloperField);
 
 		JLabel genreLabel = new JLabel("Genre");
-		genreLabel.setBounds(10, 70, 80, 25);
+		genreLabel.setBounds(10, 100, 80, 25);
 		this.add(genreLabel);
 
 		fGameGenreField = new JComboBox<Genre>(Genre.values());
-		fGameGenreField.setBounds(100, 70, 190, 25);
+		fGameGenreField.setBounds(100, 100, 190, 25);
+		fGameGenreField.addItem(null);
 		fGameGenreField.setSelectedIndex(-1);
 		this.add(fGameGenreField);
 
 		JLabel sortByLabel = new JLabel("Sort By");
-		sortByLabel.setBounds(10, 100, 80, 25);
+		sortByLabel.setBounds(10, 130, 80, 25);
 		this.add(sortByLabel);
 
 		fGameSortOptionField = new JComboBox<GameSortByOption>(GameSortByOption.values());
-		fGameSortOptionField.setBounds(100, 100, 100, 25);
+		fGameSortOptionField.setBounds(100, 130, 100, 25);
+		fGameSortOptionField.addItem(null);
 		fGameSortOptionField.setSelectedIndex(-1);
 		this.add(fGameSortOptionField);
 
 		fGameSortDirectionField = new JComboBox<SortDirection>(SortDirection.values());
-		fGameSortDirectionField.setBounds(210, 100, 80, 25);
+		fGameSortDirectionField.setBounds(210, 130, 80, 25);
+		fGameSortDirectionField.addItem(null);
 		fGameSortDirectionField.setSelectedIndex(-1);
 		this.add(fGameSortDirectionField);
 		
 		discount.setBounds(10, 160, 150, 25);
 		this.add(discount);
 	
-		owned.setBounds(10, 190, 100, 25);
+		owned.setBounds(10, 190, 150, 25);
 		this.add(owned);
 		
+		ownedByAll.setBounds(10, 220, 150, 25);
+		this.add(ownedByAll);
+		
 		JLabel userLabel = new JLabel("User ID");
-		userLabel.setBounds(10, 130, 110, 25);
+		userLabel.setBounds(160, 192, 60, 25);
 		this.add(userLabel);
 		
-		userIDField.setBounds(100, 130, 130, 25);
+		userIDField.setBounds(220, 190, 130, 25);
 		this.add(userIDField);
 
-		output.setBounds(10, 270, 450, 300);
+		output.setBounds(10, 330, 450, 300);
 		output.setLineWrap(true);
 		output.setEditable(false);
 		this.add(output);
 		
 		JButton clearButton = new JButton("Clear");
-		clearButton.setBounds(300, 230, 70, 25);
+		clearButton.setBounds(300, 300, 70, 25);
 		this.add(clearButton);
 		
 		JButton searchButton = new JButton("Search");
-		searchButton.setBounds(10, 230, 280, 25);
+		searchButton.setBounds(10, 300, 280, 25);
 		this.add(searchButton);
+		
+		JButton mostPopular = new JButton("Most Popular");
+		mostPopular.setBounds(330, 40, 120, 25);
+		this.add(mostPopular);
 		
 		radioButtonGroup.add(discount);
 		radioButtonGroup.add(owned);
+		radioButtonGroup.add(ownedByAll);
 		
-//--------Add ActionListeners for events to the clear and search buttons --------------------------
-//-------------------------------------------------------------------------------------------------
+//--------Add ActionListeners for events  --------------------------
+//------------------------------------------------------------------
+		
+		mostPopular.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Collection<FinalizedGame> mostPopularGame = iPublic.findMostPopularGame();
+				
+				for (Object obj : mostPopularGame) {
+					output.append(mostPopularGame.toString() + "\n");
+				}
+			}	
+		});
 		
 		clearButton.addActionListener(new ActionListener() {
 			@Override
@@ -130,68 +160,43 @@ public class PublicPanel extends JPanel {
 			}
 		});
 		
+        final JTable table = new JTable();
+        final JDialog dialog = new JDialog();
+        dialog.setSize(720, 420);
+        JScrollPane scrollPane = new JScrollPane(table);
+        table.setFillsViewportHeight(true);
+        dialog.add(scrollPane);
+		
 		searchButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 					// Retrieve all the variables from the JTextFields created earlier
-				String gameName = fGameNameField.getText();
-				Genre gameGenre = (Genre)fGameGenreField.getSelectedItem();	
-				String gameDeveloper = fGameDeveloperField.getText();
-				SortDirection sortDirection = (SortDirection)fGameSortDirectionField.getSelectedItem();
-				GameSortByOption sortField = (GameSortByOption)fGameSortOptionField.getSelectedItem();
+				String gameName = fGameNameField.getText().equals("") ? null : fGameNameField.getText();	
+				String gameDeveloper = fGameDeveloperField.getText().equals("") ? null : fGameDeveloperField.getText();
 				boolean discounted = discount.isSelected();
 				boolean isOwned = owned.isSelected();
-				String storeUserID = userIDField.getText();
-								
-				if (!isOwned && !discounted) {
-					List<FinalizedGame> storeGeneralList = new ArrayList<FinalizedGame>();
-					
-					storeGeneralList = iPublic.listPurchasableGames();
-				
-					if (storeGeneralList.size() == 0) {
-						output.append("There are currently no games available for purchase.");
-						output.append("\n");
-					}
-					else {
-						output.append("Here are the games available for purchase:\n");
-				
-						for (int i = 0; i < storeGeneralList.size(); i++) {
-							output.append(storeGeneralList.get(i).getName().toString() + "\n");
-						}
-						
-						output.append("\n");
-					}
-				}
-				
+				boolean isOwnedByAll = ownedByAll.isSelected();
+				String storeUserID = userIDField.getText().equals("") ? null : userIDField.getText();
+                
 				if (discounted) {
 					List<FinalizedGame> storeDiscountedList = new ArrayList<FinalizedGame>();
 					
 					storeDiscountedList = iPublic.listPurchasableGames(
-							gameName, gameGenre, gameDeveloper, null, null, sortField, sortDirection, discounted);
+							gameName,
+							(Genre)fGameGenreField.getSelectedItem(),
+							gameDeveloper, null, null,
+							(GameSortByOption)fGameSortOptionField.getSelectedItem(),
+							(SortDirection)fGameSortDirectionField.getSelectedItem(), discounted);
 					
-					if (storeDiscountedList.size() == 0) {
-						output.append("There are currently no games on discount.");
-						output.append("\n");
-					}
-					else {
-						output.append("Here are the list of discounted games:");
-						
-						for (int i = 0; i < storeDiscountedList.size(); i++) {
-							output.append(storeDiscountedList.get(i).getName().toString());
-						}
-						
-						output.append("\n");
-					}
+	                table.setModel(new FeedbackTableModel(storeDiscountedList));
+	                dialog.setVisible(true);
 				}
-				
-				if (isOwned) {
+				else if (isOwned) {
 					try {
 						List<Playtime> storeOwnedList = new ArrayList<Playtime>();
 						
 						storeOwnedList = iPublic.listGamesOwned(storeUserID);
-						
-						output.append(storeUserID + ", here are the games in your library:\n");
 						
 						for (int i = 0; i < storeOwnedList.size(); i++) {
 							output.append(storeOwnedList.get(i).getGame().getName().toString() + "\n");
@@ -206,17 +211,96 @@ public class PublicPanel extends JPanel {
 								JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
+				else if (isOwnedByAll) {
+					Collection<FinalizedGame> ownedAll = iPublic.findGamesOwnedByAllCustomers();
+					
+					for (Object obj : ownedAll) {
+						output.append(ownedAll.toString() + "\n");
+					}
+				}
+				else {
+					List<FinalizedGame> storeGeneralList = new ArrayList<FinalizedGame>();
+					
+					storeGeneralList = iPublic.listPurchasableGames(
+							gameName,
+							(Genre)fGameGenreField.getSelectedItem(),
+							gameDeveloper, null, null,
+							(GameSortByOption)fGameSortOptionField.getSelectedItem(),
+							(SortDirection)fGameSortDirectionField.getSelectedItem(),
+							discounted);
+					
+	                table.setModel(new FeedbackTableModel(storeGeneralList));
+	                dialog.setVisible(true);
+				}
 			}
 			
 		});
-		
-
 	}
+	
 
+    // table class for displaying the games
+    private static class FeedbackTableModel extends AbstractTableModel {
+
+        private static final String[] COLUMN_NAMES = {"Game Title", "Description", "Developer",
+        												"Genre", "Rating", "Full Price", "Sale Price", "Discount (%)"};
+        private final List<FinalizedGame> fGameList;
+
+        public FeedbackTableModel(List<FinalizedGame> aGameList) {
+        	fGameList = aGameList;
+        }
+
+        @Override
+        public int getColumnCount() {
+            return COLUMN_NAMES.length;
+        }
+
+        @Override
+        public int getRowCount() {
+            return fGameList.size();
+        }
+        
+        @Override
+        public String getColumnName(int column) {
+            return COLUMN_NAMES[column];
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+
+            switch (columnIndex) {
+            case 0:
+                return fGameList.get(rowIndex).getName();
+            case 1:
+                return fGameList.get(rowIndex).getDescription();
+            case 2:
+                return fGameList.get(rowIndex).getDeveloper();
+            case 3:
+                return fGameList.get(rowIndex).getGenre();
+            case 4:
+            	return fGameList.get(rowIndex).getRating();
+            case 5:
+            	return fGameList.get(rowIndex).getFullPrice();
+            case 6:
+            	return fGameList.get(rowIndex).getSalePrice();
+            case 7:
+            	return fGameList.get(rowIndex).getDiscountPercentage();
+            default:
+                throw new IllegalArgumentException("Column index higher than anticipated.");
+            }
+        }
+
+    }
+
+    /*
 	public static final void main(String[] args) {
 		JFrame frame = new JFrame();
 		frame.add(new PublicPanel(Accessors.getPublicAccessor()));
 		frame.setSize(500,650);
 		frame.setVisible(true);
-	}
+	}*/
 }

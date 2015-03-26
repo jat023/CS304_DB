@@ -3,13 +3,13 @@ package ca.ubc.cs.cs304.steemproject.ui.panels;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -24,7 +24,6 @@ import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
-import ca.ubc.cs.cs304.steemproject.access.Accessors;
 import ca.ubc.cs.cs304.steemproject.access.IGameTesterAccessor;
 import ca.ubc.cs.cs304.steemproject.access.options.GameSortByOption;
 import ca.ubc.cs.cs304.steemproject.access.options.SortDirection;
@@ -62,7 +61,7 @@ public class GameTesterPanel extends JPanel {
         fGameTester = aGameTester;
 
         setLayout(null);
-        
+
         JLabel searchLabel = new JLabel("SEARCH FOR AVAILABLE GAMES");
         searchLabel.setFont(new Font("Serif", Font.BOLD, 14));
         searchLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -135,22 +134,22 @@ public class GameTesterPanel extends JPanel {
             }
 
         });
-        
+
         // Table dialog for showing game tester feedbacks.
         JLabel collectLabel = new JLabel("DISPLAY PREVIOUS TESTS");
         collectLabel.setFont(new Font("Serif", Font.BOLD, 14));
         collectLabel.setHorizontalAlignment(JLabel.CENTER);
         collectLabel.setBounds(300, 10, 280, 25);
         this.add(collectLabel);
-        
+
         JLabel afterLabel = new JLabel("Earliest");
         afterLabel.setBounds(300, 40, 80, 25);
         this.add(afterLabel);
-        
+
         JLabel beforeLabel = new JLabel("Latest");
         beforeLabel.setBounds(300, 70, 80, 25);
         this.add(beforeLabel);
-        
+
         UtilDateModel afterModel = new UtilDateModel();
         Properties afterProperties = new Properties();
         afterProperties.put("text.today", "Today");
@@ -160,7 +159,7 @@ public class GameTesterPanel extends JPanel {
         fEarliestDatePicker = new JDatePickerImpl(afterDatePanel, new DateLabelFormatter());
         fEarliestDatePicker.setBounds(390, 40, 190, 25);
         this.add(fEarliestDatePicker);
-        
+
         UtilDateModel beforeModel = new UtilDateModel();
         Properties beforeProperties = new Properties();
         beforeProperties.put("text.today", "Today");
@@ -170,17 +169,38 @@ public class GameTesterPanel extends JPanel {
         fLatestDatePicker = new JDatePickerImpl(beforeDatePanel, new DateLabelFormatter());
         fLatestDatePicker.setBounds(390, 70, 190, 25);
         this.add(fLatestDatePicker);
-        
-        // TODO: implement button and action
-        // and a way to get a java.util.Date object.
-        
-    }
 
-    public static final void main(String[] args) {
-        JFrame frame = new JFrame();
-        frame.add(new GameTesterPanel(Accessors.getGameTesterAccessor(),  new GameTester(1, "gametester1@gmail.com", "Pass1")));
-        frame.setSize(600,220);
-        frame.setVisible(true);
+        final JTable table = new JTable();
+        final JDialog dialog = new JDialog();
+        dialog.setSize(720, 420);
+        JScrollPane scrollPane = new JScrollPane(table);
+        table.setFillsViewportHeight(true);
+        dialog.add(scrollPane);
+
+        JButton collectButton = new JButton("Display");
+        collectButton.setBounds(300, 100, 290, 25);
+        this.add(collectButton);
+
+        collectButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+
+                Date earliestDate = (Date) fEarliestDatePicker.getModel().getValue();
+                Date latestDate = (Date) fLatestDatePicker.getModel().getValue();
+
+                if (earliestDate == null || latestDate == null) {
+                    JOptionPane.showMessageDialog(null, "Dates must be selected.", "ACTION FAILED", JOptionPane.ERROR_MESSAGE);
+                    return;
+                } 
+
+                List<GameTesterFeedback> feedbacks = fGameTesterAccessor.collectFeedback(earliestDate, latestDate);
+
+                table.setModel(new FeedbackTableModel(feedbacks));
+                dialog.setVisible(true);
+            }
+        });
+
     }
 
     private class DisplayGameInDevelopment extends JDialog {
@@ -333,6 +353,11 @@ public class GameTesterPanel extends JPanel {
         public int getRowCount() {
             return fFeedbacks.size();
         }
+        
+        @Override
+        public String getColumnName(int column) {
+            return COLUMN_NAMES[column];
+        }
 
         @Override
         public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -343,15 +368,15 @@ public class GameTesterPanel extends JPanel {
         public Object getValueAt(int rowIndex, int columnIndex) {
 
             switch (columnIndex) {
-            case 1:
+            case 0:
                 return fFeedbacks.get(rowIndex).getTester().getEmail();
-            case 2:
+            case 1:
                 return fFeedbacks.get(rowIndex).getGame().getName();
-            case 3:
+            case 2:
                 return fFeedbacks.get(rowIndex).getRating();
-            case 4:
+            case 3:
                 return fFeedbacks.get(rowIndex).getDate();
-            case 5:
+            case 4:
                 return fFeedbacks.get(rowIndex).getFeedback();
             default:
                 throw new IllegalArgumentException("Column index higher than anticipated.");

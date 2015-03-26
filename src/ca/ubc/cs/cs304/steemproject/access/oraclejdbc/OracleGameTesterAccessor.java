@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -116,15 +115,15 @@ public class OracleGameTesterAccessor implements IGameTesterAccessor {
         ResultSet results;
 
         try {
-            fCollectFeedbacksSQL.setDate(1, new java.sql.Date(afterThisDate.getTime()));
-            fCollectFeedbacksSQL.setDate(2, new java.sql.Date(beforeThisDate.getTime()));
+            fCollectFeedbacksSQL.setTimestamp(1, new java.sql.Timestamp(afterThisDate.getTime()));
+            fCollectFeedbacksSQL.setTimestamp(2, new java.sql.Timestamp(beforeThisDate.getTime()));
             results = fCollectFeedbacksSQL.executeQuery();
         } catch (SQLException e) {
             log.error("Could not execute query.", e);
             throw new InternalConnectionException("Could not execute query.", e);
         }
 
-        Collection<GameTesterFeedback> feedbacks = new ArrayList<GameTesterFeedback>();
+        List<GameTesterFeedback> feedbacks = new ArrayList<GameTesterFeedback>();
 
         try {
 
@@ -154,7 +153,7 @@ public class OracleGameTesterAccessor implements IGameTesterAccessor {
             log.error("Found test submitted by non-existant tester.");
         } 
 
-        return null;
+        return feedbacks;
     }
 
 }
