@@ -2,8 +2,8 @@ package ca.ubc.cs.cs304.steemproject.ui.panels;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
-
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import ca.ubc.cs.cs304.steemproject.access.Accessors;
@@ -14,6 +14,7 @@ import ca.ubc.cs.cs304.steemproject.base.Genre;
 import ca.ubc.cs.cs304.steemproject.base.released.FinalizedGame;
 import ca.ubc.cs.cs304.steemproject.base.released.Playtime;
 import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
+
 import java.awt.Font;
 import java.awt.event.*;
 
@@ -26,8 +27,9 @@ public class PublicPanel extends JPanel {
     private final JComboBox<Genre> fGameGenreField;
     private final JComboBox<GameSortByOption> fGameSortOptionField;
     private final JComboBox<SortDirection> fGameSortDirectionField;
-    private final JRadioButton discount = new JRadioButton("Discounted");
-    private final JRadioButton owned = new JRadioButton("Owned");
+    private final JRadioButton discount = new JRadioButton("Discounted games");
+    private final JRadioButton owned = new JRadioButton("Owned by you");
+    private final JRadioButton ownedByAll = new JRadioButton("Owned by all");
     private final JTextField userIDField = new JTextField(25);
     private final JTextArea output = new JTextArea(10,10);
     private final ButtonGroup radioButtonGroup = new ButtonGroup();
@@ -45,7 +47,7 @@ public class PublicPanel extends JPanel {
 //--------SET FIELDS, BUTTONS, LABELS, ETC with absolute positioning --------------------------------
 //---------------------------------------------------------------------------------------------------
 		JLabel searchLabel = new JLabel("SEARCH FOR AVAILABLE GAMES");
-        searchLabel.setFont(new Font("Serif", Font.BOLD, 18));
+        searchLabel.setFont(new Font("Serif", Font.BOLD, 16));
         searchLabel.setHorizontalAlignment(JLabel.LEFT);
         searchLabel.setBounds(10, 10, 280, 25);
         this.add(searchLabel);
@@ -95,34 +97,54 @@ public class PublicPanel extends JPanel {
 		discount.setBounds(10, 160, 150, 25);
 		this.add(discount);
 	
-		owned.setBounds(10, 190, 100, 25);
+		owned.setBounds(10, 190, 150, 25);
 		this.add(owned);
 		
+		ownedByAll.setBounds(10, 220, 150, 25);
+		this.add(ownedByAll);
+		
 		JLabel userLabel = new JLabel("User ID");
-		userLabel.setBounds(130, 190, 90, 25);
+		userLabel.setBounds(160, 192, 60, 25);
 		this.add(userLabel);
 		
-		userIDField.setBounds(200, 190, 130, 25);
+		userIDField.setBounds(220, 190, 130, 25);
 		this.add(userIDField);
 
-		output.setBounds(10, 270, 450, 300);
+		output.setBounds(10, 330, 450, 300);
 		output.setLineWrap(true);
 		output.setEditable(false);
 		this.add(output);
 		
 		JButton clearButton = new JButton("Clear");
-		clearButton.setBounds(300, 230, 70, 25);
+		clearButton.setBounds(300, 300, 70, 25);
 		this.add(clearButton);
 		
 		JButton searchButton = new JButton("Search");
-		searchButton.setBounds(10, 230, 280, 25);
+		searchButton.setBounds(10, 300, 280, 25);
 		this.add(searchButton);
+		
+		JButton mostPopular = new JButton("Most Popular");
+		mostPopular.setBounds(330, 40, 120, 25);
+		this.add(mostPopular);
 		
 		radioButtonGroup.add(discount);
 		radioButtonGroup.add(owned);
+		radioButtonGroup.add(ownedByAll);
 		
-//--------Add ActionListeners for events to the clear and search buttons --------------------------
-//-------------------------------------------------------------------------------------------------
+//--------Add ActionListeners for events  --------------------------
+//------------------------------------------------------------------
+		
+		mostPopular.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Collection<FinalizedGame> mostPopularGame = iPublic.findMostPopularGame();
+				
+				for (Object obj : mostPopularGame) {
+					output.append(mostPopularGame.toString() + "\n");
+				}
+			}	
+		});
 		
 		clearButton.addActionListener(new ActionListener() {
 			@Override
@@ -154,35 +176,9 @@ public class PublicPanel extends JPanel {
 				String gameDeveloper = fGameDeveloperField.getText().equals("") ? null : fGameDeveloperField.getText();
 				boolean discounted = discount.isSelected();
 				boolean isOwned = owned.isSelected();
+				boolean isOwnedByAll = ownedByAll.isSelected();
 				String storeUserID = userIDField.getText().equals("") ? null : userIDField.getText();
                 
-				if (!isOwned && !discounted) {
-					List<FinalizedGame> storeGeneralList = new ArrayList<FinalizedGame>();
-					
-					storeGeneralList = iPublic.listPurchasableGames(
-							gameName,
-							(Genre)fGameGenreField.getSelectedItem(),
-							gameDeveloper, null, null,
-							(GameSortByOption)fGameSortOptionField.getSelectedItem(),
-							(SortDirection)fGameSortDirectionField.getSelectedItem(),
-							discounted);
-					
-	                table.setModel(new FeedbackTableModel(storeGeneralList));
-	                dialog.setVisible(true);
-					/*
-					if (storeGeneralList.size() == 0) {
-						output.append("There are currently no games available for purchase.");
-						output.append("\n");
-					}
-					else {
-						for (int i = 0; i < storeGeneralList.size(); i++) {
-							output.append(storeGeneralList.get(i).getName().toString() + "\n");
-						}
-						
-						output.append("\n");
-					}*/
-				}
-				
 				if (discounted) {
 					List<FinalizedGame> storeDiscountedList = new ArrayList<FinalizedGame>();
 					
@@ -195,24 +191,8 @@ public class PublicPanel extends JPanel {
 					
 	                table.setModel(new FeedbackTableModel(storeDiscountedList));
 	                dialog.setVisible(true);
-					/*
-					if (storeDiscountedList.size() == 0) {
-						output.append("There are currently no games on discount.");
-						output.append("\n");
-					}
-					else {
-						output.append("Here is the list of discounted games:");
-						output.append("\n");
-						
-						for (int i = 0; i < storeDiscountedList.size(); i++) {
-							output.append(storeDiscountedList.get(i).getName().toString());
-						}
-						
-						output.append("\n");
-					}*/
 				}
-				
-				if (isOwned) {
+				else if (isOwned) {
 					try {
 						List<Playtime> storeOwnedList = new ArrayList<Playtime>();
 						
@@ -230,6 +210,27 @@ public class PublicPanel extends JPanel {
 								"ERROR",
 								JOptionPane.INFORMATION_MESSAGE);
 					}
+				}
+				else if (isOwnedByAll) {
+					Collection<FinalizedGame> ownedAll = iPublic.findGamesOwnedByAllCustomers();
+					
+					for (Object obj : ownedAll) {
+						output.append(ownedAll.toString() + "\n");
+					}
+				}
+				else {
+					List<FinalizedGame> storeGeneralList = new ArrayList<FinalizedGame>();
+					
+					storeGeneralList = iPublic.listPurchasableGames(
+							gameName,
+							(Genre)fGameGenreField.getSelectedItem(),
+							gameDeveloper, null, null,
+							(GameSortByOption)fGameSortOptionField.getSelectedItem(),
+							(SortDirection)fGameSortDirectionField.getSelectedItem(),
+							discounted);
+					
+	                table.setModel(new FeedbackTableModel(storeGeneralList));
+	                dialog.setVisible(true);
 				}
 			}
 			
@@ -295,10 +296,11 @@ public class PublicPanel extends JPanel {
 
     }
 
+    /*
 	public static final void main(String[] args) {
 		JFrame frame = new JFrame();
 		frame.add(new PublicPanel(Accessors.getPublicAccessor()));
 		frame.setSize(500,650);
 		frame.setVisible(true);
-	}
+	}*/
 }

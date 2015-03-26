@@ -412,11 +412,11 @@ public class CustomerPanel extends JPanel {
         }
 
     }
-    
+    /*
     public static final void main(String[] args) {
         JFrame frame = new JFrame();
         frame.add(new CustomerPanel(Accessors.getCustomerAccessor(),  new Customer(1, "customer1@gmail.com", "apple123")));
         frame.setSize(500,700);
         frame.setVisible(true);
-    }
+    }*/
 }
