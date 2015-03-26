@@ -149,10 +149,8 @@ public class PublicPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Collection<FinalizedGame> mostPopularGame = iPublic.findMostPopularGame();
-				
-				for (Object obj : mostPopularGame) {
-					output.append(mostPopularGame.toString() + "\n");
-				}
+
+				// TODO : HOW DO I GET INFO FROM COLLECTIONS??
 			}	
 		});
 		
@@ -228,7 +226,7 @@ public class PublicPanel extends JPanel {
 				else if (isOwnedByAll) {
 					Collection<FinalizedGame> ownedAll = iPublic.findGamesOwnedByAllCustomers();
 		
-					
+					// TODO : HOW DO I GET INFO FROM COLLECTIONS??
 				}
 				else {
 					List<FinalizedGame> storeGeneralList = new ArrayList<FinalizedGame>();
@@ -307,7 +305,7 @@ public class PublicPanel extends JPanel {
         }
     }
     
- // table class for displaying the all and discounted games
+    // table class for displaying the games owned by a certain given customers
     private static class ownedGamesTableModel extends AbstractTableModel {
 
         private static final String[] COLUMN_NAMES = {"Game Title", "Owned by", "Hours Played"};
