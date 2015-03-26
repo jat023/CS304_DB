@@ -149,7 +149,11 @@ public class PublicPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Collection<FinalizedGame> mostPopularGame = iPublic.findMostPopularGame();
-
+				
+				//Like this????
+				for (FinalizedGame obj : mostPopularGame) {
+					output.append(obj.getName().toString() + "\n");
+				}
 				// TODO : HOW DO I GET INFO FROM COLLECTIONS??
 			}	
 		});
