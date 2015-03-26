@@ -10,6 +10,7 @@ import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,9 +18,11 @@ import java.util.Properties;
 
 import ca.ubc.cs.cs304.steemproject.access.Accessors;
 import ca.ubc.cs.cs304.steemproject.access.ICustomerAccessor;
+import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.Retrieves;
 import ca.ubc.cs.cs304.steemproject.base.released.CreditCard;
 import ca.ubc.cs.cs304.steemproject.base.released.Customer;
 import ca.ubc.cs.cs304.steemproject.base.released.Transaction;
+import ca.ubc.cs.cs304.steemproject.exception.GameNotExistException;
 import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
 import ca.ubc.cs.cs304.steemproject.ui.panels.datepicker.DateLabelFormatter;
 
@@ -28,6 +31,7 @@ public class CustomerPanel extends JPanel {
 
 	private final ICustomerAccessor fCustomerAccessor;
     private final Customer fCustomer;
+    
     private final JTextArea output = new JTextArea(10,10);
     private final JTextField deleteCreditCardField = new JTextField(50);
     private final JTextField addCreditCardField = new JTextField(50);
@@ -48,6 +52,7 @@ public class CustomerPanel extends JPanel {
         if (aCustomer == null) {
             throw new IllegalArgumentException("Customerer cannot be null.");
         }
+        
         fCustomerAccessor = aCustomerAccessor;
         fCustomer = aCustomer;
         
@@ -159,8 +164,27 @@ public class CustomerPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
-				
+		
+				try {
+					fCustomerAccessor.purchaseGame(fCustomer,
+							Retrieves.retrieveCreditCard(purchaseCardField.getText()),
+							Retrieves.retrieveFinalizedGame(purchaseGameField.getText()));
+					JOptionPane.showMessageDialog(null,
+							"Congratulations, you've purchased a game!",
+							"GAME PURCHASED",
+							JOptionPane.INFORMATION_MESSAGE);
+				} catch (UserNotExistsException | GameNotExistException e) {
+					JOptionPane.showMessageDialog(null,
+							"Invalid entries",
+							"FAILED TO PURCHASE GAME",
+							JOptionPane.INFORMATION_MESSAGE);
+				} catch (SQLException e) {
+					JOptionPane.showMessageDialog(null,
+							"Invalid entries",
+							"FAILED TO PURCHASE GAME",
+							JOptionPane.INFORMATION_MESSAGE);
+				}
+			
 			}
 		});
 		
