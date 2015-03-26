@@ -1,6 +1,7 @@
 package ca.ubc.cs.cs304.steemproject.ui.panels;
 
 import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,6 @@ import ca.ubc.cs.cs304.steemproject.base.Genre;
 import ca.ubc.cs.cs304.steemproject.base.released.FinalizedGame;
 import ca.ubc.cs.cs304.steemproject.base.released.Playtime;
 import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
-
 import java.awt.Font;
 import java.awt.event.*;
 
@@ -45,8 +45,8 @@ public class PublicPanel extends JPanel {
 //--------SET FIELDS, BUTTONS, LABELS, ETC with absolute positioning --------------------------------
 //---------------------------------------------------------------------------------------------------
 		JLabel searchLabel = new JLabel("SEARCH FOR AVAILABLE GAMES");
-        searchLabel.setFont(new Font("Serif", Font.BOLD, 14));
-        searchLabel.setHorizontalAlignment(JLabel.CENTER);
+        searchLabel.setFont(new Font("Serif", Font.BOLD, 18));
+        searchLabel.setHorizontalAlignment(JLabel.LEFT);
         searchLabel.setBounds(10, 10, 280, 25);
         this.add(searchLabel);
 		
@@ -54,8 +54,6 @@ public class PublicPanel extends JPanel {
 		nameLabel.setBounds(10, 40, 80, 25);
 		this.add(nameLabel);
 		
-				// the setBounds() API for each field or button is
-					///					setBounds(int x-coord, int y-coord, int length, int height)
 		fGameNameField = new JTextField("", 15);
 		fGameNameField.setBounds(100, 40, 190, 25);
 		this.add(fGameNameField);
@@ -140,6 +138,13 @@ public class PublicPanel extends JPanel {
 			}
 		});
 		
+        final JTable table = new JTable();
+        final JDialog dialog = new JDialog();
+        dialog.setSize(720, 420);
+        JScrollPane scrollPane = new JScrollPane(table);
+        table.setFillsViewportHeight(true);
+        dialog.add(scrollPane);
+		
 		searchButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -161,7 +166,10 @@ public class PublicPanel extends JPanel {
 							(GameSortByOption)fGameSortOptionField.getSelectedItem(),
 							(SortDirection)fGameSortDirectionField.getSelectedItem(),
 							discounted);
-				
+					
+	                table.setModel(new FeedbackTableModel(storeGeneralList));
+	                dialog.setVisible(true);
+					/*
 					if (storeGeneralList.size() == 0) {
 						output.append("There are currently no games available for purchase.");
 						output.append("\n");
@@ -172,7 +180,7 @@ public class PublicPanel extends JPanel {
 						}
 						
 						output.append("\n");
-					}
+					}*/
 				}
 				
 				if (discounted) {
@@ -185,6 +193,9 @@ public class PublicPanel extends JPanel {
 							(GameSortByOption)fGameSortOptionField.getSelectedItem(),
 							(SortDirection)fGameSortDirectionField.getSelectedItem(), discounted);
 					
+	                table.setModel(new FeedbackTableModel(storeDiscountedList));
+	                dialog.setVisible(true);
+					/*
 					if (storeDiscountedList.size() == 0) {
 						output.append("There are currently no games on discount.");
 						output.append("\n");
@@ -198,7 +209,7 @@ public class PublicPanel extends JPanel {
 						}
 						
 						output.append("\n");
-					}
+					}*/
 				}
 				
 				if (isOwned) {
@@ -223,9 +234,66 @@ public class PublicPanel extends JPanel {
 			}
 			
 		});
-		
-
 	}
+	
+
+    // table class for displaying the games
+    private static class FeedbackTableModel extends AbstractTableModel {
+
+        private static final String[] COLUMN_NAMES = {"Game Title", "Description", "Developer",
+        												"Genre", "Rating", "Full Price", "Sale Price", "Discount (%)"};
+        private final List<FinalizedGame> fGameList;
+
+        public FeedbackTableModel(List<FinalizedGame> aGameList) {
+        	fGameList = aGameList;
+        }
+
+        @Override
+        public int getColumnCount() {
+            return COLUMN_NAMES.length;
+        }
+
+        @Override
+        public int getRowCount() {
+            return fGameList.size();
+        }
+        
+        @Override
+        public String getColumnName(int column) {
+            return COLUMN_NAMES[column];
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+
+            switch (columnIndex) {
+            case 0:
+                return fGameList.get(rowIndex).getName();
+            case 1:
+                return fGameList.get(rowIndex).getDescription();
+            case 2:
+                return fGameList.get(rowIndex).getDeveloper();
+            case 3:
+                return fGameList.get(rowIndex).getGenre();
+            case 4:
+            	return fGameList.get(rowIndex).getRating();
+            case 5:
+            	return fGameList.get(rowIndex).getFullPrice();
+            case 6:
+            	return fGameList.get(rowIndex).getSalePrice();
+            case 7:
+            	return fGameList.get(rowIndex).getDiscountPercentage();
+            default:
+                throw new IllegalArgumentException("Column index higher than anticipated.");
+            }
+        }
+
+    }
 
 	public static final void main(String[] args) {
 		JFrame frame = new JFrame();
