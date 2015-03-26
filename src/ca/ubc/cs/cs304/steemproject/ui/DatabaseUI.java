@@ -15,9 +15,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 
 import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.DBCustomerAccessor;
-//import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.InitializeDatabase;
 import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.connection.SteemOracleDbConnector;
-import ca.ubc.cs.cs304.steemproject.base.released.Customer;
 
 public class DatabaseUI {
 	
@@ -138,15 +136,7 @@ public class DatabaseUI {
         else {
         	System.out.println("Connected failed to connect");
         }
-     /*
-        try {
-            InitializeDatabase initDB;
-            initDB.init();
-            log.info("Database and tables have been successfully reset.");
-        } catch (Exception e) {
-            log.error("Database initialization failed.", e);
-        }
-		*/
+
 		DatabaseUI tablesUI = new DatabaseUI();
 		tablesUI.show();
 		

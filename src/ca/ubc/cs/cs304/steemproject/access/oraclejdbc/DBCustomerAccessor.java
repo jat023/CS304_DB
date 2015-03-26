@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.connection.SteemOracleDbConnector;
@@ -18,6 +19,10 @@ public class DBCustomerAccessor {
 		fConnection = SteemOracleDbConnector.getDefaultConnection();
 		statement = fConnection.createStatement();
 	}
+	
+	/*public HashMap<String,InfoLists> getCustomerInfo(HashMap<"Customer",InfoLists>) throws SQLException {
+		
+	}*/
 	
 	public List<Integer> getIDs() throws SQLException {
 		List<Integer> customerIDs = new ArrayList<Integer>();
@@ -60,4 +65,6 @@ public class DBCustomerAccessor {
 		
 		return customerPasswords;
 	}
+	
+	
 }
