@@ -219,15 +219,59 @@ public class PublicPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-					// Retrieve all the variables from the JTextFields created earlier
 				String gameName = fGameNameField.getText().equals("") ? null : fGameNameField.getText();	
 				String gameDeveloper = fGameDeveloperField.getText().equals("") ? null : fGameDeveloperField.getText();
 				boolean discounted = discount.isSelected();
 				boolean isOwned = owned.isSelected();
 				boolean isOwnedByAll = ownedByAll.isSelected();
-				String storeUserID = userIDField.getText().equals("") ? null : userIDField.getText();
-                
-				if (discounted) {
+				//String storeUserID = userIDField.getText().equals("") ? null : userIDField.getText();
+				String storeUserEmail;
+				int storeUserID;
+				
+				if (isOwned) {
+					if ( userIDField.getText().equals("1")
+							|| userIDField.getText().equals("2")
+							|| userIDField.getText().equals("3")
+							|| userIDField.getText().equals("4")
+							|| userIDField.getText().equals("5") ) {
+						storeUserID = Integer.parseInt(userIDField.getText());
+						
+						try {
+							List<Playtime> storeOwnedList = new ArrayList<Playtime>();
+							
+							storeOwnedList = iPublic.listGamesOwned(storeUserID);
+							
+			                ownedTable.setModel(new ownedGamesTableModel(storeOwnedList));
+			                ownedDialog.setVisible(true);
+							
+						} catch (UserNotExistsException e) {
+							JOptionPane.showMessageDialog(null,
+									"No user with this email exists.",
+									"ERROR",
+									JOptionPane.INFORMATION_MESSAGE);
+						}
+					}
+					else {
+						storeUserEmail = userIDField.getText().equals("") ? null : userIDField.getText();
+						
+						try {
+							List<Playtime> storeOwnedList = new ArrayList<Playtime>();
+							
+							storeOwnedList = iPublic.listGamesOwned(storeUserEmail);
+							
+			                ownedTable.setModel(new ownedGamesTableModel(storeOwnedList));
+			                ownedDialog.setVisible(true);
+							
+						} catch (UserNotExistsException e) {
+							JOptionPane.showMessageDialog(null,
+									"No user with this email exists.",
+									"ERROR",
+									JOptionPane.INFORMATION_MESSAGE);
+						}
+					}
+				}
+				
+				else if (discounted) {
 					List<FinalizedGame> storeDiscountedList = new ArrayList<FinalizedGame>();
 					
 					storeDiscountedList = iPublic.listPurchasableGames(
@@ -239,22 +283,6 @@ public class PublicPanel extends JPanel {
 					
 	                table.setModel(new DisplayGamesTableModel(storeDiscountedList));
 	                dialog.setVisible(true);
-				}
-				else if (isOwned) {
-					try {
-						List<Playtime> storeOwnedList = new ArrayList<Playtime>();
-						
-						storeOwnedList = iPublic.listGamesOwned(storeUserID);
-						
-		                ownedTable.setModel(new ownedGamesTableModel(storeOwnedList));
-		                ownedDialog.setVisible(true);
-						
-					} catch (UserNotExistsException e) {
-						JOptionPane.showMessageDialog(null,
-								"No user with this email exists.",
-								"ERROR",
-								JOptionPane.INFORMATION_MESSAGE);
-					}
 				}
 				else if (isOwnedByAll) {
 					Collection<FinalizedGame> ownedAll = iPublic.findGamesOwnedByAllCustomers();
@@ -385,5 +413,10 @@ public class PublicPanel extends JPanel {
                 throw new IllegalArgumentException("Column index higher than anticipated.");
             }
         }
+    }
+    
+    private enum checkUserInputType {
+    	STRING,
+    	INTEGER
     }
 }

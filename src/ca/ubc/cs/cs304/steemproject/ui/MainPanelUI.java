@@ -23,12 +23,12 @@ public class MainPanelUI {
 	 */
 	public void buildGUI() {
 		JFrame mainWindow = new JFrame("Steem");
-		JTabbedPane tabbedPane = new JTabbedPane();
+		final JTabbedPane tabbedPane = new JTabbedPane();
 		
 		mainWindow.setSize(550,700);
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		LoginPanel theLoginPanel = new LoginPanel(Accessors.getLoginAccessor());
+		final LoginPanel theLoginPanel = new LoginPanel(Accessors.getLoginAccessor());
 		tabbedPane.add(theLoginPanel);
 		tabbedPane.add(new PublicPanel(Accessors.getPublicAccessor()));
 		

@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import ca.ubc.cs.cs304.steemproject.access.Accessors;
 import ca.ubc.cs.cs304.steemproject.access.ICustomerAccessor;
 import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.Retrieves;
 import ca.ubc.cs.cs304.steemproject.base.released.CreditCard;
@@ -162,6 +163,23 @@ public class CustomerPanel extends JPanel {
         purchaseCvvField.setBounds(190, 580, 100, 25);
         this.add(purchaseCvvField);
 
+        	// LOGOUT Button
+        final JButton logoutButton = new JButton("Log out");
+        logoutButton.setBounds(350, 40, 150, 25);
+        logoutButton.setHorizontalAlignment(JButton.CENTER);
+        this.add(logoutButton);
+        
+        // log off current user
+        logoutButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				final LoginPanel logout = new LoginPanel(Accessors.getLoginAccessor());
+				
+				logout.logout();
+			}
+        });
+        
         // clear all field with the clear button
         clearButton.addActionListener(new ActionListener() {
 
@@ -175,7 +193,7 @@ public class CustomerPanel extends JPanel {
 			}
         });
         
-		// Purchase a game with a given credit card and game name
+		// purchase a game with a given credit card and game name
 		purchaseButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -200,7 +218,6 @@ public class CustomerPanel extends JPanel {
 							"FAILED TO PURCHASE GAME",
 							JOptionPane.INFORMATION_MESSAGE);
 				}
-			
 			}
 		});
 		
