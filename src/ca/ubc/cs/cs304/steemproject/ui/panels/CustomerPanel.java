@@ -24,6 +24,7 @@ import javax.swing.table.AbstractTableModel;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
+
 import ca.ubc.cs.cs304.steemproject.access.ICustomerAccessor;
 import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.Retrieves;
 import ca.ubc.cs.cs304.steemproject.base.released.CreditCard;
@@ -430,13 +431,13 @@ public class CustomerPanel extends JPanel {
                         JOptionPane.showMessageDialog(null, "No card is selected.", "SUBMISSION FAILED", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
-
-                    try{
-                        fCustomerAccessor.updateCCV((String) fTable.getModel().getValueAt(row, 2), ccvField.getText());
-                    } catch (Exception e1) {
-                        JOptionPane.showMessageDialog(null, e1.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
-                    }
                     
+                    if( ccvField.getText().matches("[0-9]+") && ccvField.getText().length() == 3 ) {
+                		fCustomerAccessor.updateCCV((String) fTable.getModel().getValueAt(row, 2), ccvField.getText());
+                	}
+                    else {
+                    	JOptionPane.showMessageDialog(null, "CCV must be a 3 digit number", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    }
                     
                     ccvField.setText("");
                     updateTable();

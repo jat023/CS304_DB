@@ -21,6 +21,8 @@ public class DatabaseUI {
 	private JPanel buttonPanel;
 	private JPanel tablePanel;
 	private JPanel tablePanel2;
+	private JPanel tablePanel3;
+	private JPanel tablePanel4;
 	private JCheckBox option1check;
 	private JCheckBox option2check;
 	private JCheckBox option3check;
@@ -42,11 +44,19 @@ public class DatabaseUI {
 		tablePanel2 = new JPanel();
 		tablePanel2.setLayout(new BorderLayout());
 		tablePanel2.setSize(600, 100);
+		tablePanel3 = new JPanel();
+		tablePanel3.setLayout(new BorderLayout());
+		tablePanel3.setSize(600, 100);
+		tablePanel4 = new JPanel();
+		tablePanel4.setLayout(new BorderLayout());
+		tablePanel4.setSize(600, 100);
 		
 		mainWindow.add(optionsPanel);
 		mainWindow.add(buttonPanel);
 		mainWindow.add(tablePanel);
 		mainWindow.add(tablePanel2);
+		mainWindow.add(tablePanel3);
+		mainWindow.add(tablePanel4);
 		
 		setComponentLocations();
 		generalAccessorDB = new DBGeneralAccessor();
@@ -119,7 +129,38 @@ public class DatabaseUI {
 					tablePanel2.setVisible(false);
 				}
 				if(option3check.isSelected()) {
-					System.out.println("N/A");
+					List<Integer> userIDs;
+					List<String> CardNumbers;
+					List<String> CCVs;
+					List<String> Addresses;
+					try {
+						userIDs = generalAccessorDB.getCards().getIDs();
+						CardNumbers = generalAccessorDB.getCards().getCardNumbers();
+						CCVs = generalAccessorDB.getCards().getCCVs();
+						Addresses = generalAccessorDB.getCards().getAddresses();
+						
+						String columnNames[] = {"User ID","Card Number","Card CCV", "Card Address"};
+						DefaultTableModel tableModel3 = new DefaultTableModel(columnNames, 0);
+						JTable testerTable = new JTable(tableModel3);
+
+						for( int i = 0; i < CardNumbers.size(); i++ ) {
+							Object[] rowObj = {userIDs.get(i).toString(), CardNumbers.get(i).toString(),
+									CCVs.get(i).toString(), Addresses.get(i).toString()};
+							tableModel3.addRow(rowObj);
+						}
+						
+						JScrollPane scrollPane3 = new JScrollPane(testerTable);
+					    tablePanel3.add(scrollPane3, BorderLayout.CENTER);
+						
+					    tablePanel3.setVisible(true);
+						tablePanel3.revalidate();
+						tablePanel3.repaint();
+					}catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}else {
+					tablePanel3.setVisible(false);
 				}
 				if(option4check.isSelected()) {
 					System.out.println("N/A");
@@ -133,6 +174,8 @@ public class DatabaseUI {
 		buttonPanel.setLocation(225, 125);
 		tablePanel.setLocation(50,175);
 		tablePanel2.setLocation(50,280);
+		tablePanel3.setLocation(50,385);
+		tablePanel4.setLocation(50,490);
 	}
 	
 	private JPanel initRefreshButton() {
