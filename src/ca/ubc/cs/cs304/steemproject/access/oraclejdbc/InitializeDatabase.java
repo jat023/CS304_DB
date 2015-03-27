@@ -150,11 +150,11 @@ final class InitializeDatabase {
 
         FinalizedGame game1 = new FinalizedGame("Sneaky Thief","So sneaky.", Genre.RPG, "Bob", 10f, 10.00f, false, 0f);
         FinalizedGame game2 = new FinalizedGame("Amazing Horse","RIDE TO GLORY!", Genre.STRATEGY, "Dan Inc.", 8.8f, 9.99f, true, 0.4f);
-        FinalizedGame game3 = new FinalizedGame("Amazing Irish Luck","Fun for the leprechauns.", Genre.ACTION, "Dan", 5f, 59.99f, false, 0.2f);
+        FinalizedGame game3 = new FinalizedGame("Amazing Irish Luck","Fun for the leprechauns.", Genre.ACTION, "Dan", 5f, 59.99f, true, 0.2f);
         FinalizedGame game4 = new FinalizedGame("Fun Classroom Game","Fun for the whole family.", Genre.RPG, "Blazzard", 8.2f, 39.99f, true, 0.1f);
         FinalizedGame game5 = new FinalizedGame("Some CS304 Project","So fun you won't even notice it isn't a game.", Genre.SPORTS, "Dan", 3.5f, 29.99f, false, 0f);
         FinalizedGame game6 = new FinalizedGame("Bunjee","Test your jumping skills!", Genre.CASUAL, "Beema Studios", 7f, 14.49f, false, 0f);
-        FinalizedGame game7 = new FinalizedGame("Car 2 GO","Be the first at the finish line!", Genre.RACING, "EC Sports", 6.6f, 25.99f, false, 0.8f);
+        FinalizedGame game7 = new FinalizedGame("Car 2 GO","Be the first at the finish line!", Genre.RACING, "EC Sports", 6.6f, 25.99f, true, 0.8f);
         FinalizedGame game8 = new FinalizedGame("Truck Smash","Like Monster trucks, but better.", Genre.RACING, "EC Sports", 8.2f, 7.49f, false, 0f);
         FinalizedGame game9 = new FinalizedGame("Tunnel Run","How long can you go?", Genre.CASUAL, "Beema Studios", 9f, 8.99f, false, 0f);
         FinalizedGame game10 = new FinalizedGame("Dancing with the Stars","Rock it, Shake it, Move it.", Genre.CASUAL, "Cumon Entertainment", 9.7f, 49.99f, true, 0.5f);
