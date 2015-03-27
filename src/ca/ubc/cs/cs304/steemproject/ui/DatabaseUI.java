@@ -1,22 +1,18 @@
 package ca.ubc.cs.cs304.steemproject.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 
 import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.DBGeneralAccessor;
 import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.connection.SteemOracleDbConnector;
-import ca.ubc.cs.cs304.steemproject.base.released.Transaction;
 
 public class DatabaseUI {
 	

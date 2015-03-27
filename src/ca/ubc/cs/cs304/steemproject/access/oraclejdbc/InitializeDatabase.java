@@ -148,17 +148,16 @@ final class InitializeDatabase {
         Customer customer4 = new Customer(4, "customer4@gmail.com", "date123");
         Customer customer5 = new Customer(5, "customer5@gmail.com", "fig123");
 
-        FinalizedGame game1 = new FinalizedGame("Sneaky Thief","So sneaky.", Genre.RPG, "Bob", 10f, 1.00f, false, 0f);
+        FinalizedGame game1 = new FinalizedGame("Sneaky Thief","So sneaky.", Genre.RPG, "Bob", 10f, 10.00f, false, 0f);
         FinalizedGame game2 = new FinalizedGame("Amazing Horse","RIDE TO GLORY!", Genre.STRATEGY, "Dan Inc.", 8.8f, 9.99f, true, 0.4f);
-        FinalizedGame game3 = new FinalizedGame("Amazing Irish Luck","Fun for the leprechauns.", Genre.ACTION, "Dan", 5f, 59.99f, false, 0.2f);
+        FinalizedGame game3 = new FinalizedGame("Amazing Irish Luck","Fun for the leprechauns.", Genre.ACTION, "Dan", 5f, 59.99f, true, 0.2f);
         FinalizedGame game4 = new FinalizedGame("Fun Classroom Game","Fun for the whole family.", Genre.RPG, "Blazzard", 8.2f, 39.99f, true, 0.1f);
         FinalizedGame game5 = new FinalizedGame("Some CS304 Project","So fun you won't even notice it isn't a game.", Genre.SPORTS, "Dan", 3.5f, 29.99f, false, 0f);
-        
-        FinalizedGame game6 = new FinalizedGame("Bunjee","Test your jumping skills!", Genre.CASUAL, "Beema Studios", 7f, 1.00f, false, 0f);
-        FinalizedGame game7 = new FinalizedGame("Car 2 GO","Be the first at the finish line!", Genre.RACING, "EC Sports", 6.6f, 1.00f, false, 0f);
-        FinalizedGame game8 = new FinalizedGame("Truck Smash","Like Monster trucks, but better.", Genre.RACING, "EC Sports", 8.2f, 1.00f, false, 0f);
-        FinalizedGame game9 = new FinalizedGame("Tunnel Run","How long can you go?", Genre.CASUAL, "Beema Studios", 9f, 1.00f, false, 0f);
-        FinalizedGame game10 = new FinalizedGame("Dancing with the Stars","Rock it, Shake it, Move it.", Genre.CASUAL, "Cumon Entertainment", 9.7f, 1.00f, false, 0f);
+        FinalizedGame game6 = new FinalizedGame("Bunjee","Test your jumping skills!", Genre.CASUAL, "Beema Studios", 7f, 14.49f, false, 0f);
+        FinalizedGame game7 = new FinalizedGame("Car 2 GO","Be the first at the finish line!", Genre.RACING, "EC Sports", 6.6f, 25.99f, true, 0.8f);
+        FinalizedGame game8 = new FinalizedGame("Truck Smash","Like Monster trucks, but better.", Genre.RACING, "EC Sports", 8.2f, 7.49f, false, 0f);
+        FinalizedGame game9 = new FinalizedGame("Tunnel Run","How long can you go?", Genre.CASUAL, "Beema Studios", 9f, 8.99f, false, 0f);
+        FinalizedGame game10 = new FinalizedGame("Dancing with the Stars","Rock it, Shake it, Move it.", Genre.CASUAL, "Cumon Entertainment", 9.7f, 49.99f, true, 0.5f);
 
         GameTester tester1 = new GameTester(1, "gametester1@gmail.com", "Pass1");
         GameTester tester2 = new GameTester(2, "gametester2@gmail.com", "Pass2");
@@ -175,7 +174,7 @@ final class InitializeDatabase {
         CreditCard card1 = new CreditCard(customer1, "1111222233334444", "922", "12 Neighbourhood Drive");
         CreditCard card2 = new CreditCard(customer2, "1111222233335555", "214", "100 Broadway Street");
         CreditCard card3 = new CreditCard(customer3, "1111222233336666", "522", "1202 Maple Street");
-        CreditCard card4 = new CreditCard(customer4, "1111222233337777", "152", "14 Neighbourhood Drive");
+        CreditCard card4 = new CreditCard(customer4, "1111222233337777", "152", "14 Cambo Drive");
         CreditCard card5 = new CreditCard(customer5, "1111222233338888", "177", "16 Neighbourhood Drive");
         CreditCard card6 = new CreditCard(customer1, "1111222233339999", "102", "12 Neighbourhood Drive");
 
@@ -187,7 +186,6 @@ final class InitializeDatabase {
         Transaction transaction6 = new Transaction( customer3, card3, game2, generateRandomDate() );
         Transaction transaction7 = new Transaction( customer4, card4, game2, generateRandomDate() );
         Transaction transaction8 = new Transaction( customer5, card5, game2, generateRandomDate() );
-        
         Transaction transaction9 = new Transaction( customer2, card2, game6, generateRandomDate() );
         Transaction transaction10 = new Transaction( customer3, card3, game7, generateRandomDate() );
         Transaction transaction11 = new Transaction( customer1, card1, game8, generateRandomDate() );
@@ -205,7 +203,7 @@ final class InitializeDatabase {
         GameTesterFeedback feedback2 = new GameTesterFeedback(gameInDev1, tester2, generateRandomDate(), 0.1f, "Game too hard");
         GameTesterFeedback feedback3 = new GameTesterFeedback(gameInDev2, tester3, generateRandomDate(), 8.8f, "AWESOME");
         GameTesterFeedback feedback4 = new GameTesterFeedback(gameInDev3, tester4, generateRandomDate(), 3.0f, "Early Development");
-        GameTesterFeedback feedback5 = new GameTesterFeedback(gameInDev4, tester1, generateRandomDate(), 8.1f, "After 20 patches..");
+        GameTesterFeedback feedback5 = new GameTesterFeedback(gameInDev4, tester1, generateRandomDate(), 8.1f, "After 20 patches...");
 
         log.info("Inserting customers.");
 
@@ -263,7 +261,6 @@ final class InitializeDatabase {
         Inserts.insertTransaction(transaction6);
         Inserts.insertTransaction(transaction7);
         Inserts.insertTransaction(transaction8);
-        
         Inserts.insertTransaction(transaction9);
         Inserts.insertTransaction(transaction10);
         Inserts.insertTransaction(transaction11);

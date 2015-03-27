@@ -106,7 +106,7 @@ public class PublicPanel extends JPanel {
 		userField.setBounds(260, 190, 130, 25);
 		this.add(userField);
 
-		output.setBounds(10, 330, 450, 300);
+		output.setBounds(10, 330, 450, 200);
 		output.setLineWrap(true);
 		output.setEditable(false);
 		this.add(output);

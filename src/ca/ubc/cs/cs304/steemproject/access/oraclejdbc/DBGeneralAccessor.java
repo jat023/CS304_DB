@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.connection.SteemOracleDbConnector;
-import ca.ubc.cs.cs304.steemproject.base.development.GameTester;
-import ca.ubc.cs.cs304.steemproject.base.released.Customer;
 
 public class DBGeneralAccessor {
 	private DBcustomers allCustomers;
