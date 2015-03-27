@@ -31,21 +31,20 @@ public class MainPanelUI {
 		LoginPanel theLoginPanel = new LoginPanel(Accessors.getLoginAccessor());
 		tabbedPane.add(theLoginPanel);
 		tabbedPane.add(new PublicPanel(Accessors.getPublicAccessor()));
+		
 		mainWindow.add(tabbedPane);
 		mainWindow.setVisible(true);
 		
-		
 		theLoginPanel.getLoginStatusButton().addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					System.out.println(theLoginPanel.getLoginStatus().toString());
-					if( theLoginPanel.getLoginStatus().equals(LoginStatus.CUSTOMER) ) {
-						tabbedPane.add(new CustomerPanel(Accessors.getCustomerAccessor(), theLoginPanel.getCustomer() ));
-					}
-					if( theLoginPanel.getLoginStatus().equals(LoginStatus.GAMETESTER) ) {
-						tabbedPane.add(new GameTesterPanel(Accessors.getGameTesterAccessor(), theLoginPanel.getGameTester() ));
-					}
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if( theLoginPanel.getLoginStatus().equals(LoginStatus.CUSTOMER) ) {
+					tabbedPane.add(new CustomerPanel(Accessors.getCustomerAccessor(), theLoginPanel.getCustomer() ));
 				}
+				if( theLoginPanel.getLoginStatus().equals(LoginStatus.GAMETESTER) ) {
+					tabbedPane.add(new GameTesterPanel(Accessors.getGameTesterAccessor(), theLoginPanel.getGameTester() ));
+				}
+			}
 		 });
 	}
 }
