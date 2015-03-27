@@ -30,6 +30,8 @@ public class LoginPanel extends JPanel {
     private LoginStatus loginStatus;
     private Customer loggedInCustomer;
     private GameTester loggedInGameTester;
+    
+    private JButton logInStatusButton;
 
     public LoginPanel(ILoginAccessor aLoginAccessor) {
 
@@ -57,6 +59,8 @@ public class LoginPanel extends JPanel {
         fPasswordField = new JPasswordField("", 20);
         fPasswordField.setBounds(100, 40, 160, 25);
         this.add(fPasswordField);
+        
+        logInStatusButton = new JButton();
 
         JButton loginButton = new JButton("LOGIN");
         loginButton.setBounds(10, 80, 80, 25);
@@ -74,6 +78,7 @@ public class LoginPanel extends JPanel {
 						fLoginAccessor.loginCustomer(email, password);
 						loggedInCustomer = fLoginAccessor.lookupCustomer(email);
 						loginStatus = LoginStatus.CUSTOMER;
+						logInStatusButton.doClick();
 						JOptionPane.showMessageDialog(null, "Welcome " + email, "LOGIN SUCCESS", JOptionPane.INFORMATION_MESSAGE);
 					} catch (UserNotExistsException e) {
 						JOptionPane.showMessageDialog(null, "No user with given this email exists.", "LOGIN FAILED", JOptionPane.ERROR_MESSAGE);
@@ -86,6 +91,7 @@ public class LoginPanel extends JPanel {
 						fLoginAccessor.loginGametester(email, password);
 						loggedInCustomer = fLoginAccessor.lookupCustomer(email);
 						loginStatus = LoginStatus.GAMETESTER;
+						logInStatusButton.doClick();
 						JOptionPane.showMessageDialog(null, "Welcome " + email,"LOGIN SUCCESS", JOptionPane.INFORMATION_MESSAGE);
 					} catch (UserNotExistsException e) {
 						JOptionPane.showMessageDialog(null, "No game tester with this email exists.", "LOGIN FAILED", JOptionPane.ERROR_MESSAGE);
@@ -137,6 +143,10 @@ public class LoginPanel extends JPanel {
         } else {
             throw new IllegalStateException("No game tester has logged in.");
         }
+    }
+    
+    public JButton getLoginStatusButton() {
+    	return logInStatusButton;
     }
 
     public enum LoginStatus {

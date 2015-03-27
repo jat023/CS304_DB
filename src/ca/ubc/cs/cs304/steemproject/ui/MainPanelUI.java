@@ -1,12 +1,17 @@
 package ca.ubc.cs.cs304.steemproject.ui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.*;
+
 import ca.ubc.cs.cs304.steemproject.access.Accessors;
 import ca.ubc.cs.cs304.steemproject.base.development.GameTester;
 import ca.ubc.cs.cs304.steemproject.base.released.Customer;
 import ca.ubc.cs.cs304.steemproject.ui.panels.CustomerPanel;
 import ca.ubc.cs.cs304.steemproject.ui.panels.GameTesterPanel;
 import ca.ubc.cs.cs304.steemproject.ui.panels.LoginPanel;
+import ca.ubc.cs.cs304.steemproject.ui.panels.LoginPanel.LoginStatus;
 import ca.ubc.cs.cs304.steemproject.ui.panels.PublicPanel;
 
 
@@ -23,14 +28,25 @@ public class MainPanelUI {
 		mainWindow.setSize(550,700);
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		tabbedPane.add(new LoginPanel(Accessors.getLoginAccessor()));
+		LoginPanel theLoginPanel = new LoginPanel(Accessors.getLoginAccessor());
+		tabbedPane.add(theLoginPanel);
 		tabbedPane.add(new PublicPanel(Accessors.getPublicAccessor()));
-		tabbedPane.add(new GameTesterPanel(Accessors.getGameTesterAccessor(), new GameTester(1, "gametester1@gmail.com", "Pass1")));
-		tabbedPane.add(new CustomerPanel(Accessors.getCustomerAccessor(), new Customer(1, "customer1@gmail.com", "apple123")));
-
 		mainWindow.add(tabbedPane);
-
 		mainWindow.setVisible(true);
+		
+		
+		theLoginPanel.getLoginStatusButton().addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					System.out.println(theLoginPanel.getLoginStatus().toString());
+					if( theLoginPanel.getLoginStatus().equals(LoginStatus.CUSTOMER) ) {
+						tabbedPane.add(new CustomerPanel(Accessors.getCustomerAccessor(), theLoginPanel.getCustomer() ));
+					}
+					if( theLoginPanel.getLoginStatus().equals(LoginStatus.GAMETESTER) ) {
+						tabbedPane.add(new GameTesterPanel(Accessors.getGameTesterAccessor(), theLoginPanel.getGameTester() ));
+					}
+				}
+		 });
 	}
 }
    
