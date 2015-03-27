@@ -1,10 +1,7 @@
 package ca.ubc.cs.cs304.steemproject.main;
 
-import javax.swing.*;
 import java.sql.*;
-
 import org.apache.log4j.Logger;
-
 import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.connection.SteemOracleDbConnector;
 import ca.ubc.cs.cs304.steemproject.ui.MainPanelUI;
 
