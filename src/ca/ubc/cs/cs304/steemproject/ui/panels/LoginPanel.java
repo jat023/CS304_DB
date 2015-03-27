@@ -89,7 +89,7 @@ public class LoginPanel extends JPanel {
 				case GAME_TESTER:
 					try {
 						fLoginAccessor.loginGametester(email, password);
-						loggedInCustomer = fLoginAccessor.lookupCustomer(email);
+						loggedInGameTester = fLoginAccessor.lookupGameTester(email);
 						loginStatus = LoginStatus.GAMETESTER;
 						logInStatusButton.doClick();
 						JOptionPane.showMessageDialog(null, "Welcome " + email,"LOGIN SUCCESS", JOptionPane.INFORMATION_MESSAGE);
