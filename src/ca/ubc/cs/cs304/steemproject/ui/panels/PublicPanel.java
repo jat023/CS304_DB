@@ -152,7 +152,7 @@ public class PublicPanel extends JPanel {
 				
 				output.append("The most expensive genre is ");
 				output.append(game.getKey().toString());
-				output.append(" at a price of ");
+				output.append(" at an average price of ");
 				output.append(game.getValue().toString());
 				output.append(".\n");
 			}	
@@ -166,7 +166,7 @@ public class PublicPanel extends JPanel {
 				
 				output.append("The least expensive genre is ");
 				output.append(game.getKey().toString());
-				output.append(" at a price of ");
+				output.append(" at an average price of ");
 				output.append(game.getValue().toString());
 				output.append(".\n");
 			}	

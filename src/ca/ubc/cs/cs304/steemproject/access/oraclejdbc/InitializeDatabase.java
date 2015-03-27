@@ -194,7 +194,7 @@ final class InitializeDatabase {
         Transaction transaction14 = new Transaction( customer5, card5, game4, generateRandomDate() );
         Transaction transaction15 = new Transaction( customer5, card5, game3, generateRandomDate() );
 
-        Transaction transaction16 = new Transaction( customer1, card1, game10, generateRandomDate() );
+        //Transaction transaction16 = new Transaction( customer1, card1, game10, generateRandomDate() );
         Transaction transaction17 = new Transaction( customer2, card2, game10, generateRandomDate() );
         Transaction transaction18 = new Transaction( customer3, card3, game10, generateRandomDate() );
         Transaction transaction19 = new Transaction( customer4, card4, game10, generateRandomDate() );
@@ -269,7 +269,6 @@ final class InitializeDatabase {
         Inserts.insertTransaction(transaction14);
         Inserts.insertTransaction(transaction15);
         
-        Inserts.insertTransaction(transaction16);
         Inserts.insertTransaction(transaction17);
         Inserts.insertTransaction(transaction18);
         Inserts.insertTransaction(transaction19);
@@ -293,7 +292,6 @@ final class InitializeDatabase {
         Inserts.insertOwnsGame(new Playtime(transaction14.getBuyer(), transaction14.getGame(), 1086.0f));
         Inserts.insertOwnsGame(new Playtime(transaction15.getBuyer(), transaction15.getGame(), 41.0f));
         
-        Inserts.insertOwnsGame(new Playtime(transaction16.getBuyer(), transaction16.getGame(), 0.0f));
         Inserts.insertOwnsGame(new Playtime(transaction17.getBuyer(), transaction17.getGame(), 0.0f));
         Inserts.insertOwnsGame(new Playtime(transaction18.getBuyer(), transaction18.getGame(), 0.0f));
         Inserts.insertOwnsGame(new Playtime(transaction19.getBuyer(), transaction19.getGame(), 0.0f));

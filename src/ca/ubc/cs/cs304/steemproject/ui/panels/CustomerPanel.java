@@ -56,7 +56,7 @@ public class CustomerPanel extends JPanel {
             throw new IllegalArgumentException("Customer accessor cannot be null.");
         }
         if (aCustomer == null) {
-            throw new IllegalArgumentException("Customerer cannot be null.");
+            throw new IllegalArgumentException("Customer cannot be null.");
         }
         
         fCustomerAccessor = aCustomerAccessor;
