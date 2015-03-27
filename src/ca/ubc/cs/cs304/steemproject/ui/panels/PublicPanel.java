@@ -229,11 +229,17 @@ public class PublicPanel extends JPanel {
 				int storeUserID;
 				
 				if (isOwned) {
-					if ( userIDField.getText().equals("1")
-							|| userIDField.getText().equals("2")
-							|| userIDField.getText().equals("3")
-							|| userIDField.getText().equals("4")
-							|| userIDField.getText().equals("5") ) {
+				    
+				    boolean useId;
+				    
+				    try {
+				        storeUserID = Integer.parseInt(userIDField.getText());
+				        useId = true;
+				    } catch (NumberFormatException e) {
+				        useId = false;
+				    }
+				    
+					if (useId) {
 						storeUserID = Integer.parseInt(userIDField.getText());
 						
 						try {
@@ -413,10 +419,5 @@ public class PublicPanel extends JPanel {
                 throw new IllegalArgumentException("Column index higher than anticipated.");
             }
         }
-    }
-    
-    private enum checkUserInputType {
-    	STRING,
-    	INTEGER
     }
 }
