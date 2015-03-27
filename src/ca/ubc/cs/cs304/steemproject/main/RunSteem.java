@@ -11,29 +11,32 @@ import ca.ubc.cs.cs304.steemproject.ui.MainPanelUI;
 
 
 public class RunSteem {
-    
-	public final static Logger log = Logger.getLogger(RunSteem.class);
-	
-	/*
-	 * Basic constructor function for building the UI interface
-	 */
-	public static void createUI() {
-		MainPanelUI mainConsole = new MainPanelUI();
-		mainConsole.buildGUI();
-	}
-	
-	public static void main(String args[]) {
+
+    public final static Logger log = Logger.getLogger(RunSteem.class);
+
+    /*
+     * Basic constructor function for building the UI interface
+     */
+    public static void createUI() {
+        MainPanelUI mainConsole = new MainPanelUI();
+        mainConsole.buildGUI();
+    }
+
+    public static void main(String args[]) {
 
         Connection con = SteemOracleDbConnector.getDefaultConnection();
-        
+
         if (con != null) {
-        	System.out.println("Connection established");
+            System.out.println("Connection established");
         }
         else {
-        	System.out.println("Connected failed to connect");
+            System.out.println("Connected failed to connect");
         }
-     
-        createUI();
+        try {
+            createUI();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
 }

@@ -21,6 +21,7 @@ import ca.ubc.cs.cs304.steemproject.base.released.Playtime;
 import ca.ubc.cs.cs304.steemproject.base.released.Transaction;
 import ca.ubc.cs.cs304.steemproject.exception.GameNotExistException;
 import ca.ubc.cs.cs304.steemproject.exception.InternalConnectionException;
+import ca.ubc.cs.cs304.steemproject.exception.UserHasExistingCreditCards;
 import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
 
 public class OracleCustomerAccessor implements ICustomerAccessor {
@@ -184,7 +185,7 @@ public class OracleCustomerAccessor implements ICustomerAccessor {
     }
 
     @Override
-    public void removeAccount(Customer aCustomer) throws UserNotExistsException {
+    public void removeAccount(Customer aCustomer) throws UserNotExistsException, UserHasExistingCreditCards {
         IUser user = QueriesHelper.retrieveUser(aCustomer.getUserId(), Tables.CUSTOMER_TABLENAME);
         if (user.getUserId() == aCustomer.getUserId() && user.getEmail().equals(aCustomer.getEmail()) && user.getPassword().equals(aCustomer.getPassword())) {
             
@@ -193,7 +194,7 @@ public class OracleCustomerAccessor implements ICustomerAccessor {
             try {
                 SteemOracleDbConnector.getDefaultConnection().createStatement().executeUpdate(query);
             } catch (SQLException e) {
-                throw new InternalConnectionException("Could not execute query: " +query, e);
+                throw new UserHasExistingCreditCards("Could not execute query: " +query, e);
             }
             
         } else {

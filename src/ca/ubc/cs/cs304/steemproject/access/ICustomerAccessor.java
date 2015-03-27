@@ -8,6 +8,7 @@ import ca.ubc.cs.cs304.steemproject.base.released.Customer;
 import ca.ubc.cs.cs304.steemproject.base.released.FinalizedGame;
 import ca.ubc.cs.cs304.steemproject.base.released.Transaction;
 import ca.ubc.cs.cs304.steemproject.exception.GameNotExistException;
+import ca.ubc.cs.cs304.steemproject.exception.UserHasExistingCreditCards;
 import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
 
 public interface ICustomerAccessor {
@@ -59,5 +60,5 @@ public interface ICustomerAccessor {
      * DELETION QUERY.
      * Removes user account from database and removes all associated entries. (ie. transaction and per-game playtime)
      */
-    public void removeAccount(Customer aCustomer) throws UserNotExistsException;
+    public void removeAccount(Customer aCustomer) throws UserNotExistsException, UserHasExistingCreditCards;
 }

@@ -177,6 +177,7 @@ final class InitializeDatabase {
         CreditCard card3 = new CreditCard(customer3, "1111222233336666", "522", "1202 Maple Street");
         CreditCard card4 = new CreditCard(customer4, "1111222233337777", "152", "14 Neighbourhood Drive");
         CreditCard card5 = new CreditCard(customer5, "1111222233338888", "177", "16 Neighbourhood Drive");
+        CreditCard card6 = new CreditCard(customer1, "1111222233339999", "102", "12 Neighbourhood Drive");
 
         Transaction transaction1 = new Transaction( customer1, card1, game1, generateRandomDate() );
         Transaction transaction2 = new Transaction( customer2, card2, game2, generateRandomDate() );
@@ -195,6 +196,11 @@ final class InitializeDatabase {
         Transaction transaction14 = new Transaction( customer5, card5, game4, generateRandomDate() );
         Transaction transaction15 = new Transaction( customer5, card5, game3, generateRandomDate() );
 
+        Transaction transaction16 = new Transaction( customer1, card1, game10, generateRandomDate() );
+        Transaction transaction17 = new Transaction( customer2, card2, game10, generateRandomDate() );
+        Transaction transaction18 = new Transaction( customer3, card3, game10, generateRandomDate() );
+        Transaction transaction19 = new Transaction( customer4, card4, game10, generateRandomDate() );
+        
         GameTesterFeedback feedback1 = new GameTesterFeedback(gameInDev1, tester1, generateRandomDate(), 2.1f, "Very Buggy");
         GameTesterFeedback feedback2 = new GameTesterFeedback(gameInDev1, tester2, generateRandomDate(), 0.1f, "Game too hard");
         GameTesterFeedback feedback3 = new GameTesterFeedback(gameInDev2, tester3, generateRandomDate(), 8.8f, "AWESOME");
@@ -245,6 +251,7 @@ final class InitializeDatabase {
         Inserts.insertCreditCard(card3);
         Inserts.insertCreditCard(card4);
         Inserts.insertCreditCard(card5);
+        Inserts.insertCreditCard(card6);
 
         log.info("Inserting transactions");
 
@@ -264,6 +271,11 @@ final class InitializeDatabase {
         Inserts.insertTransaction(transaction13);
         Inserts.insertTransaction(transaction14);
         Inserts.insertTransaction(transaction15);
+        
+        Inserts.insertTransaction(transaction16);
+        Inserts.insertTransaction(transaction17);
+        Inserts.insertTransaction(transaction18);
+        Inserts.insertTransaction(transaction19);
 
         log.info("Inserting play times.");
 
@@ -283,6 +295,11 @@ final class InitializeDatabase {
         Inserts.insertOwnsGame(new Playtime(transaction13.getBuyer(), transaction13.getGame(), 164.4f));
         Inserts.insertOwnsGame(new Playtime(transaction14.getBuyer(), transaction14.getGame(), 1086.0f));
         Inserts.insertOwnsGame(new Playtime(transaction15.getBuyer(), transaction15.getGame(), 41.0f));
+        
+        Inserts.insertOwnsGame(new Playtime(transaction16.getBuyer(), transaction16.getGame(), 0.0f));
+        Inserts.insertOwnsGame(new Playtime(transaction17.getBuyer(), transaction17.getGame(), 0.0f));
+        Inserts.insertOwnsGame(new Playtime(transaction18.getBuyer(), transaction18.getGame(), 0.0f));
+        Inserts.insertOwnsGame(new Playtime(transaction19.getBuyer(), transaction19.getGame(), 0.0f));
 
         log.info("Inserting feedbacks.");
 

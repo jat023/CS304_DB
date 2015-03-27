@@ -29,12 +29,11 @@ public class PublicPanel extends JPanel {
     private final JComboBox<Genre> fGameGenreField;
     private final JComboBox<GameSortByOption> fGameSortOptionField;
     private final JComboBox<SortDirection> fGameSortDirectionField;
-    private final JRadioButton discount = new JRadioButton("Discounted games");
-    private final JRadioButton owned = new JRadioButton("Owned by you");
-    private final JRadioButton ownedByAll = new JRadioButton("Owned by all");
-    private final JTextField userIDField = new JTextField(25);
+    private final JRadioButton discount = new JRadioButton("Discounted only");
+    private final JRadioButton owned = new JRadioButton("Owned by user");
+    private final JTextField userField = new JTextField(25);
     private final JTextArea output = new JTextArea(10,10);
-    private final ButtonGroup radioButtonGroup = new ButtonGroup();
+    private final ButtonGroup buttonGroup = new ButtonGroup();
 	
 	public PublicPanel(IPublicAccessor aPublicAccessor) {
 
@@ -46,10 +45,10 @@ public class PublicPanel extends JPanel {
 		iPublic = aPublicAccessor;
 		setLayout(null);
 		
-		JLabel searchLabel = new JLabel("SEARCH FOR AVAILABLE GAMES");
+		JLabel searchLabel = new JLabel("SEARCH FOR PURCHASABLE GAMES");
         searchLabel.setFont(new Font("Serif", Font.BOLD, 20));
         searchLabel.setHorizontalAlignment(JLabel.LEFT);
-        searchLabel.setBounds(10, 10, 350, 25);
+        searchLabel.setBounds(10, 10, 450, 25);
         this.add(searchLabel);
 		
 		JLabel nameLabel = new JLabel("Game Title");
@@ -94,22 +93,18 @@ public class PublicPanel extends JPanel {
 		fGameSortDirectionField.setSelectedIndex(-1);
 		this.add(fGameSortDirectionField);
 		
-		discount.setBounds(10, 160, 150, 25);
+		discount.setBounds(10, 160, 170, 25);
 		this.add(discount);
 	
 		owned.setBounds(10, 190, 150, 25);
 		this.add(owned);
 		
-			// division query
-		ownedByAll.setBounds(10, 220, 150, 25);
-		this.add(ownedByAll);
-		
-		JLabel userLabel = new JLabel("User ID");
-		userLabel.setBounds(160, 192, 60, 25);
+		JLabel userLabel = new JLabel("User Email/ID");
+		userLabel.setBounds(160, 192, 120, 25);
 		this.add(userLabel);
 		
-		userIDField.setBounds(220, 190, 130, 25);
-		this.add(userIDField);
+		userField.setBounds(260, 190, 130, 25);
+		this.add(userField);
 
 		output.setBounds(10, 330, 450, 300);
 		output.setLineWrap(true);
@@ -117,7 +112,7 @@ public class PublicPanel extends JPanel {
 		this.add(output);
 		
 		JButton clearButton = new JButton("Clear");
-		clearButton.setBounds(300, 300, 70, 25);
+		clearButton.setBounds(300, 300, 100, 25);
 		this.add(clearButton);
 		
 		JButton searchButton = new JButton("Search");
@@ -138,9 +133,12 @@ public class PublicPanel extends JPanel {
 		leastExpensive.setBounds(330, 100, 150,25);
 		this.add(leastExpensive);
 		
-		radioButtonGroup.add(discount);
-		radioButtonGroup.add(owned);
-		radioButtonGroup.add(ownedByAll);
+		JButton ownedByAll = new JButton("Owned By All");
+		ownedByAll.setBounds(330, 130, 150,25);
+        this.add(ownedByAll);
+        
+        buttonGroup.add(discount);
+        buttonGroup.add(owned);
 		
 		
 //--------Add ActionListeners for events  --------------------------
@@ -178,24 +176,59 @@ public class PublicPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+			    JTable table = new JTable();
+                JDialog dialog = new JDialog();
+                dialog.setSize(720, 420);
+                JScrollPane scrollPane = new JScrollPane(table);
+                table.setFillsViewportHeight(true);
+                dialog.add(scrollPane);
+                
 				Collection<FinalizedGame> mostPopularGame = iPublic.findMostPopularGame();
 			
-				output.append("This game is most popular: ");
+				output.append("These games are most popular: \n");
 				for (FinalizedGame obj : mostPopularGame) {
 					output.append(obj.getName().toString() + "\n");
 				}
+				
+				table.setModel(new DisplayGamesTableModel(new ArrayList<FinalizedGame>(mostPopularGame)));
+                dialog.setVisible(true);
 			}	
 		});
+		
+		ownedByAll.addActionListener(new ActionListener() {
+            
+		    @Override
+		    public void actionPerformed(ActionEvent arg0) {
+		        
+		        JTable table = new JTable();
+		        JDialog dialog = new JDialog();
+		        dialog.setSize(720, 420);
+		        JScrollPane scrollPane = new JScrollPane(table);
+		        table.setFillsViewportHeight(true);
+		        dialog.add(scrollPane);
+		        
+		        Collection<FinalizedGame> ownedAll = iPublic.findGamesOwnedByAllCustomers();
+
+		        output.append("These games are owned by all customers: \n");
+		        for (FinalizedGame obj : ownedAll) {
+		            output.append(obj.getName().toString() + "\n");
+		        }
+		        
+		        table.setModel(new DisplayGamesTableModel(new ArrayList<FinalizedGame>(ownedAll)));
+                dialog.setVisible(true);
+
+		    }
+        });
 		
 		clearButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				output.setText("");
-				radioButtonGroup.clearSelection();
+				buttonGroup.clearSelection();
 				fGameSortOptionField.setSelectedIndex(-1);
 				fGameSortDirectionField.setSelectedIndex(-1);
 				fGameGenreField.setSelectedIndex(-1);
-				userIDField.setText("");
+				userField.setText("");
 				fGameNameField.setText("");
 				fGameDeveloperField.setText("");
 			}
@@ -223,7 +256,6 @@ public class PublicPanel extends JPanel {
 				String gameDeveloper = fGameDeveloperField.getText().equals("") ? null : fGameDeveloperField.getText();
 				boolean discounted = discount.isSelected();
 				boolean isOwned = owned.isSelected();
-				boolean isOwnedByAll = ownedByAll.isSelected();
 				//String storeUserID = userIDField.getText().equals("") ? null : userIDField.getText();
 				String storeUserEmail;
 				int storeUserID;
@@ -233,14 +265,14 @@ public class PublicPanel extends JPanel {
 				    boolean useId;
 				    
 				    try {
-				        storeUserID = Integer.parseInt(userIDField.getText());
+				        storeUserID = Integer.parseInt(userField.getText());
 				        useId = true;
 				    } catch (NumberFormatException e) {
 				        useId = false;
 				    }
 				    
 					if (useId) {
-						storeUserID = Integer.parseInt(userIDField.getText());
+						storeUserID = Integer.parseInt(userField.getText());
 						
 						try {
 							List<Playtime> storeOwnedList = new ArrayList<Playtime>();
@@ -252,13 +284,13 @@ public class PublicPanel extends JPanel {
 							
 						} catch (UserNotExistsException e) {
 							JOptionPane.showMessageDialog(null,
-									"No user with this email exists.",
+									"No user with this ID exists.",
 									"ERROR",
 									JOptionPane.INFORMATION_MESSAGE);
 						}
 					}
 					else {
-						storeUserEmail = userIDField.getText().equals("") ? null : userIDField.getText();
+						storeUserEmail = userField.getText().equals("") ? null : userField.getText();
 						
 						try {
 							List<Playtime> storeOwnedList = new ArrayList<Playtime>();
@@ -289,14 +321,6 @@ public class PublicPanel extends JPanel {
 					
 	                table.setModel(new DisplayGamesTableModel(storeDiscountedList));
 	                dialog.setVisible(true);
-				}
-				else if (isOwnedByAll) {
-					Collection<FinalizedGame> ownedAll = iPublic.findGamesOwnedByAllCustomers();
-						
-					output.append("This game is owned by all customers: ");
-					for (FinalizedGame obj : ownedAll) {
-						output.append(obj.getName().toString() + "\n");
-					}
 				}
 				else {
 					List<FinalizedGame> storeGeneralList = new ArrayList<FinalizedGame>();

@@ -1,28 +1,37 @@
 package ca.ubc.cs.cs304.steemproject.ui.panels;
 
-import java.awt.event.*;
-
-import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
-
-import org.jdatepicker.impl.JDatePanelImpl;
-import org.jdatepicker.impl.JDatePickerImpl;
-import org.jdatepicker.impl.UtilDateModel;
-
-import java.awt.*;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-import ca.ubc.cs.cs304.steemproject.access.Accessors;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.AbstractTableModel;
+
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
+
 import ca.ubc.cs.cs304.steemproject.access.ICustomerAccessor;
 import ca.ubc.cs.cs304.steemproject.access.oraclejdbc.Retrieves;
 import ca.ubc.cs.cs304.steemproject.base.released.CreditCard;
 import ca.ubc.cs.cs304.steemproject.base.released.Customer;
 import ca.ubc.cs.cs304.steemproject.base.released.Transaction;
 import ca.ubc.cs.cs304.steemproject.exception.GameNotExistException;
+import ca.ubc.cs.cs304.steemproject.exception.UserHasExistingCreditCards;
 import ca.ubc.cs.cs304.steemproject.exception.UserNotExistsException;
 import ca.ubc.cs.cs304.steemproject.ui.panels.datepicker.DateLabelFormatter;
 
@@ -33,16 +42,14 @@ public class CustomerPanel extends JPanel {
     private final Customer fCustomer;
     
     private final JTextArea output = new JTextArea(10,10);
-    private final JTextField deleteCreditCardField = new JTextField(50);
-    private final JTextField addCreditCardField = new JTextField(50);
-    private final JTextField cvvField = new JTextField(5);
-    private final JTextField addressWithCardField = new JTextField(50);
+    private final JTextField fCreditCardNumberField = new JTextField(50);
+    private final JTextField fCcvField = new JTextField(5);
+    private final JTextField fAddressField = new JTextField(50);
     private final JDatePickerImpl fEarliestDatePicker;
     private final JDatePickerImpl fLatestDatePicker;
     
     private final JTextField purchaseGameField = new JTextField(30);
     private final JTextField purchaseCardField = new JTextField(30);
-    private final JTextField purchaseCvvField = new JTextField(10);
     
     public CustomerPanel(ICustomerAccessor aCustomerAccessor, Customer aCustomer) {
         
@@ -62,7 +69,7 @@ public class CustomerPanel extends JPanel {
         JLabel titleLabel = new JLabel("Customer Account Options");
         titleLabel.setFont(new Font("Serif", Font.BOLD, 20));
         titleLabel.setHorizontalAlignment(JLabel.LEFT);
-        titleLabel.setBounds(10, 10, 280, 25);
+        titleLabel.setBounds(10, 10, 330, 25);
         this.add(titleLabel);
         
         	// UPDATE CREDIT CARD INFORMATION
@@ -73,36 +80,29 @@ public class CustomerPanel extends JPanel {
         this.add(creditCardLabel);
         
         JButton addCreditCardButton = new JButton("Add Credit Card");
-        addCreditCardButton.setBounds(10,70,140,25);
+        addCreditCardButton.setBounds(10,70,180,25);
         this.add(addCreditCardButton);
         
-        addCreditCardField.setBounds(150,70,200,25);
-        this.add(addCreditCardField);
         
-        JButton deleteCreditCardButton = new JButton("Delete Credit Card");
-        deleteCreditCardButton.setBounds(10,100,140,25);
-        this.add(deleteCreditCardButton);
+        JLabel numberLabel = new JLabel("Card num.");
+        numberLabel.setBounds(10, 100, 130, 25);
+        this.add(numberLabel);
+        fCreditCardNumberField.setBounds(100,100,200,25);
+        this.add(fCreditCardNumberField);
         
-        deleteCreditCardField.setBounds(150, 100, 200, 25);
-        this.add(deleteCreditCardField);
+        JLabel cvvCreditCardLabel = new JLabel("CCV");
+        cvvCreditCardLabel.setBounds(10, 130, 50, 25);
+        this.add(cvvCreditCardLabel);
         
-        JLabel cvvCreditCardField = new JLabel("CVV");
-        cvvCreditCardField.setBounds(380, 100, 50, 25);
-        this.add(cvvCreditCardField);
-        
-        cvvField.setBounds(420, 100, 50, 25);
-        this.add(cvvField);
-        
-        JButton updateCVV = new JButton("Update CVV");
-        updateCVV.setBounds(10, 130, 140, 25);
-        this.add(updateCVV);
+        fCcvField.setBounds(100, 130, 50, 25);
+        this.add(fCcvField);
         
         JLabel addressWithCard = new JLabel("Address");
-        addressWithCard.setBounds(20, 160, 100, 25);
+        addressWithCard.setBounds(10, 160, 100, 25);
         this.add(addressWithCard);
         
-        addressWithCardField.setBounds(150, 160, 200, 25);
-        this.add(addressWithCardField);
+        fAddressField.setBounds(100, 160, 200, 25);
+        this.add(fAddressField);
         
         JButton searchButton = new JButton("List Cards");
         searchButton.setBounds(20, 200, 280, 25);
@@ -145,50 +145,26 @@ public class CustomerPanel extends JPanel {
         this.add(purchaseButton);
         
         JLabel purchaseGameName = new JLabel("Game name:");
-        purchaseGameName.setBounds(100, 520, 80, 25);
+        purchaseGameName.setBounds(100, 520, 120, 25);
         this.add(purchaseGameName);
         
         JLabel buyWithThisCreditCard = new JLabel("Credit Card:");
-        buyWithThisCreditCard.setBounds(100, 550, 80, 25);
+        buyWithThisCreditCard.setBounds(100, 550, 120, 25);
         this.add(buyWithThisCreditCard);
-        
-        JLabel buyWithThisCVV = new JLabel("CVV:");
-        buyWithThisCVV.setBounds(100, 580, 80, 25);
-        this.add(buyWithThisCVV);
         
         purchaseGameField.setBounds(190, 520, 200, 25);
         this.add(purchaseGameField);
         purchaseCardField.setBounds(190, 550, 200, 25);
         this.add(purchaseCardField);
-        purchaseCvvField.setBounds(190, 580, 100, 25);
-        this.add(purchaseCvvField);
-
-        	// LOGOUT Button
-        final JButton logoutButton = new JButton("Log out");
-        logoutButton.setBounds(350, 40, 150, 25);
-        logoutButton.setHorizontalAlignment(JButton.CENTER);
-        this.add(logoutButton);
-        
-        // log off current user
-        logoutButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				final LoginPanel logout = new LoginPanel(Accessors.getLoginAccessor());
-				
-				logout.logout();
-			}
-        });
         
         // clear all field with the clear button
         clearButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-		        addCreditCardField.setText("");
-		        deleteCreditCardField.setText("");
-		        cvvField.setText("");
-		        addressWithCardField.setText("");
+		        fCreditCardNumberField.setText("");
+		        fCcvField.setText("");
+		        fAddressField.setText("");
 		        output.setText("");
 			}
         });
@@ -211,36 +187,12 @@ public class CustomerPanel extends JPanel {
 					JOptionPane.showMessageDialog(null,
 							"Invalid entries",
 							"FAILED TO PURCHASE GAME",
-							JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.ERROR_MESSAGE);
 				} catch (SQLException e) {
 					JOptionPane.showMessageDialog(null,
 							"Invalid entries",
 							"FAILED TO PURCHASE GAME",
-							JOptionPane.INFORMATION_MESSAGE);
-				}
-			}
-		});
-		
-		//Updates the CVV of the current user's credit card
-		updateCVV.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String changeThisCardCVV = addCreditCardField.getText();
-				String newCVV = cvvField.getText();
-				
-				if (newCVV == "" || changeThisCardCVV == "") {
-					JOptionPane.showMessageDialog(null,
-							"Invalid entries",
-							"FAILED TO UPDATE CVV",
-							JOptionPane.INFORMATION_MESSAGE);
-				}
-				else {
-					fCustomerAccessor.updateCCV(changeThisCardCVV, newCVV);
-					JOptionPane.showMessageDialog(null,
-							"CVV Updated",
-							"SUCCESS",
-							JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -256,8 +208,13 @@ public class CustomerPanel extends JPanel {
 					JOptionPane.showMessageDialog(null,
 							"No user exists",
 							"FAILED TO REMOVE ACCOUNT",
-							JOptionPane.INFORMATION_MESSAGE);
-				}
+							JOptionPane.ERROR_MESSAGE);
+				} catch (UserHasExistingCreditCards e1) {
+				    JOptionPane.showMessageDialog(null,
+                            "User has existing credit cards.",
+                            "FAILED TO REMOVE ACCOUNT",
+                            JOptionPane.ERROR_MESSAGE);
+                }
 			}
 		});
 		
@@ -281,11 +238,10 @@ public class CustomerPanel extends JPanel {
 					JOptionPane.showMessageDialog(null,
 							"No user exists",
 							"FAILED TO GET CREDIT CARDS",
-							JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.ERROR_MESSAGE);
 				}
 			
-				creditCardTable.setModel(new CreditCardTableModel(creditCards));
-				creditCardDialog.setVisible(true);
+				new DisplayCreditCard(fCustomerAccessor, creditCards, fCustomer);
 				
 			}
 		});
@@ -295,9 +251,9 @@ public class CustomerPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				String cardToBeAdded = addCreditCardField.getText();
-				String cvvOfCardToAdd = cvvField.getText();
-				String addressWithCard = addressWithCardField.getText();
+				String cardToBeAdded = fCreditCardNumberField.getText();
+				String cvvOfCardToAdd = fCcvField.getText();
+				String addressWithCard = fAddressField.getText();
 				
 				CreditCard addThisCard = new CreditCard(fCustomer, cardToBeAdded, cvvOfCardToAdd, addressWithCard);
 				
@@ -309,31 +265,7 @@ public class CustomerPanel extends JPanel {
 					JOptionPane.showMessageDialog(null,
 							"No user exists",
 							"ADD CARD FAILED",
-							JOptionPane.INFORMATION_MESSAGE);
-				}
-			}
-		});
-		
-		// Deletes the given card of the user from the database
-		deleteCreditCardButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				String cardToBeDeleted = deleteCreditCardField.getText();
-				String cvvOfCardToDelete = cvvField.getText();
-				String addressWithCard = addressWithCardField.getText();
-				
-				CreditCard deleteThisCard = new CreditCard(fCustomer, cardToBeDeleted, cvvOfCardToDelete, addressWithCard);
-				
-				try {
-					fCustomerAccessor.deleteCreditCard(deleteThisCard);
-					JOptionPane.showMessageDialog(null,cardToBeDeleted, 
-							"Card deleted!", JOptionPane.INFORMATION_MESSAGE);
-				} catch (UserNotExistsException e) {
-					JOptionPane.showMessageDialog(null,
-							"No user exists",
-							"DELETE CARD FAILED",
-							JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -450,6 +382,113 @@ public class CustomerPanel extends JPanel {
                 return fTransactionHistory.get(rowIndex).getDateOfPurchase();
             default:
                 throw new IllegalArgumentException("Column index higher than anticipated.");
+            }
+        }
+    }
+    
+    private class DisplayCreditCard extends JDialog {
+
+        private final ICustomerAccessor fCustomerAccessor;
+        private final Customer fCustomer;
+        private final JTable fTable;
+        
+        public DisplayCreditCard(ICustomerAccessor aCustomerAccessor, List<CreditCard> aListOfCreditCards, Customer thisCustomer) {
+            
+            this.fCustomerAccessor = aCustomerAccessor;
+            this.fCustomer = thisCustomer;
+
+            // Table which displays the list of games.
+            fTable = new JTable();
+            fTable.setModel(new CreditCardTableModel(aListOfCreditCards));
+            fTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+            JScrollPane scrollPane = new JScrollPane(fTable);
+            fTable.setFillsViewportHeight(true);
+            scrollPane.setBounds(10, 10, 700, 200);
+
+            // Field for updating CCV
+            JLabel ccvLabel = new JLabel("new CCV:");
+            ccvLabel.setBounds(10, 220, 70, 25);
+            final JTextField ccvField = new JTextField("");
+            ccvField.setBounds(90, 220, 40, 25);
+
+            // Button for updating CCV
+            JButton updateButton = new JButton("Update");
+            updateButton.setBounds(140, 220, 130, 25);
+            
+            updateButton.addActionListener(new ActionListener() {
+                
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    
+                    int row = fTable.getSelectedRow();
+                    
+                    if (row < 0 || row >= fTable.getModel().getRowCount()) {
+                        JOptionPane.showMessageDialog(null, "No card is selected.", "SUBMISSION FAILED", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    try{
+                        fCustomerAccessor.updateCCV((String) fTable.getModel().getValueAt(row, 2), ccvField.getText());
+                    } catch (Exception e1) {
+                        JOptionPane.showMessageDialog(null, e1.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+                    }
+                    
+                    
+                    ccvField.setText("");
+                    updateTable();
+                }
+            });
+
+            // Button for deleting credit card
+            JButton deleteButton = new JButton("Delete Credit Card");
+            deleteButton.setBounds(10, 360, 170, 25);
+
+            deleteButton.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+
+                    int row = fTable.getSelectedRow();
+
+                    if (row < 0 || row >= fTable.getModel().getRowCount()) {
+                        JOptionPane.showMessageDialog(null, "No card is selected.", "SUBMISSION FAILED", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    CreditCard targetCard = new CreditCard(
+                            fCustomer, 
+                            (String) fTable.getModel().getValueAt(row, 2), 
+                            (String) fTable.getModel().getValueAt(row, 3), 
+                            (String) fTable.getModel().getValueAt(row, 4));
+
+                    try {
+                        fCustomerAccessor.deleteCreditCard(targetCard);
+                    } catch (UserNotExistsException e) {
+                        throw new IllegalStateException(e);
+                    }
+                    JOptionPane.showMessageDialog(null, "Successfully deleted credit card.", "SUBMISSION SUCCESS", JOptionPane.INFORMATION_MESSAGE); 
+                    
+                    updateTable();
+                }
+            });            
+
+            // Put them all together
+            this.setLayout(null);
+            this.add(scrollPane);
+            this.add(ccvLabel);
+            this.add(ccvField);
+            this.add(updateButton);
+            this.add(deleteButton);
+            this.setSize(720, 420);
+            this.setVisible(true);
+        }
+        
+        private void updateTable() {
+            try {
+                fTable.setModel(new CreditCardTableModel(fCustomerAccessor.listCreditCards(fCustomer)));
+            } catch (UserNotExistsException e) {
+                throw new RuntimeException(e);
             }
         }
     }
