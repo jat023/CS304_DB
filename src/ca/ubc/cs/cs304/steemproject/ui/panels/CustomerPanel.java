@@ -251,7 +251,17 @@ public class CustomerPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
+					List<CreditCard> customersCardsToRemove = fCustomerAccessor.listCreditCards(fCustomer);
+					
+					for (int i = 0; i < customersCardsToRemove.size(); i++) {
+						fCustomerAccessor.deleteCreditCard(customersCardsToRemove.get(i));
+					}
+					
 					fCustomerAccessor.removeAccount(fCustomer);
+					JOptionPane.showMessageDialog(null,
+							"Current user deleted",
+							"ACCOUNT REMOVED",
+							JOptionPane.INFORMATION_MESSAGE);
 				} catch (UserNotExistsException e1) {
 					JOptionPane.showMessageDialog(null,
 							"No user exists",
