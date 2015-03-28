@@ -27,4 +27,20 @@ public class DBQueriesHelper {
 			i++;
 		}
 	}
+	
+	public void addFloatsToList(ResultSet aResults, List<Float> targetList, String input) throws SQLException {
+		int i = 0;
+		while( aResults.next() ) {
+			targetList.add(i, aResults.getFloat(input));
+			i++;
+		}
+	}
+	
+	public void addBooleansToList(ResultSet aResults, List<Boolean> targetList, String input) throws SQLException {
+		int i = 0;
+		while( aResults.next() ) {
+			targetList.add(i, aResults.getBoolean(input));
+			i++;
+		}
+	}
 }

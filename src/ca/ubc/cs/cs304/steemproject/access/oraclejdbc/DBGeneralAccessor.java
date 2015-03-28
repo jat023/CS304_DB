@@ -13,6 +13,7 @@ public class DBGeneralAccessor {
 	private DBcustomers allCustomers;
 	private DBtesters allTesters;
 	private DBcards allCards;
+	private DBgames allGames;
 	
 	private Connection fConnection;
 	private Statement statement;
@@ -24,6 +25,7 @@ public class DBGeneralAccessor {
 		allCustomers = new DBcustomers(statement);
 		allTesters = new DBtesters(statement);
 		allCards = new DBcards(statement);
+		allGames = new DBgames(statement);
 	}
 	
 	public DBcustomers getCustomers() {
@@ -34,6 +36,9 @@ public class DBGeneralAccessor {
 	}
 	public DBcards getCards() {
 		return allCards;
+	}
+	public DBgames getGames() {
+		return allGames;
 	}
 	
 	
@@ -135,6 +140,72 @@ public class DBGeneralAccessor {
 			ResultSet results = SelectQuery(Tables.CREDIT_CARD_ATTR_ADDRESS, Tables.CREDIT_CARD_TABLENAME, statement);
 			addStringsToList(results, Addresses, Tables.CREDIT_CARD_ATTR_ADDRESS );
 			return Addresses;
+		}
+	}
+	
+	public class DBgames extends DBQueriesHelper{
+		private Statement statement;
+		
+		private List<String> gameNames;
+		private List<String> descriptions;
+		private List<String> genres;
+		private List<String> developers;
+		private List<Float> ratings;
+		private List<Float> prices;
+		private List<Boolean> onSpecials;
+		private List<Float> discounts;
+		
+		DBgames(Statement aStatement) {
+			statement = aStatement;		
+			gameNames = new ArrayList<String>();
+			descriptions = new ArrayList<String>();
+			genres = new ArrayList<String>();
+			developers = new ArrayList<String>();
+			ratings = new ArrayList<Float>();
+			prices = new ArrayList<Float>();
+			onSpecials = new ArrayList<Boolean>();
+			discounts = new ArrayList<Float>();
+		}
+		
+		public List<String> getNames() throws SQLException {
+			ResultSet results = SelectQuery(Tables.GAME_ATTR_NAME, Tables.FINALIZED_GAME_TABLENAME, statement);
+			addStringsToList(results, gameNames, Tables.GAME_ATTR_NAME );
+			return gameNames;
+		}
+		public List<String> getDescriptions() throws SQLException {
+			ResultSet results = SelectQuery(Tables.GAME_ATTR_DESCRIPTION, Tables.FINALIZED_GAME_TABLENAME, statement);
+			addStringsToList(results, descriptions, Tables.GAME_ATTR_DESCRIPTION );
+			return descriptions;
+		}
+		public List<String> getGenres() throws SQLException {
+			ResultSet results = SelectQuery(Tables.GAME_ATTR_GENRE, Tables.FINALIZED_GAME_TABLENAME, statement);
+			addStringsToList(results, genres, Tables.GAME_ATTR_GENRE );
+			return genres;
+		}
+		public List<String> getDevelopers() throws SQLException {
+			ResultSet results = SelectQuery(Tables.GAME_ATTR_DEVELOPER, Tables.FINALIZED_GAME_TABLENAME, statement);
+			addStringsToList(results, developers, Tables.GAME_ATTR_DEVELOPER );
+			return developers;
+		}
+		public List<Float> getRatings() throws SQLException {
+			ResultSet results = SelectQuery(Tables.FINALIZED_GAME_ATTR_RATING, Tables.FINALIZED_GAME_TABLENAME, statement);
+			addFloatsToList(results, ratings, Tables.FINALIZED_GAME_ATTR_RATING );
+			return ratings;
+		}
+		public List<Float> getPrices() throws SQLException {
+			ResultSet results = SelectQuery(Tables.FINALIZED_GAME_ATTR_FULLPRICE, Tables.FINALIZED_GAME_TABLENAME, statement);
+			addFloatsToList(results, prices, Tables.FINALIZED_GAME_ATTR_FULLPRICE );
+			return prices;
+		}
+		public List<Boolean> getOnSpecials() throws SQLException {
+			ResultSet results = SelectQuery(Tables.FINALIZED_GAME_ATTR_ONSPECIAL, Tables.FINALIZED_GAME_TABLENAME, statement);
+			addBooleansToList(results, onSpecials, Tables.FINALIZED_GAME_ATTR_ONSPECIAL );
+			return onSpecials;
+		}
+		public List<Float> getDiscounts() throws SQLException {
+			ResultSet results = SelectQuery(Tables.FINALIZED_GAME_ATTR_DISCOUNTPERC, Tables.FINALIZED_GAME_TABLENAME, statement);
+			addFloatsToList(results, discounts, Tables.FINALIZED_GAME_ATTR_DISCOUNTPERC );
+			return discounts;
 		}
 	}
 }

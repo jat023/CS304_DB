@@ -28,6 +28,14 @@ public class DatabaseUI {
 	private JCheckBox option3check;
 	private JCheckBox option4check;
 	private JButton refreshButton;
+	private JTable customerTable;
+	private JTable testerTable;
+	private JTable cardTable;
+	private JTable gameTable;
+	private DefaultTableModel tableModel;
+	private DefaultTableModel tableModel2;
+	private DefaultTableModel tableModel3;
+	private DefaultTableModel tableModel4;
 	private DBGeneralAccessor generalAccessorDB;
 	
 	DatabaseUI() throws SQLException {		
@@ -35,7 +43,7 @@ public class DatabaseUI {
 		mainWindow.setSize(700,700);
 		mainWindow.setLayout(null);
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+	
 		optionsPanel = initCheckBoxesPanel();
 		buttonPanel = initRefreshButton();
 		tablePanel = new JPanel();
@@ -51,6 +59,13 @@ public class DatabaseUI {
 		tablePanel4.setLayout(new BorderLayout());
 		tablePanel4.setSize(600, 100);
 		
+		initTables();
+		
+		tablePanel.setVisible(false);
+		tablePanel2.setVisible(false);
+		tablePanel3.setVisible(false);
+		tablePanel4.setVisible(false);
+		
 		mainWindow.add(optionsPanel);
 		mainWindow.add(buttonPanel);
 		mainWindow.add(tablePanel);
@@ -61,9 +76,12 @@ public class DatabaseUI {
 		setComponentLocations();
 		generalAccessorDB = new DBGeneralAccessor();
 		
-		refreshButton.addActionListener(new ActionListener() {
+		refreshButton.addActionListener(new ActionListener() {		
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				
+				resetAllTables();
+				
 				if(option1check.isSelected()) {
 					List<Integer> userIDs;
 					List<String> userEmails;
@@ -72,10 +90,6 @@ public class DatabaseUI {
 						userIDs = generalAccessorDB.getCustomers().getIDs();
 						userEmails = generalAccessorDB.getCustomers().getEmails();
 						userPasswords = generalAccessorDB.getCustomers().getPasswords();
-						
-						String columnNames[] = {"Customer ID","Customer Email","Customer Password"};
-						DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
-						JTable customerTable = new JTable(tableModel);
 
 						for( int i = 0; i < userIDs.size(); i++ ) {
 							Object[] rowObj = {userIDs.get(i).toString(), userEmails.get(i).toString(),
@@ -83,8 +97,9 @@ public class DatabaseUI {
 							tableModel.addRow(rowObj);
 						}
 						
-						JScrollPane scrollPane = new JScrollPane(customerTable);
-					    tablePanel.add(scrollPane, BorderLayout.CENTER);
+						userIDs.clear();
+						userEmails.clear();
+						userPasswords.clear();
 						
 					    tablePanel.setVisible(true);
 						tablePanel.revalidate();
@@ -104,10 +119,6 @@ public class DatabaseUI {
 						testerIDs = generalAccessorDB.getTesters().getIDs();
 						testerEmails = generalAccessorDB.getTesters().getEmails();
 						testerPasswords = generalAccessorDB.getTesters().getPasswords();
-						
-						String columnNames[] = {"Tester ID","Tester Email","Tester Password"};
-						DefaultTableModel tableModel2 = new DefaultTableModel(columnNames, 0);
-						JTable testerTable = new JTable(tableModel2);
 
 						for( int i = 0; i < testerIDs.size(); i++ ) {
 							Object[] rowObj = {testerIDs.get(i).toString(), testerEmails.get(i).toString(),
@@ -115,8 +126,9 @@ public class DatabaseUI {
 							tableModel2.addRow(rowObj);
 						}
 						
-						JScrollPane scrollPane2 = new JScrollPane(testerTable);
-					    tablePanel2.add(scrollPane2, BorderLayout.CENTER);
+						testerIDs.clear();
+						testerEmails.clear();
+						testerPasswords.clear();
 						
 					    tablePanel2.setVisible(true);
 						tablePanel2.revalidate();
@@ -138,10 +150,6 @@ public class DatabaseUI {
 						CardNumbers = generalAccessorDB.getCards().getCardNumbers();
 						CCVs = generalAccessorDB.getCards().getCCVs();
 						Addresses = generalAccessorDB.getCards().getAddresses();
-						
-						String columnNames[] = {"User ID","Card Number","Card CCV", "Card Address"};
-						DefaultTableModel tableModel3 = new DefaultTableModel(columnNames, 0);
-						JTable testerTable = new JTable(tableModel3);
 
 						for( int i = 0; i < CardNumbers.size(); i++ ) {
 							Object[] rowObj = {userIDs.get(i).toString(), CardNumbers.get(i).toString(),
@@ -149,8 +157,11 @@ public class DatabaseUI {
 							tableModel3.addRow(rowObj);
 						}
 						
-						JScrollPane scrollPane3 = new JScrollPane(testerTable);
-					    tablePanel3.add(scrollPane3, BorderLayout.CENTER);
+						userIDs.clear();
+						CardNumbers.clear();
+						CCVs.clear();
+						Addresses.clear();
+						
 						
 					    tablePanel3.setVisible(true);
 						tablePanel3.revalidate();
@@ -163,7 +174,51 @@ public class DatabaseUI {
 					tablePanel3.setVisible(false);
 				}
 				if(option4check.isSelected()) {
-					System.out.println("N/A");
+					List<String> names;
+					List<String> descriptions;
+					List<String> genres;
+					List<String> developers;
+					List<Float> ratings;
+					List<Float> prices;
+					List<Boolean> onSpecials;
+					List<Float> discounts;
+					try {
+						names = generalAccessorDB.getGames().getNames();
+						descriptions = generalAccessorDB.getGames().getDescriptions();
+						genres = generalAccessorDB.getGames().getGenres();
+						developers = generalAccessorDB.getGames().getDevelopers();
+						ratings = generalAccessorDB.getGames().getRatings();
+						prices = generalAccessorDB.getGames().getPrices();
+						onSpecials = generalAccessorDB.getGames().getOnSpecials();
+						discounts = generalAccessorDB.getGames().getDiscounts();
+
+						for( int i = 0; i < names.size(); i++ ) {
+							Object[] rowObj = {names.get(i).toString(), descriptions.get(i).toString(),
+									genres.get(i).toString(), developers.get(i).toString(),
+									ratings.get(i).toString(), prices.get(i).toString(),
+									onSpecials.get(i).toString(), discounts.get(i).toString()};
+							tableModel4.addRow(rowObj);
+						}
+						
+						names.clear();
+						descriptions.clear();
+						genres.clear();
+						developers.clear();
+						ratings.clear();
+						prices.clear();
+						onSpecials.clear();
+						discounts.clear();
+						
+						
+					    tablePanel4.setVisible(true);
+						tablePanel4.revalidate();
+						tablePanel4.repaint();
+					}catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}else {
+					tablePanel4.setVisible(false);
 				}
 			}
 		});
@@ -176,6 +231,44 @@ public class DatabaseUI {
 		tablePanel2.setLocation(50,280);
 		tablePanel3.setLocation(50,385);
 		tablePanel4.setLocation(50,490);
+	}
+	
+	private void resetAllTables() {
+		tableModel.setRowCount(0);
+		tableModel2.setRowCount(0);
+		tableModel3.setRowCount(0);
+		tableModel4.setRowCount(0);
+		customerTable.setModel(tableModel);
+		testerTable.setModel(tableModel2);
+		cardTable.setModel(tableModel3);
+		gameTable.setModel(tableModel4);
+	}
+	
+	private void initTables() {
+		String columnNames[] = {"Customer ID","Customer Email","Customer Password"};
+		tableModel = new DefaultTableModel(columnNames, 0);
+		customerTable = new JTable(tableModel);
+		JScrollPane scrollPane = new JScrollPane(customerTable);
+	    tablePanel.add(scrollPane, BorderLayout.CENTER);
+	    
+	    String columnNames2[] = {"Tester ID","Tester Email","Tester Password"};
+		tableModel2 = new DefaultTableModel(columnNames2, 0);
+		testerTable = new JTable(tableModel2);
+		JScrollPane scrollPane2 = new JScrollPane(testerTable);
+	    tablePanel2.add(scrollPane2, BorderLayout.CENTER);
+	    
+	    String columnNames3[] = {"User ID","Card Number","Card CCV", "Card Address"};
+		tableModel3 = new DefaultTableModel(columnNames3, 0);
+		cardTable = new JTable(tableModel3);
+		JScrollPane scrollPane3 = new JScrollPane(cardTable);
+	    tablePanel3.add(scrollPane3, BorderLayout.CENTER);
+	    
+	    String columnNames4[] = {"Game Name","Game Description","Game Genre", "Game Developer",
+	    						"Game Rating", "Game Price", "Game On Special", "Game Discount"};
+		tableModel4 = new DefaultTableModel(columnNames4, 0);
+		gameTable = new JTable(tableModel4);
+		JScrollPane scrollPane4 = new JScrollPane(gameTable);
+	    tablePanel4.add(scrollPane4, BorderLayout.CENTER);
 	}
 	
 	private JPanel initRefreshButton() {
